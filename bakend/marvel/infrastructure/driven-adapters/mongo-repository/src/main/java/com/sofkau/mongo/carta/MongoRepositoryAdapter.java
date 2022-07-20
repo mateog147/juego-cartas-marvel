@@ -21,10 +21,6 @@ public class MongoRepositoryAdapter extends AdapterOperations<Carta, CartaDocume
         super(repository, mapper, d -> mapper.map(d, Carta.class));
     }
 
-    @Override
-    public Mono<Carta> findById(Carta carta) {
-        return null;
-    }
 
     @Override
     public Mono<Carta> update(String id, Carta carta) {

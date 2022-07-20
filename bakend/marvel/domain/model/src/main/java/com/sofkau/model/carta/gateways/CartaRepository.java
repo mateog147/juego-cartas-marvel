@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 public interface CartaRepository {
     public Mono<Carta> save(Carta carta);
 
-    public Mono<Carta> findById(Carta carta);
+    public Mono<Carta> findById(String id);
 
     public Mono<Void> deleteById(String id);
 

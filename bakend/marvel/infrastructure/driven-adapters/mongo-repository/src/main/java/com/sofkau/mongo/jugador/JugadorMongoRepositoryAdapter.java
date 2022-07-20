@@ -43,6 +43,7 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
 
     @Override
     public Mono<Jugador> actualizarPuntos(String jugadorId, Integer puntos) {
+
         return null;
     }
 }

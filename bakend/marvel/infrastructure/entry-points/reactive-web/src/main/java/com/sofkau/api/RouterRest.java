@@ -15,9 +15,12 @@ public class RouterRest {
 public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, HandlerJugador jugador) {
     return route(GET("/api/carta/"), handler::GETMostrarCartasUseCase)
     .andRoute(POST("/api/carta/crear"), handler::POSTCrearCartaUseCase)
-    .andRoute(POST("/api/jugador/crear"), jugador::POSTCrearJugador)
-    .andRoute(PUT("api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador);
-            //.and(route(GET("/api/otherusercase/path"), handler::listenGETOtherUseCase));
+    .andRoute(GET("/api/carta/{id}"), handler::GETBuscarCartaPorId)
+    .andRoute(DELETE("/api/carta/{id}"),handler::DELETEEliminarCartaUseCase)
+    .andRoute(PUT("/api/carta/{id}"),handler::PUTModificarPorId)
+    .andRoute(POST("/api/jugador/crear"), jugador::POSTCrearJugador);
+    //.andRoute(PUT("api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador);
+
 
     }
 }

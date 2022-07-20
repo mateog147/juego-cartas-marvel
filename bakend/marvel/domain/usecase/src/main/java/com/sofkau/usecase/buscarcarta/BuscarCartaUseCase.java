@@ -10,8 +10,8 @@ public class BuscarCartaUseCase {
 
     private final CartaRepository repository;
 
-    public Mono<Carta> buscarCarta(Carta carta){
-        return repository.findById(carta);
+    public Mono<Carta> buscarCarta(String id){
+        return repository.findById(id);
     }
 
 }

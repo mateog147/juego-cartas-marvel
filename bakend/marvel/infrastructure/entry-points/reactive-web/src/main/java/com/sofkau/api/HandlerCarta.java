@@ -21,6 +21,7 @@ public class HandlerCarta {
 private final CrearCartaUseCase crearCartaUseCase;
 private final MostrarCartasUseCase mostrarCartasUseCase;
 private final EliminarCartaUseCase eliminarCartaUseCase;
+private final BuscarCartaUseCase buscarCartaUseCase;
 
 
     public Mono<ServerResponse> POSTCrearCartaUseCase(ServerRequest serverRequest) {
@@ -43,5 +44,24 @@ private final EliminarCartaUseCase eliminarCartaUseCase;
         var id = serverRequest.pathVariable("id");
         return  ServerResponse.ok()
                 .body(eliminarCartaUseCase.eliminarCarta(id), Carta.class);
+    }
+
+    public  Mono<ServerResponse> GETBuscarCartaPorId(ServerRequest serverRequest){
+        var id = serverRequest.pathVariable("id");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(buscarCartaUseCase.buscarCarta(id), Carta.class);
+    }
+
+    public Mono<ServerResponse> PUTModificarPorId(ServerRequest serverRequest) {
+        var id = serverRequest.pathVariable("id");
+
+        return buscarCartaUseCase.buscarCarta(id)
+                .map(carta -> {
+                    carta.setNombre("TEST");
+                    return carta;
+                })
+                .flatMap(cartaGuardada -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(cartaGuardada), Carta.class));
     }
 }

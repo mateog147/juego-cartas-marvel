@@ -1,8 +1,5 @@
 package com.sofkau.model.carta;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder(toBuilder = true)
@@ -14,7 +11,6 @@ public class Carta {
     private String nombre;
     private Integer xp;
     private String imagen;
-
 
     public String id() {
         return id;

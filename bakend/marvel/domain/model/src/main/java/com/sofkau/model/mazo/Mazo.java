@@ -1,12 +1,14 @@
 package com.sofkau.model.mazo;
 import com.sofkau.model.carta.Carta;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 
 @Data
-@Builder(toBuilder = true)
+@NoArgsConstructor
 public class Mazo {
 
     private String id;

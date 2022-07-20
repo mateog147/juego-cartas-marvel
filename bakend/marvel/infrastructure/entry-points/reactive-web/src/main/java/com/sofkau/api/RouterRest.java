@@ -14,7 +14,7 @@ public class RouterRest {
 @Bean
 public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, HandlerJugador jugador) {
     return route(GET("/api/carta/"), handler::GETMostrarCartasUseCase)
-    .andRoute(POST("/api/carta/crear"), handler::POSTCrearCartaUseCase)
+    .andRoute(POST("/api/carta/"), handler::POSTCrearCartaUseCase)
     .andRoute(GET("/api/carta/{id}"), handler::GETBuscarCartaPorId)
     .andRoute(DELETE("/api/carta/{id}"),handler::DELETEEliminarCartaUseCase)
     .andRoute(PUT("/api/carta/{id}"),handler::PUTModificarPorId)

@@ -10,7 +10,7 @@ public class EliminarCartaUseCase {
 
     private final CartaRepository repository;
 
-    public Mono<Carta> eliminarCarta(Carta carta){
-        return repository.delete(carta);
+    public Mono<Void> eliminarCarta(String id){
+        return repository.deleteById(id);
     }
 }

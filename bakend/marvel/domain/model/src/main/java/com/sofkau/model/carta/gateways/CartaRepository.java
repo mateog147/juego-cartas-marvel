@@ -9,7 +9,9 @@ public interface CartaRepository {
 
     public Mono<Carta> findById(Carta carta);
 
-    public Mono<Carta> delete(Carta carta);
+    public Mono<Void> deleteById(String id);
 
     public Flux<Carta> findAll();
+
+    public Mono<Carta> update(String id, Carta carta);
 }

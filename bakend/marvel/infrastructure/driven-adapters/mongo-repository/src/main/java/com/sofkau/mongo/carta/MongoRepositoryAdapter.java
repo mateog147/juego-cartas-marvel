@@ -27,7 +27,12 @@ public class MongoRepositoryAdapter extends AdapterOperations<Carta, CartaDocume
     }
 
     @Override
-    public Mono<Carta> delete(Carta carta) {
-        return null;
+    public Mono<Carta> update(String id, Carta carta) {
+        carta.setId(id);
+
+        return repository
+                .save(new CartaDocument(carta.id(),carta.nombre(), carta.xp(), carta.imagen()))
+                .flatMap(c -> Mono.just(carta));
     }
+
 }

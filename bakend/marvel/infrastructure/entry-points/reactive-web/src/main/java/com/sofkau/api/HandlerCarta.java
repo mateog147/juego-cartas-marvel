@@ -40,9 +40,8 @@ private final EliminarCartaUseCase eliminarCartaUseCase;
 
     public Mono<ServerResponse> DELETEEliminarCartaUseCase(ServerRequest serverRequest) {
 
-        return serverRequest.bodyToMono(Carta.class)
-                .flatMap(carta -> eliminarCartaUseCase.eliminarCarta(carta))
-                .flatMap(cartaEliminada -> ServerResponse.ok()
-                        .body(Mono.empty(), Carta.class));
+        var id = serverRequest.pathVariable("id");
+        return  ServerResponse.ok()
+                .body(eliminarCartaUseCase.eliminarCarta(id), Carta.class);
     }
 }

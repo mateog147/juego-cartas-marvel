@@ -11,7 +11,7 @@ public class MostrarCartasUseCase {
 
     private final CartaRepository repository;
 
-    public Flux<Carta> mostrarCartas(Carta carta){
-        return repository.findAll(carta);
+    public Flux<Carta> mostrarCartas(){
+        return repository.findAll();
     }
 }

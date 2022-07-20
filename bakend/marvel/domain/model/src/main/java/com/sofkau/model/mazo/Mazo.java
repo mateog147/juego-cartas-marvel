@@ -1,6 +1,9 @@
 package com.sofkau.model.mazo;
+import com.sofkau.model.carta.Carta;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.*;
 
 @Data
 @Builder(toBuilder = true)

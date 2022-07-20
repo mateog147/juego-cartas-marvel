@@ -11,5 +11,5 @@ public interface CartaRepository {
 
     public Mono<Carta> delete(Carta carta);
 
-    public Flux<Carta> findAll(Carta carta);
+    public Flux<Carta> findAll();
 }

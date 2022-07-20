@@ -1,12 +1,11 @@
-package com.sofkau.mongo;
+package com.sofkau.mongo.carta;
 
 import com.sofkau.mongo.helper.AdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MongoRepositoryAdapter extends AdapterOperations<Object/* change for domain model */, Object/* change for adapter model */, String, MongoDBRepository>
+public class MongoRepositoryAdapter extends AdapterOperations<Carta, Object/* change for adapter model */, String, MongoDBRepository>
 // implements ModelRepository from domain
 {
 

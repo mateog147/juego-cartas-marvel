@@ -1,12 +1,16 @@
 package com.sofkau.model.jugador;
 import com.sofkau.model.carta.Carta;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Jugador {
     private String id;
     private String nombre;
@@ -14,11 +18,7 @@ public class Jugador {
     private List<Carta> cartas;
 
 
-    public Jugador(String id, String nombre, List<Carta> cartas) {
-        this.id = id;
-        this.nombre = nombre;
-        this.cartas = cartas;
-    }
+
 
     public Integer puntaje() {
         return puntaje;

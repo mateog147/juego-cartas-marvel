@@ -1,10 +1,8 @@
 package com.sofkau.mongo.jugador;
 
 import com.sofkau.model.carta.Carta;
-import com.sofkau.model.carta.gateways.CartaRepository;
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.jugador.gateways.JugadorRepository;
-import com.sofkau.mongo.carta.CartaDocument;
 import com.sofkau.mongo.helper.AdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
@@ -14,11 +12,11 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Repository
-public class MongoRepositoryAdapter extends AdapterOperations<Jugador, JugadorDocument, String, MongoDBRepository>
+public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, JugadorDocument, String, JugadorMongoDBRepository>
  implements JugadorRepository
 {
 
-    public MongoRepositoryAdapter(MongoDBRepository repository, ObjectMapper mapper) {
+    public JugadorMongoRepositoryAdapter(JugadorMongoDBRepository repository, ObjectMapper mapper) {
         /**
          *  Could be use mapper.mapBuilder if your domain model implement builder pattern
          *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
@@ -40,6 +38,11 @@ public class MongoRepositoryAdapter extends AdapterOperations<Jugador, JugadorDo
 
     @Override
     public Mono<Jugador> eliminarcartaApostada(String jugadorId, Carta carta) {
+        return null;
+    }
+
+    @Override
+    public Mono<Jugador> actualizarPuntos(String jugadorId, Integer puntos) {
         return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.sofkau.api;
 
 import com.sofkau.model.jugador.Jugador;
+import com.sofkau.usecase.jugador.actualizarpuntaje.ActualizarPuntajeJugadorUseCase;
 import com.sofkau.usecase.jugador.crearjugador.CrearJugadorUseCase;
 import com.sofkau.usecase.jugador.rendirse.RendirseEnRondaUseCase;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class HandlerJugador {
 
     private final CrearJugadorUseCase crearJugadorUseCase;
     private final RendirseEnRondaUseCase rendirseEnRondaUseCase;
+    private final ActualizarPuntajeJugadorUseCase actualizarPuntajeJugadorUseCase;
 
     public Mono<ServerResponse> POSTCrearJugador(ServerRequest serverRequest){
 
@@ -26,5 +28,12 @@ public class HandlerJugador {
 
 
 
+    }
+    public Mono<ServerResponse> PUTActualizarPuntajeJugador(ServerRequest serverRequest){
+        var id = serverRequest.pathVariable("id");
+        return serverRequest.bodyToMono(Jugador.class)
+                .flatMap(item-> actualizarPuntajeJugadorUseCase.actualizarPuntajeDelJugador(id, item.getPuntaje()) )
+                .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(jugador), Jugador.class));
     }
 }

@@ -15,4 +15,6 @@ public interface JugadorRepository {
     Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador);
 
     Mono<Jugador> eliminarcartaApostada(String jugadorId, Carta carta);
+
+    Mono<Jugador> actualizarPuntos(String jugadorId, Integer puntos);
 }

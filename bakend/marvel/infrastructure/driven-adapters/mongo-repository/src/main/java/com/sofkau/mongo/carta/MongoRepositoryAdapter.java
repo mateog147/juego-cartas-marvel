@@ -1,12 +1,15 @@
 package com.sofkau.mongo.carta;
 
+import com.sofkau.model.carta.Carta;
+import com.sofkau.model.carta.gateways.CartaRepository;
 import com.sofkau.mongo.helper.AdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
 @Repository
-public class MongoRepositoryAdapter extends AdapterOperations<Carta, Object/* change for adapter model */, String, MongoDBRepository>
-// implements ModelRepository from domain
+public class MongoRepositoryAdapter extends AdapterOperations<Carta, CartaDocument, String, MongoDBRepository>
+ implements CartaRepository
 {
 
     public MongoRepositoryAdapter(MongoDBRepository repository, ObjectMapper mapper) {
@@ -15,6 +18,16 @@ public class MongoRepositoryAdapter extends AdapterOperations<Carta, Object/* ch
          *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
          *  Or using mapper.map with the class of the object model
          */
-        super(repository, mapper, d -> mapper.map(d, Object.class/* change for domain model */));
+        super(repository, mapper, d -> mapper.map(d, Carta.class));
+    }
+
+    @Override
+    public Mono<Carta> findById(Carta carta) {
+        return null;
+    }
+
+    @Override
+    public Mono<Carta> delete(Carta carta) {
+        return null;
     }
 }

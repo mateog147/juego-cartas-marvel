@@ -13,8 +13,9 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class RouterRest {
 @Bean
 public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler) {
-    return route(GET("/api/carta/"), handler::GETMostrarCartasUseCase);
-    //.andRoute(POST("/api/usecase/otherpath"), handler::listenPOSTUseCase).and(route(GET("/api/otherusercase/path"), handler::listenGETOtherUseCase));
+    return route(GET("/api/carta/"), handler::GETMostrarCartasUseCase)
+    .andRoute(POST("/api/carta/crear"), handler::POSTCrearCartaUseCase);
+            //.and(route(GET("/api/otherusercase/path"), handler::listenGETOtherUseCase));
 
     }
 }

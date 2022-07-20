@@ -12,13 +12,13 @@ public class Mazo {
     private String id;
     private Set<Carta> mazo;
 
-    public Mazo(String id, List<Carta> mazo) {
+    public Mazo(String id, Set<Carta> mazo) {
         this.id = id;
         this.mazo = barajarMazo(mazo);
     }
 
-    private Set<Carta> barajarMazo(List<Carta> mazo) {
-        Collections.shuffle(mazo);
+    private Set<Carta> barajarMazo(Set<Carta> mazo) {
+        Collections.shuffle(Arrays.asList(mazo.toArray()));
         Set<Carta> mazo_barajado = new HashSet<>();
         mazo_barajado.addAll(mazo);
         return mazo_barajado;

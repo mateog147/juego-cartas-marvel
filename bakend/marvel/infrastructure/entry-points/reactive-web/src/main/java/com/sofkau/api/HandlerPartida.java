@@ -19,10 +19,12 @@ public class HandlerPartida {
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
 
         return serverRequest.bodyToFlux(Jugador.class)
+                .map(jugador -> jugador.getId())
+                .log()
                 .collectList()
                 .map(lista -> crearPartidaUseCase.crearPartida(lista))
                 .flatMap(partida -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                        .body(Mono.just(partida), Partida.class));
+                        .body(partida, Partida.class));
 
     }
 }

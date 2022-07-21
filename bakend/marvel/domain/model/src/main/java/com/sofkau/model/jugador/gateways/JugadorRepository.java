@@ -20,4 +20,6 @@ public interface JugadorRepository {
 
 
     Mono<Jugador> findById(String id);
+
+    Flux<Jugador> findAllById(Iterable<String> ids);
 }

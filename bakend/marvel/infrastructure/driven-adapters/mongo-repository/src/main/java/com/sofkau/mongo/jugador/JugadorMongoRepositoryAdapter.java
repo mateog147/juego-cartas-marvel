@@ -41,5 +41,10 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
         return null;
     }
 
+    @Override
+    public Flux<Jugador> findAllById(Iterable<String> ids) {
+        return repository.findAllById(ids).map(d -> mapper.map(d, Jugador.class));
+    }
+
 
 }

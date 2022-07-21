@@ -48,5 +48,4 @@ public class Jugador {
                 .filter(carta -> (!carta.id().equalsIgnoreCase(cartaId)) )
                 .collect(Collectors.toList());
     }
-
 }

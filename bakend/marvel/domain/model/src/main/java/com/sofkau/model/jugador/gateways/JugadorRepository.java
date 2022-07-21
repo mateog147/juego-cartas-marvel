@@ -18,7 +18,6 @@ public interface JugadorRepository {
 
     Mono<Jugador> eliminarcartaApostada(String jugadorId, Carta carta);
 
-    Mono<Jugador> actualizarPuntos(String jugadorId, Integer puntos);
 
     Mono<Jugador> findById(String id);
 }

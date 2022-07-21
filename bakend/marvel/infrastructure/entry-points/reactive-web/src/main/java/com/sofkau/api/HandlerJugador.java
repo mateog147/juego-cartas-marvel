@@ -2,6 +2,7 @@ package com.sofkau.api;
 
 import com.sofkau.model.carta.Carta;
 import com.sofkau.model.jugador.Jugador;
+import com.sofkau.usecase.agregarcartas.AgregarCartasUseCase;
 import com.sofkau.usecase.consultarjugadores.ConsultarjugadoresUseCase;
 import com.sofkau.usecase.jugador.actualizarpuntaje.ActualizarPuntajeJugadorUseCase;
 import com.sofkau.usecase.jugador.crearjugador.CrearJugadorUseCase;
@@ -21,6 +22,7 @@ public class HandlerJugador {
     private final RendirseEnRondaUseCase rendirseEnRondaUseCase;
     private final ActualizarPuntajeJugadorUseCase actualizarPuntajeJugadorUseCase;
     private final ConsultarjugadoresUseCase consultarJuegadoresUseCase;
+    private final AgregarCartasUseCase agregarCartasUseCase;
 
     public Mono<ServerResponse> POSTCrearJugador(ServerRequest serverRequest){
 
@@ -43,5 +45,14 @@ public class HandlerJugador {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(consultarJuegadoresUseCase.consultarJugadores(), Jugador.class);
+    }
+
+    public Mono<ServerResponse> PUTAgregarCartasJugador(ServerRequest serverRequest) {
+        var id = serverRequest.pathVariable("id");
+        return serverRequest.bodyToFlux(Carta.class)
+                .collectList()
+                .flatMap(lista-> agregarCartasUseCase.agregarCartas(id, lista))
+                .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(jugador), Jugador.class));
     }
 }

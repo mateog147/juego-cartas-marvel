@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class RouterRest {
 @Bean
-public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, HandlerJugador jugador) {
+public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, HandlerJugador jugador, HandlerPartida partidaHandler) {
     return route(GET("/api/carta/"), handler::GETMostrarCartasUseCase)
     .andRoute(POST("/api/carta/"), handler::POSTCrearCartaUseCase)
     .andRoute(GET("/api/carta/{id}"), handler::GETBuscarCartaPorId)
@@ -22,6 +22,7 @@ public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, Handl
     .andRoute(PUT("/api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador)
     .andRoute(GET("/api/jugador/"), jugador::GETConsultarJugadores)
     .andRoute(PUT("/api/jugador/cartaagregada/{id}"), jugador::PUTAgregarCartasJugador)
-    .andRoute(PUT("/api/jugador/cartaeliminada/{id}"), jugador::PUTEliminarCartaApostada);
+    .andRoute(PUT("/api/jugador/cartaeliminada/{id}"), jugador::PUTEliminarCartaApostada)
+    .andRoute(POST("/api/partida/"), partidaHandler::POSTCrearPartida);
     }
 }

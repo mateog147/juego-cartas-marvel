@@ -1,0 +1,25 @@
+package com.sofkau.mongo.partida;
+
+import com.sofkau.model.partida.Partida;
+import com.sofkau.model.partida.gateways.PartidaRepository;
+import com.sofkau.mongo.helper.AdapterOperations;
+import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class PartidaMongoRepositoryAdapter extends AdapterOperations<Partida, PartidaDocument, String, PartidaMongoDBRepository>
+ implements PartidaRepository
+{
+
+    public PartidaMongoRepositoryAdapter(PartidaMongoDBRepository repository, ObjectMapper mapper) {
+        /**
+         *  Could be use mapper.mapBuilder if your domain model implement builder pattern
+         *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
+         *  Or using mapper.map with the class of the object model
+         */
+        super(repository, mapper, d -> mapper.map(d, Partida.class));
+    }
+
+
+
+}

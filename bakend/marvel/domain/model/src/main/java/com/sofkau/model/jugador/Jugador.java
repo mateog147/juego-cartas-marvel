@@ -35,4 +35,10 @@ public class Jugador {
     public String nombre() {
         return nombre;
     }
+
+    public List<Carta> agregarCartas(List<Carta> cartasNueva){
+        List<Carta> lista = this.cartas;
+        lista.addAll(cartasNueva);
+        return lista;
+    }
 }

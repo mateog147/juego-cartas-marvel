@@ -10,13 +10,14 @@ import java.util.List;
 public interface JugadorRepository {
     Mono<Jugador> save(Jugador jugador);
 
+    Flux<Jugador> findAll();
+
     Flux<Carta> agregarCartasGanadas(String jugadorId ,List<Carta> cartas);
 
     Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador);
 
     Mono<Jugador> eliminarcartaApostada(String jugadorId, Carta carta);
 
-    Mono<Jugador> actualizarPuntos(String jugadorId, Integer puntos);
 
     Mono<Jugador> findById(String id);
 }

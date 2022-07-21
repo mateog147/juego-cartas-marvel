@@ -1,4 +1,4 @@
-package com.sofkau.usecase.eliminarcarta;
+package com.sofkau.usecase.carta.crearcarta;
 
 import com.sofkau.model.carta.Carta;
 import com.sofkau.model.carta.gateways.CartaRepository;
@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class EliminarCartaUseCase {
+public class CrearCartaUseCase {
 
     private final CartaRepository repository;
 
-    public Mono<Void> eliminarCarta(String id){
-        return repository.deleteById(id);
+    public Mono<Carta> saveCarta(Carta carta){
+        return repository.save(carta);
     }
 }

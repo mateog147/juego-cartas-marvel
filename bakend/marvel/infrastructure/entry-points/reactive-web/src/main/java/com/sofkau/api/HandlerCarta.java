@@ -1,17 +1,16 @@
 package com.sofkau.api;
 
 import com.sofkau.model.carta.Carta;
-import com.sofkau.usecase.actualizarcarta.ActualizarCartaUseCase;
-import com.sofkau.usecase.buscarcarta.BuscarCartaUseCase;
-import com.sofkau.usecase.crearcarta.CrearCartaUseCase;
-import com.sofkau.usecase.eliminarcarta.EliminarCartaUseCase;
-import com.sofkau.usecase.mostrarcartas.MostrarCartasUseCase;
+import com.sofkau.usecase.carta.actualizarcarta.ActualizarCartaUseCase;
+import com.sofkau.usecase.carta.buscarcarta.BuscarCartaUseCase;
+import com.sofkau.usecase.carta.crearcarta.CrearCartaUseCase;
+import com.sofkau.usecase.carta.eliminarcarta.EliminarCartaUseCase;
+import com.sofkau.usecase.carta.mostrarcartas.MostrarCartasUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component

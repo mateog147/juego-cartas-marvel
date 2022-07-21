@@ -1,15 +1,17 @@
-package com.sofkau.usecase.actualizarcarta;
+package com.sofkau.usecase.carta.mostrarcartas;
 
 import com.sofkau.model.carta.Carta;
 import com.sofkau.model.carta.gateways.CartaRepository;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class ActualizarCartaUseCase {
+public class MostrarCartasUseCase {
+
     private final CartaRepository repository;
 
-    public Mono<Carta> actualziarCarta(String id, Carta carta){
-        return repository.update(id, carta);
+    public Flux<Carta> mostrarCartas(){
+        return repository.findAll();
     }
 }

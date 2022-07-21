@@ -10,6 +10,8 @@ import java.util.List;
 public interface JugadorRepository {
     Mono<Jugador> save(Jugador jugador);
 
+    Flux<Jugador> findAll();
+
     Flux<Carta> agregarCartasGanadas(String jugadorId ,List<Carta> cartas);
 
     Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador);

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder(toBuilder = true)
@@ -41,4 +42,11 @@ public class Jugador {
         lista.addAll(cartasNueva);
         return lista;
     }
+
+    public List<Carta> eliminarCarta(String cartaId){
+        return this.cartas.stream()
+                .filter(carta -> (!carta.id().equalsIgnoreCase(cartaId)) )
+                .collect(Collectors.toList());
+    }
+
 }

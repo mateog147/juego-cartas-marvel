@@ -12,7 +12,7 @@ public interface JugadorRepository {
 
     Flux<Jugador> findAll();
 
-    Flux<Carta> agregarCartasGanadas(String jugadorId ,List<Carta> cartas);
+    Flux<Carta> agregarCartas(String jugadorId ,List<Carta> cartas);
 
     Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador);
 

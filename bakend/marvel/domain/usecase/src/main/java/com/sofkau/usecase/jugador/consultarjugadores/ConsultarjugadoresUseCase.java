@@ -1,4 +1,4 @@
-package com.sofkau.usecase.consultarjugadores;
+package com.sofkau.usecase.jugador.consultarjugadores;
 
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.jugador.gateways.JugadorRepository;

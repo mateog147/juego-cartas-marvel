@@ -2,10 +2,11 @@ package com.sofkau.api;
 
 import com.sofkau.model.carta.Carta;
 import com.sofkau.model.jugador.Jugador;
-import com.sofkau.usecase.agregarcartas.AgregarCartasUseCase;
-import com.sofkau.usecase.consultarjugadores.ConsultarjugadoresUseCase;
+import com.sofkau.usecase.jugador.agregarcartas.AgregarCartasUseCase;
+import com.sofkau.usecase.jugador.consultarjugadores.ConsultarjugadoresUseCase;
 import com.sofkau.usecase.jugador.actualizarpuntaje.ActualizarPuntajeJugadorUseCase;
 import com.sofkau.usecase.jugador.crearjugador.CrearJugadorUseCase;
+import com.sofkau.usecase.jugador.eliminarcartaapostada.EliminarCartaApostadaUseCase;
 import com.sofkau.usecase.jugador.rendirse.RendirseEnRondaUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -23,6 +24,8 @@ public class HandlerJugador {
     private final ActualizarPuntajeJugadorUseCase actualizarPuntajeJugadorUseCase;
     private final ConsultarjugadoresUseCase consultarJuegadoresUseCase;
     private final AgregarCartasUseCase agregarCartasUseCase;
+
+    private final EliminarCartaApostadaUseCase eliminarCartaApostadaUseCase;
 
     public Mono<ServerResponse> POSTCrearJugador(ServerRequest serverRequest){
 
@@ -52,6 +55,14 @@ public class HandlerJugador {
         return serverRequest.bodyToFlux(Carta.class)
                 .collectList()
                 .flatMap(lista-> agregarCartasUseCase.agregarCartas(id, lista))
+                .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(jugador), Jugador.class));
+    }
+
+    public Mono<ServerResponse> PUTEliminarCartaApostada(ServerRequest serverRequest) {
+        var id = serverRequest.pathVariable("id");
+        return serverRequest.bodyToMono(Carta.class)
+                .flatMap(cartaId -> eliminarCartaApostadaUseCase.eliminarCartaApostada(id, cartaId.id()))
                 .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                         .body(Mono.just(jugador), Jugador.class));
     }

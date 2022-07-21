@@ -27,7 +27,7 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
 
 
     @Override
-    public Flux<Carta> agregarCartasGanadas(String jugadorId, List<Carta> cartas) {
+    public Flux<Carta> agregarCartas(String jugadorId, List<Carta> cartas) {
         return null;
     }
 

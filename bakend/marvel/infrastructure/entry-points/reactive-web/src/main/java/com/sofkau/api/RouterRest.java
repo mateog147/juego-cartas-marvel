@@ -19,8 +19,8 @@ public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, Handl
     .andRoute(DELETE("/api/carta/{id}"),handler::DELETEEliminarCartaUseCase)
     .andRoute(PUT("/api/carta/{id}"),handler::PUTModificarPorId)
     .andRoute(POST("/api/jugador/"), jugador::POSTCrearJugador)
-    .andRoute(PUT("/api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador);
-
+    .andRoute(PUT("/api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador)
+    .andRoute(GET("/api/jugador/"), jugador::GETConsultarJugadores);
 
     }
 }

@@ -42,8 +42,11 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
     }
 
     @Override
-    public Mono<Jugador> actualizarPuntos(String jugadorId, Integer puntos) {
+    public Mono<Jugador> actualizarPuntos(String jugadorId, Integer puntosTotales) {
 
-        return null;
+        return  null;//repository
+                //.findById(jugadorId)
+                //.map(jugador1 -> jugador1);
+
     }
 }

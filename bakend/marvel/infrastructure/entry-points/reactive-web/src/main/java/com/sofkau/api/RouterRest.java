@@ -18,8 +18,8 @@ public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, Handl
     .andRoute(GET("/api/carta/{id}"), handler::GETBuscarCartaPorId)
     .andRoute(DELETE("/api/carta/{id}"),handler::DELETEEliminarCartaUseCase)
     .andRoute(PUT("/api/carta/{id}"),handler::PUTModificarPorId)
-    .andRoute(POST("/api/jugador/crear"), jugador::POSTCrearJugador);
-    //.andRoute(PUT("api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador);
+    .andRoute(POST("/api/jugador/"), jugador::POSTCrearJugador)
+    .andRoute(PUT("/api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador);
 
 
     }

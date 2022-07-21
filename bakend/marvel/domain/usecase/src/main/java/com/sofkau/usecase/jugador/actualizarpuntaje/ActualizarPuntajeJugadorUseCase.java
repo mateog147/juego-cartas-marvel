@@ -10,6 +10,13 @@ public class ActualizarPuntajeJugadorUseCase {
     private final JugadorRepository jugadorRepository;
 
     public Mono<Jugador> actualizarPuntajeDelJugador(String id, Integer puntos){
-        return jugadorRepository.actualizarPuntos(id, puntos);
+        return jugadorRepository
+                .findById(id)
+                .switchIfEmpty(Mono.error(new Exception("Id jugador invalido")))
+                .map(jugador -> jugador.toBuilder()
+                        .puntaje(puntos)
+                        .build()
+                )
+                .flatMap(jugador -> this.jugadorRepository.save(jugador));
     }
 }

@@ -14,7 +14,7 @@ public interface JugadorRepository {
 
     Flux<Carta> agregarCartas(String jugadorId ,List<Carta> cartas);
 
-    Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador);
+    Mono<Jugador> rendirseEnRonda(String jugadorId);
 
     Mono<Jugador> eliminarcartaApostada(String jugadorId, Carta carta);
 

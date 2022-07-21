@@ -9,7 +9,12 @@ import reactor.core.publisher.Mono;
 public class RendirseEnRondaUseCase {
     private final JugadorRepository jugadorRepository;
 
-    Mono<Jugador> rendirse(String id, Jugador jugador){
-        return jugadorRepository.rendirseEnRonda(id, jugador);
+    public Mono<Jugador> rendirseEnRonda(String id){
+
+        return jugadorRepository.findById(id)
+                .map(jugador -> jugador.toBuilder()
+                        .cartas(jugador.rendirse())
+                        .build())
+                .flatMap(jugadorRepository::save);
     }
 }

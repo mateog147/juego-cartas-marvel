@@ -5,7 +5,10 @@ import com.sofkau.model.carta.gateways.CartaRepository;
 import com.sofkau.mongo.helper.AdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Repository
 public class MongoRepositoryAdapter extends AdapterOperations<Carta, CartaDocument, String, MongoDBRepository>
@@ -21,6 +24,17 @@ public class MongoRepositoryAdapter extends AdapterOperations<Carta, CartaDocume
         super(repository, mapper, d -> mapper.map(d, Carta.class));
     }
 
+
+    @Override
+    public Flux<Carta> findAllById(List<String> ids) {
+        return repository.findAllById(ids)
+                .map(cartaDocument -> Carta.builder()
+                        .id(cartaDocument.getId())
+                        .nombre(cartaDocument.getNombre())
+                        .xp(cartaDocument.getXp())
+                        .imagen(cartaDocument.getImagen())
+                        .build());
+    }
 
     @Override
     public Mono<Carta> update(String id, Carta carta) {

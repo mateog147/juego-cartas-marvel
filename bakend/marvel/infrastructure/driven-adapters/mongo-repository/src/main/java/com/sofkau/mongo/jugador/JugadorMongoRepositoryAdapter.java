@@ -32,7 +32,7 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
     }
 
     @Override
-    public Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador) {
+    public Mono<Jugador> rendirseEnRonda(String jugadorId) {
         return null;
     }
 

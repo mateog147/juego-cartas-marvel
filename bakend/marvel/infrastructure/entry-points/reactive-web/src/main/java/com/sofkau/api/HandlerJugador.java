@@ -27,6 +27,8 @@ public class HandlerJugador {
 
     private final EliminarCartaApostadaUseCase eliminarCartaApostadaUseCase;
 
+
+
     public Mono<ServerResponse> POSTCrearJugador(ServerRequest serverRequest){
 
         return serverRequest.bodyToMono(Jugador.class)
@@ -65,5 +67,14 @@ public class HandlerJugador {
                 .flatMap(cartaId -> eliminarCartaApostadaUseCase.eliminarCartaApostada(id, cartaId.id()))
                 .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                         .body(Mono.just(jugador), Jugador.class));
+    }
+
+    public Mono<ServerResponse> PUTRendirseEnRonda(ServerRequest serverRequest){
+        var jugadorId = serverRequest.pathVariable("id");
+        return  serverRequest.bodyToMono(Jugador.class)
+                .flatMap(jugador -> rendirseEnRondaUseCase.rendirseEnRonda(jugadorId))
+                .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(jugador),Jugador.class));
+
     }
 }

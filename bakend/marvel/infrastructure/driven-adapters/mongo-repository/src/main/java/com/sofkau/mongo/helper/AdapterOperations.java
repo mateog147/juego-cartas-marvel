@@ -42,6 +42,8 @@ public abstract class AdapterOperations<E, D, I, R extends ReactiveCrudRepositor
         return doQuery(repository.findById(id));
     }
 
+    public Flux<E> findAllById(Iterable<I> ids){return doQueryMany(repository.findAllById(ids));}
+
     public Flux<E> findByExample(E entity) {
         return doQueryMany(repository.findAll(of(toData(entity))));
     }

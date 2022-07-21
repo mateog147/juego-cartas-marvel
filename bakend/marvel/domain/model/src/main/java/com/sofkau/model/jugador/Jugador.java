@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,5 +50,9 @@ public class Jugador {
                 .filter(carta -> (!carta.id().equalsIgnoreCase(cartaId)) )
                 .collect(Collectors.toList());
     }
+    public List<Carta> rendirse(){
+      return new ArrayList<>();
+    }
+
 
 }

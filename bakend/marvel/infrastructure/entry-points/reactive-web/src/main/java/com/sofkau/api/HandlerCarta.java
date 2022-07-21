@@ -1,6 +1,7 @@
 package com.sofkau.api;
 
 import com.sofkau.model.carta.Carta;
+import com.sofkau.usecase.actualizarcarta.ActualizarCartaUseCase;
 import com.sofkau.usecase.buscarcarta.BuscarCartaUseCase;
 import com.sofkau.usecase.crearcarta.CrearCartaUseCase;
 import com.sofkau.usecase.eliminarcarta.EliminarCartaUseCase;
@@ -22,6 +23,8 @@ private final CrearCartaUseCase crearCartaUseCase;
 private final MostrarCartasUseCase mostrarCartasUseCase;
 private final EliminarCartaUseCase eliminarCartaUseCase;
 private final BuscarCartaUseCase buscarCartaUseCase;
+
+private final ActualizarCartaUseCase actualizarCartaUseCase;
 
 
     public Mono<ServerResponse> POSTCrearCartaUseCase(ServerRequest serverRequest) {
@@ -56,12 +59,9 @@ private final BuscarCartaUseCase buscarCartaUseCase;
     public Mono<ServerResponse> PUTModificarPorId(ServerRequest serverRequest) {
         var id = serverRequest.pathVariable("id");
 
-        return buscarCartaUseCase.buscarCarta(id)
-                .map(carta -> {
-                    carta.setNombre("TEST");
-                    return carta;
-                })
-                .flatMap(cartaGuardada -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                        .body(Mono.just(cartaGuardada), Carta.class));
+        return serverRequest.bodyToMono(Carta.class)
+                .flatMap(carta -> actualizarCartaUseCase.actualziarCarta( id, carta))
+                .flatMap(cartaActualizada -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(cartaActualizada), Carta.class));
     }
 }

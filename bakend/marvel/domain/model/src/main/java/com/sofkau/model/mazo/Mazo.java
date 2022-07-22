@@ -8,38 +8,32 @@ import lombok.NoArgsConstructor;
 import java.util.*;
 
 @Data
-@NoArgsConstructor
 public class Mazo {
 
-    private String id;
-    private Set<Carta> mazo;
+    private static final Mazo instanciaMazo = new Mazo();
+    private List<Carta> mazo;
 
-    public Mazo(String id, Set<Carta> mazo) {
-        this.id = id;
-        this.mazo = barajarMazo(mazo);
+    public Mazo() {
+        this.mazo = new ArrayList<>();
     }
 
-    private Set<Carta> barajarMazo(Set<Carta> mazo) {
-        Collections.shuffle(Arrays.asList(mazo.toArray()));
-        Set<Carta> mazo_barajado = new HashSet<>();
-        mazo_barajado.addAll(mazo);
-        return mazo_barajado;
+    public static Mazo getMazo(List<Carta> mazo){
+        instanciaMazo.setMazo(mazo);
+        return instanciaMazo;
     }
 
-    public Set<Carta> mazo() {
+
+    public List<Carta> mazo() {
         return mazo;
     }
 
-    public String id() {
-        return id;
-    }
 
-    public Set<Carta> asignarCartas(){
+    public List<Carta> asignarCartas(){
 
-        int cantidadCartasARepartir = 5;
-        Set<Carta> cartas = new TreeSet<Carta>();
+        int cantidadCartasARepartir = 2;
+        List<Carta> cartas = new ArrayList<>();
 
-        for (int i = 0; i < cantidadCartasARepartir-1; i++) {
+        for (int i = 0; i < cantidadCartasARepartir; i++) {
             var carta = seleccionarCarta();
             cartas.add(carta);
             mazo.remove(carta);
@@ -52,4 +46,7 @@ public class Mazo {
         return mazo.stream().findAny().get();
     }
 
+    public void barajar() {
+        Collections.shuffle(this.mazo);
+    }
 }

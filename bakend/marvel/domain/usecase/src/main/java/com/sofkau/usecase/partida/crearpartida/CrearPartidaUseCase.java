@@ -1,39 +1,37 @@
 package com.sofkau.usecase.partida.crearpartida;
 
-import com.sofkau.model.jugador.Jugador;
-import com.sofkau.model.jugador.gateways.JugadorRepository;
+import com.sofkau.model.carta.Carta;
+import com.sofkau.model.mazo.Mazo;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.model.partida.gateways.PartidaRepository;
+import com.sofkau.model.ronda.Ronda;
+import com.sofkau.usecase.carta.mostrarcartas.MostrarCartasUseCase;
 import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class CrearPartidaUseCase {
 
     private final PartidaRepository repository;
-    private final JugadorRepository jugadorRepository;
+    private final  MostrarCartasUseCase mostrarCartasUseCase;
 
-    public Mono<Partida> crearPartida(List<String> jugadoresIds){
-        System.out.printf("jugadores"+jugadoresIds);
-        List<Jugador> jugadores = new ArrayList<Jugador> ();
+    public Mono<Partida> crearPartida(){
 
-        jugadorRepository.findAllById(jugadoresIds).subscribe(jugador -> jugadores.add(jugador));
+        List<Carta> cartas =new ArrayList<>();
+        Ronda ronda = new Ronda();
+        mostrarCartasUseCase
+                .mostrarCartas()
+                .log()
+                .subscribe(carta -> cartas.add(carta));
 
-        var j = jugadoresIds.stream()
-                .map(id -> jugadorRepository.findById(id))
-                        .map(jugadorMono -> )
+        Mazo mazo =  Mazo.getMazo(cartas);
 
-        System.out.println("hola"+jugadores);
-        return repository.save(
-                new Partida().toBuilder()
-                        .jugadores(jugadores)
-                        .build());
+        return repository.save(Partida.builder()
+                .mazo(mazo)
+                .ronda(ronda)
+                .build());
 
         }
 }

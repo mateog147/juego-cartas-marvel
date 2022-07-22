@@ -3,6 +3,7 @@ package com.sofkau.api;
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.usecase.partida.crearpartida.CrearPartidaUseCase;
+import com.sofkau.usecase.partida.repartircartas.RepartirCartasUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -15,14 +16,17 @@ import reactor.core.publisher.Mono;
 public class HandlerPartida {
 
     private final CrearPartidaUseCase crearPartidaUseCase;
+    private final RepartirCartasUseCase repartirCartasUseCase;
 
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
 
         return serverRequest.bodyToFlux(Jugador.class)
                 .map(jugador -> jugador.id())
-                .log()
                 .collectList()
-                .map(lista -> crearPartidaUseCase.crearPartida(lista))
+                .map(lista -> {
+                    return crearPartidaUseCase.crearPartida()
+                            .flatMap(partida -> repartirCartasUseCase.repartir(partida, lista));
+                })
                 .flatMap(partida -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                         .body(partida, Partida.class));
     }

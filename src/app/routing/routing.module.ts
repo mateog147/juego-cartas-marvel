@@ -8,6 +8,7 @@ import { VerifyEmailComponent } from '../components/verify-email/verify-email.co
 import { SignInComponent } from '../components/sign-in/sign-in.component';
 import { AuthGuard } from '../shared/guard/auth.guard';
 import { TableroComponent } from '../components/tablero/tablero.component';
+
 const routes: Routes = [
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: 'sign-in', component: SignInComponent },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
-  {path: 'tablero', component: TableroComponent}
+  {path: 'tablero', component: TableroComponent},
+
 ];
 
 @NgModule({

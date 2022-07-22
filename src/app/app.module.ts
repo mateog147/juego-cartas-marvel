@@ -6,7 +6,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
@@ -19,6 +19,8 @@ import { RoutingModule } from './routing/routing.module';
 import { CardComponent } from './components/card/card.component';
 import { TableroComponent } from './components/tablero/tablero.component';
 import { AvatarjugadorComponent } from './components/avatarjugador/avatarjugador.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { AvatarjugadorComponent } from './components/avatarjugador/avatarjugador
     CardComponent,
     TableroComponent,
     AvatarjugadorComponent,
+    
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase, 'sofkau-heroes'),
@@ -39,7 +42,11 @@ import { AvatarjugadorComponent } from './components/avatarjugador/avatarjugador
     AngularFireStorageModule,
     AngularFireDatabaseModule,
     BrowserModule,
-    RoutingModule
+    RoutingModule,
+    DragDropModule,
+    BrowserAnimationsModule
+   
+    
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],

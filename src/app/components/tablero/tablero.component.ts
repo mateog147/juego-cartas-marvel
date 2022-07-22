@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {Card} from '../card/card.component'
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { User } from 'src/app/shared/services/user';
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
@@ -10,7 +12,7 @@ export class TableroComponent implements OnInit {
   tablero: {status:boolean} = {status : true}
   apuestas: Card[] = [{nombre: 'Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}];
   mazo: Card[] = [{nombre: 'Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}]
-  constructor() { }
+  constructor(public authService: AuthService) {}
  
  console = console;
   

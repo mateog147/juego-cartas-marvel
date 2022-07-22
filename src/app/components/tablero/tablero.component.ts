@@ -8,8 +8,8 @@ import {Card} from '../card/card.component'
 })
 export class TableroComponent implements OnInit {
   tablero: {status:boolean} = {status : true}
-  apuestas: Card[] = [{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}];
-  mazo: Card[] = [{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}]
+  apuestas: Card[] = [{nombre: 'Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}];
+  mazo: Card[] = [{nombre: 'Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}]
   constructor() { }
  
  console = console;

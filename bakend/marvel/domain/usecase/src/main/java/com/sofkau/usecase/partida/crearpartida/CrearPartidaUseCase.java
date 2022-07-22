@@ -25,11 +25,6 @@ public class CrearPartidaUseCase {
 
         jugadorRepository.findAllById(jugadoresIds).subscribe(jugador -> jugadores.add(jugador));
 
-        var j = jugadoresIds.stream()
-                .map(id -> jugadorRepository.findById(id))
-                        .map(jugadorMono -> )
-
-        System.out.println("hola"+jugadores);
         return repository.save(
                 new Partida().toBuilder()
                         .jugadores(jugadores)

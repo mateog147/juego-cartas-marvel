@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class Jugador {
     private String id;
-    //private String uid;
+    private String uid;
     private String nombre;
     private Integer puntaje;
     private List<Carta> cartas;
 
 
-    //public String uid() {return uid;}
+    public String uid() {return uid;}
 
     public Integer puntaje() {
         return puntaje;

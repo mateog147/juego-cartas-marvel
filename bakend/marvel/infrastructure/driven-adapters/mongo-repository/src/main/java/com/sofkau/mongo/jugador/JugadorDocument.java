@@ -16,6 +16,7 @@ public class JugadorDocument {
 
     @Id
     private String id;
+    private String uid;
     private String nombre;
     private Integer puntaje;
     private List<Carta> cartas;

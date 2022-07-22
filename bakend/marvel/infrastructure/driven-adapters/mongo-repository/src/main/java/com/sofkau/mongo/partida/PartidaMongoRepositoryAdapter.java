@@ -1,10 +1,12 @@
 package com.sofkau.mongo.partida;
 
+import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.model.partida.gateways.PartidaRepository;
 import com.sofkau.mongo.helper.AdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 
 @Repository
 public class PartidaMongoRepositoryAdapter extends AdapterOperations<Partida, PartidaDocument, String, PartidaMongoDBRepository>
@@ -21,5 +23,9 @@ public class PartidaMongoRepositoryAdapter extends AdapterOperations<Partida, Pa
     }
 
 
-
+    @Override
+    public Flux<Jugador> findAllById(Iterable<String> ids) {
+        return repository.findAllById(ids)
+                .map(document -> mapper.map(document, Jugador.class));
+    }
 }

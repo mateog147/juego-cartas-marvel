@@ -19,11 +19,12 @@ public class HandlerRonda {
     private final RecibirapuestaUseCase recibirapuestaUseCase;
 
     public Mono<ServerResponse> PUTRecibirApuesta(ServerRequest serverRequest){
-        var id = serverRequest.pathVariable("id");
-        return null;
-        //serverRequest.bodyToMono(Jugador.class)
-                //.map(jugador -> recibirapuestaUseCase.recibirApuesta(id, jugador.id(), jugador.eliminarCarta()))
-                //.map(ronda -> recibirapuestaUseCase.recibirApuesta(id, ronda.))
-                // .body(partida, Partida.class));
+        var idRonda = serverRequest.pathVariable("idronda");
+        var idJugador = serverRequest.pathVariable("idjugador");
+
+        return serverRequest.bodyToMono(Carta.class)
+                .map(carta -> recibirapuestaUseCase.recibirApuesta(idRonda, carta, idJugador))
+                .flatMap(ronda -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(ronda, Ronda.class));
     }
 }

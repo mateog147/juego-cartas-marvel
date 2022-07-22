@@ -5,10 +5,12 @@ import com.sofkau.model.jugador.gateways.JugadorRepository;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.model.partida.gateways.PartidaRepository;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -18,20 +20,20 @@ public class CrearPartidaUseCase {
     private final JugadorRepository jugadorRepository;
 
     public Mono<Partida> crearPartida(List<String> jugadoresIds){
+        System.out.printf("jugadores"+jugadoresIds);
+        List<Jugador> jugadores = new ArrayList<Jugador> ();
 
-        List<Jugador> jugadores = new ArrayList<Jugador>();
+        jugadorRepository.findAllById(jugadoresIds).subscribe(jugador -> jugadores.add(jugador));
 
-         var jugador = jugadoresIds.stream()
-                .map(jugadorId -> jugadorRepository.findById(jugadorId))
-                 .map(i -> i.block())
-                .collect(Collectors.toList());
+        var j = jugadoresIds.stream()
+                .map(id -> jugadorRepository.findById(id))
+                        .map(jugadorMono -> )
 
-        Partida nuevaPartida = new Partida();
-        nuevaPartida.toBuilder()
-                .jugadores(jugador)
-                .build();
+        System.out.println("hola"+jugadores);
+        return repository.save(
+                new Partida().toBuilder()
+                        .jugadores(jugadores)
+                        .build());
 
-        System.out.printf("hola"+jugadoresIds);
-        return repository.save(nuevaPartida);
-    }
+        }
 }

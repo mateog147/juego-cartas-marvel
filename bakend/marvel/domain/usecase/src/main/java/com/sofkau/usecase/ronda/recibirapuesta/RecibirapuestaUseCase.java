@@ -19,6 +19,8 @@ public class RecibirapuestaUseCase {
 
         nuevaRonda.agregarApuesta(carta, usuarioId);
 
+        System.out.printf("ronda" + nuevaRonda);
+
         return repository.save(nuevaRonda);
 
     }

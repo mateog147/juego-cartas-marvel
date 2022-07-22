@@ -12,17 +12,18 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class RouterRest {
 @Bean
-public RouterFunction<ServerResponse> routerFunction(HandlerCarta handler, HandlerJugador jugador, HandlerPartida partidaHandler) {
-    return route(GET("/api/carta/"), handler::GETMostrarCartasUseCase)
-    .andRoute(POST("/api/carta/"), handler::POSTCrearCartaUseCase)
-    .andRoute(GET("/api/carta/{id}"), handler::GETBuscarCartaPorId)
-    .andRoute(DELETE("/api/carta/{id}"),handler::DELETEEliminarCartaUseCase)
-    .andRoute(PUT("/api/carta/{id}"),handler::PUTModificarPorId)
-    .andRoute(POST("/api/jugador/"), jugador::POSTCrearJugador)
-    .andRoute(PUT("/api/jugador/puntaje/{id}"), jugador::PUTActualizarPuntajeJugador)
-    .andRoute(GET("/api/jugador/"), jugador::GETConsultarJugadores)
-    .andRoute(PUT("/api/jugador/cartaagregada/{id}"), jugador::PUTAgregarCartasJugador)
-    .andRoute(PUT("/api/jugador/cartaeliminada/{id}"), jugador::PUTEliminarCartaApostada)
-    .andRoute(POST("/api/partida/"), partidaHandler::POSTCrearPartida);
+public RouterFunction<ServerResponse> routerFunction(HandlerCarta cartaHandler, HandlerJugador jugadorHandler, HandlerPartida partidaHandler, HandlerRonda rondaHandler) {
+    return route(GET("/api/carta/"), cartaHandler::GETMostrarCartasUseCase)
+    .andRoute(POST("/api/carta/"), cartaHandler::POSTCrearCartaUseCase)
+    .andRoute(GET("/api/carta/{id}"), cartaHandler::GETBuscarCartaPorId)
+    .andRoute(DELETE("/api/carta/{id}"),cartaHandler::DELETEEliminarCartaUseCase)
+    .andRoute(PUT("/api/carta/{id}"),cartaHandler::PUTModificarPorId)
+    .andRoute(POST("/api/jugador/"), jugadorHandler::POSTCrearJugador)
+    .andRoute(PUT("/api/jugador/puntaje/{id}"), jugadorHandler::PUTActualizarPuntajeJugador)
+    .andRoute(GET("/api/jugador/"), jugadorHandler::GETConsultarJugadores)
+    .andRoute(PUT("/api/jugador/cartaagregada/{id}"), jugadorHandler::PUTAgregarCartasJugador)
+    .andRoute(PUT("/api/jugador/cartaeliminada/{id}"), jugadorHandler::PUTEliminarCartaApostada)
+    .andRoute(POST("/api/partida/"), partidaHandler::POSTCrearPartida)
+        .andRoute(PUT("/api/ronda/{idronda}/{idjugador}"), rondaHandler::PUTRecibirApuesta);
     }
 }

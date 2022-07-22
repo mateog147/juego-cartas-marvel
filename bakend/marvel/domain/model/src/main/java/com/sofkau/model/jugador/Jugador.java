@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,12 +15,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class Jugador {
     private String id;
+    //private String uid;
     private String nombre;
     private Integer puntaje;
     private List<Carta> cartas;
 
 
-
+    //public String uid() {return uid;}
 
     public Integer puntaje() {
         return puntaje;
@@ -44,6 +46,7 @@ public class Jugador {
     }
 
     public List<Carta> eliminarCarta(String cartaId){
+
         return this.cartas.stream()
                 .filter(carta -> (!carta.id().equalsIgnoreCase(cartaId)) )
                 .collect(Collectors.toList());

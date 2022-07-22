@@ -66,4 +66,6 @@ public class HandlerJugador {
                 .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                         .body(Mono.just(jugador), Jugador.class));
     }
+
+
 }

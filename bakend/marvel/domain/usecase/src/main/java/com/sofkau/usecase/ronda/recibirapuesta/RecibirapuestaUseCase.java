@@ -12,16 +12,22 @@ import java.util.Map;
 public class RecibirapuestaUseCase {
     private final RondaRepository repository;
 
-    public Mono<Ronda> recibirApuesta ( String rondaId, Carta carta, String usuarioId){
+    public Mono<Ronda> recibirApuesta (String rondaId, Carta carta, String usuarioId){
 
-        Ronda nuevaRonda = repository.findById(rondaId)
-                .block();
+        System.out.println("ronda Id: " + rondaId + "\n" + "usuario Id: "+ usuarioId + "carta :" +carta.getNombre());
 
-        nuevaRonda.agregarApuesta(carta, usuarioId);
+        //var nRonda =
+        return
+                 repository.findById(rondaId)
+                         //.map(ronda -> ronda.agregarApuesta(carta, usuarioId));
+                         .map(ronda -> new Ronda()
+                                 .builder()
+                                 .apuestas(ronda.agregarApuesta(carta , usuarioId))
+                                 .build())
+                         .flatMap(this.repository::save);
+                         //.subscribe(ronda -> ronda.agregarApuesta(carta, usuarioId));
 
-        System.out.printf("ronda" + nuevaRonda);
-
-        return repository.save(nuevaRonda);
-
+        //return repository.save(new Ronda().toBuilder().apuestas(nRonda).build())
     }
+
 }

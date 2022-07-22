@@ -8,6 +8,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
@@ -46,7 +47,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RoutingModule,
     DragDropModule,
     BrowserAnimationsModule,
-    MatGridListModule
+    MatGridListModule,
+    HttpClientModule
    
     
   ],

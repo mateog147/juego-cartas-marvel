@@ -1,12 +1,15 @@
 package com.sofkau.mongo.ronda;
 
+import com.sofkau.model.carta.Carta;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.model.partida.gateways.PartidaRepository;
 import com.sofkau.model.ronda.Ronda;
 import com.sofkau.model.ronda.gateways.RondaRepository;
+import com.sofkau.mongo.carta.CartaDocument;
 import com.sofkau.mongo.helper.AdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
 @Repository
 public class RondaMongoRepositoryAdapter extends AdapterOperations<Ronda, RondaDocument, String, RondaMongoDBRepository>
@@ -21,7 +24,6 @@ public class RondaMongoRepositoryAdapter extends AdapterOperations<Ronda, RondaD
          */
         super(repository, mapper, d -> mapper.map(d, Ronda.class));
     }
-
 
 
 }

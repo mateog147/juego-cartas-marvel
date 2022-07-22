@@ -44,6 +44,7 @@ public class Jugador {
     }
 
     public List<Carta> eliminarCarta(String cartaId){
+
         return this.cartas.stream()
                 .filter(carta -> (!carta.id().equalsIgnoreCase(cartaId)) )
                 .collect(Collectors.toList());

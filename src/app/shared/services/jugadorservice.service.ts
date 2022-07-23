@@ -8,21 +8,23 @@ import { Jugador } from './jugador';
 })
 export class JugadorserviceService {
 
-  private jugadorURl = '/api/jugador/crear';
+  private jugadorURl = '/api/carta/';
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   constructor( private http: HttpClient) { }
   
-  nuevoJugador(uid: string, nombre: string) :Observable<any> {
+  nuevoJugador() :Observable<any> {
     const data: Jugador = {
-      nombre: nombre,
-      uid: uid,
-      cartas: [],
-      puntaje: 0,
+      nombre: 'WOLVERINE',
+      xp: 12344,
+
+      
+		   
+		   imagen : "../../../assets/imgs/lobezno.jpg"
     }
-    return this.http.post(this.jugadorURl, data, this.httpOptions)
+    return this.http.put(this.jugadorURl+'62db490108cf801d22e295f7', data, this.httpOptions)
   }
 
 }

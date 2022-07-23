@@ -1,64 +1,92 @@
-.tablero{
-    background-image:url(../../../assets/441665.jpg);
+.tablero {
+    background-image: url(../../../assets/441665.jpg);
     width: 100%;
     height: 100%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    
-     
+
+
 }
-.tablero-apuestas{
+
+.tablero-apuestas {
+   
     border: 3px solid white;
     border-radius: 10px;
     height: 80vh;
     position: relative;
 }
-.tiempo{
+
+.tiempo {
     position: absolute;
     top: 10px;
     right: 10px;
     color: white;
     font-size: 20px;
 }
-.ronda{
+
+.ronda {
     position: absolute;
     top: 10px;
     left: 10px;
     color: white;
     font-size: 20px;
 }
-.oculta{
+
+.oculta {
     width: 150px;
     height: 200px;
     background-image: url(../../../assets/FDZXLfdXEAMOXzp.jpg)
 }
-.shadow{
+
+.shadow {
+    width : 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+
+}
+
+.tablero::after {
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0, 0.6);
+
+    background-color: rgba(0, 0, 0);
 }
-.tablero::after{
-    width: 100%;
-    height: 100%;
-     
-    background-color: rgba(0,0,0);
-}
-.mazojugador{
+
+.mazojugador {
     border: 3px solid white;
     border-radius: 10px;
     height: 80vh;
     width: 18rem;
     position: relative;
-    overflow: auto;
-   
-    
-    
+    padding: 1rem;
+
+
+
 }
-.mazojugador::-webkit-scrollbar {
+
+.mazo-cartas {
+    overflow-y: scroll;
+    height: 90%;
+
+}
+
+.texto-mazo {
+    color: white;
+    position: sticky;
+
+
+
+    z-index: 1;
+
+    width: 95%;
+}
+
+.mazo-cartas::-webkit-scrollbar {
     display: none;
 }
-.jugadores-partida{
+
+.jugadores-partida {
     border: 3px solid white;
     border-radius: 10px;
     height: 80vh;

@@ -31,6 +31,7 @@ import { TableroComponent } from './components/tablero/tablero.component';
 import { AvatarjugadorComponent } from './components/avatarjugador/avatarjugador.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TablacrudComponent } from './components/tablacrud/tablacrud.component';
+import { JugadorserviceService } from './shared/services/jugadorservice.service';
 
 
 @NgModule({
@@ -68,7 +69,7 @@ import { TablacrudComponent } from './components/tablacrud/tablacrud.component';
    
     
   ],
-  providers: [AuthService],
+  providers: [AuthService, JugadorserviceService],
   bootstrap: [AppComponent],
   exports: [
     CardComponent

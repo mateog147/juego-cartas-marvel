@@ -26,7 +26,7 @@ export class TableroComponent implements OnInit , DoCheck {
  
   
   ngOnInit(): void {
-    this.jugador.nuevoJugador()
+    
     this.carta.getAll().subscribe(data=>{
       data.forEach((item: Card) =>this.mazo.push(item));
     })
@@ -49,8 +49,8 @@ export class TableroComponent implements OnInit , DoCheck {
   
   post(): void{
     console.log("hola");
-    this.jugador.nuevoJugador()
-    .subscribe(data => console.log(data));
+   
+   
   } 
   newArray(){
     localStorage.setItem('mazo', JSON.stringify(this.mazo));

@@ -8,18 +8,19 @@ import { Jugador } from './jugador';
 })
 export class JugadorserviceService {
 
-  private jugadorURl = '/api/carta/';
+  private jugadorURl = '/api/jugador/';
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   constructor( private http: HttpClient) { }
   
-  nuevoJugador() :Observable<any> {
+  nuevoJugador(uid: string, name: string): Observable<any> {
     const data: Jugador = {
-      nombre: 'SPIDER MAN',
-      xp: 345621222,  		   
-		  imagen : "../../../assets/imgs/spider1.jpg"
+      nombre: name,
+      uid: uid,  		   
+		  cartas : [],
+      puntaje: 0
     }
     return this.http.post(this.jugadorURl, data, this.httpOptions)
   }

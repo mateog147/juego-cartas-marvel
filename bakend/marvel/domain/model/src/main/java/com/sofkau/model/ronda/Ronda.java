@@ -28,9 +28,12 @@ public class Ronda {
 
 
     public String determinarGanador(){
+        if(this.apuestas.size()<=1){
+            return "non";
+        }
         return this.apuestas.stream()
                 .max(Comparator.comparingInt(Apuesta::getCartaXp))
-                .orElseThrow(IllegalArgumentException::new)
+                .orElse(new Apuesta("non",null))
                 .getJugadorId();
     }
 

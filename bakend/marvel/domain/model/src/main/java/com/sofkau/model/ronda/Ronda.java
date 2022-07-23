@@ -25,29 +25,13 @@ public class Ronda {
         //return this.apuestas;
     }
 
-    /*
-    public void agregarApuesta(Carta carta, String jugadorId){
-        Objects.requireNonNull(carta);
-        Objects.requireNonNull(jugadorId);
-        if(apuestas == null){ this.apuestas = new HashMap<>();};
 
-        this.apuestas.put(jugadorId, carta);
-
-        System.out.println("la apuesta de la esta ronda fue:" + this.apuestas);
-    }
-
-     */
-
-
-    /*
     public String determinarGanador(){
-        var cartaGanadora = this.apuestas.values()
-                .stream()
-                .max(Comparator.comparingInt(Carta::getXp));
-        //return this.apuestas.get(cartaGanadora);
-        return "";
-    }
+        var cartaGanadora = this.apuestas.stream()
+                //.reduce((x, y) -> x.getCarta().getXp().compareTo(y.getCarta().getXp()) <= 0  ? x : y).get();
+                .max(Comparator.comparingInt(apuesta -> apuesta.getCarta().getXp()));
+        return this.apuestas.get(apuestas.indexOf(cartaGanadora)).getJugadorId();
 
-     */
+    }
 
 }

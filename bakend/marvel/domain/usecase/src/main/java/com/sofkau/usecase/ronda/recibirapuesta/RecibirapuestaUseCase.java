@@ -19,8 +19,6 @@ public class RecibirapuestaUseCase {
     //public Mono<Ronda> recibirApuesta (String rondaId, Carta carta, String usuarioId) {
         public Mono<Ronda> recibirApuesta (String rondaId, Apuesta apuesta) {
 
-        //System.out.println("ronda Id: " + rondaId + "\n" + "usuario Id: " + usuarioId + "carta :" + carta.getNombre());
-
         /*
         return
                  repository.findById(rondaId)
@@ -39,19 +37,23 @@ public class RecibirapuestaUseCase {
                              return ronda;
                          })
                          .flatMap(ronda ->  repository.save(ronda));
+
          */
+
+
 
             return repository.findById(rondaId)
                     .map(ronda -> {
                         //ronda.setApuestas(apuesta);
-                        ronda.setApuestas(List.of(apuesta));
-                        //ronda.agregarApuesta(apuesta);
+                        //ronda.setApuestas(List.of(apuesta));
+                        ronda.agregarApuesta(apuesta);
                         return ronda;
                     })
                     .log()
 
                     .flatMap(repository::save);
         }
+
 
 
 

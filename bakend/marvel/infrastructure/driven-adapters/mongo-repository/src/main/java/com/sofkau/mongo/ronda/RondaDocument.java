@@ -3,6 +3,7 @@ package com.sofkau.mongo.ronda;
 import com.sofkau.model.carta.Carta;
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.mazo.Mazo;
+import com.sofkau.model.ronda.Apuesta;
 import com.sofkau.model.ronda.Ronda;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,6 @@ public class RondaDocument {
 
     @Id
     private String id;
-    private Map<Carta, String> apuestas;
+    private List<Apuesta> apuestas;
 
 }

@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Data
 @Builder(toBuilder = true)
@@ -18,11 +15,18 @@ import java.util.Objects;
 public class Ronda {
 
     private String id;
-    private Map<String, Carta> apuestas;
+    @Builder.Default
+    private List<Apuesta> apuestas = new ArrayList<>();
 
+    public void agregarApuesta ( Apuesta apuesta ) {
+        Objects.requireNonNull(apuesta);
+        if(apuestas == null){this.apuestas = new ArrayList<>(); };
+        this.apuestas.add(apuesta);
+        //return this.apuestas;
+    }
 
-
-    public Map<String, Carta> agregarApuesta(Carta carta, String jugadorId){
+    /*
+    public void agregarApuesta(Carta carta, String jugadorId){
         Objects.requireNonNull(carta);
         Objects.requireNonNull(jugadorId);
         if(apuestas == null){ this.apuestas = new HashMap<>();};
@@ -30,9 +34,12 @@ public class Ronda {
         this.apuestas.put(jugadorId, carta);
 
         System.out.println("la apuesta de la esta ronda fue:" + this.apuestas);
-        return this.apuestas;
     }
 
+     */
+
+
+    /*
     public String determinarGanador(){
         var cartaGanadora = this.apuestas.values()
                 .stream()
@@ -40,5 +47,7 @@ public class Ronda {
         //return this.apuestas.get(cartaGanadora);
         return "";
     }
+
+     */
 
 }

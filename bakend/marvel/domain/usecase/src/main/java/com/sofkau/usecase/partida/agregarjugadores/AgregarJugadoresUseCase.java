@@ -1,4 +1,4 @@
-package com.sofkau.usecase.agregarjugadores;
+package com.sofkau.usecase.partida.agregarjugadores;
 
 import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor

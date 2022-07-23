@@ -2,6 +2,7 @@ package com.sofkau.api;
 
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.partida.Partida;
+import com.sofkau.usecase.partida.agregarronda.AgregarRondaUseCase;
 import com.sofkau.usecase.partida.crearpartida.CrearPartidaUseCase;
 import com.sofkau.usecase.partida.guardarpartida.GuardarPartidaUseCase;
 import com.sofkau.usecase.partida.repartircartas.RepartirCartasUseCase;
@@ -18,7 +19,9 @@ public class HandlerPartida {
 
     private final CrearPartidaUseCase crearPartidaUseCase;
     private final RepartirCartasUseCase repartirCartasUseCase;
+    private final AgregarRondaUseCase agregarRondaUseCase;
     private final GuardarPartidaUseCase guardarPartidaUseCase;
+
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
 
         return serverRequest.bodyToFlux(Jugador.class)
@@ -27,6 +30,7 @@ public class HandlerPartida {
                 .map(lista -> {
                     return crearPartidaUseCase.crearPartida()
                             .flatMap(partida -> repartirCartasUseCase.repartir(partida, lista))
+                            .flatMap(partida -> agregarRondaUseCase.agregarRonda(partida))
                             .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                 })
                 .flatMap(partida -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)

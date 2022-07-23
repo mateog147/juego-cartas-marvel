@@ -12,6 +12,7 @@ import com.sofkau.usecase.partida.gestionarapuesta.GestionarApuestaUseCase;
 import com.sofkau.usecase.partida.gestionarganador.GestionarGanadorUseCase;
 import com.sofkau.usecase.partida.guardarpartida.GuardarPartidaUseCase;
 import com.sofkau.usecase.partida.repartircartas.RepartirCartasUseCase;
+import com.sofkau.usecase.partida.retirarjugador.RetirarJugadorUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ public class HandlerPartida {
     private final GestionarApuestaUseCase gestionarApuestaUseCase;
     private final EncontrarPartidaUseCase encontrarPartidaUseCase;
     private final GestionarGanadorUseCase gestionarGanadorUseCase;
+    private  final RetirarJugadorUseCase retirarJugadorUseCase;
 
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
         return serverRequest.bodyToFlux(Jugador.class)
@@ -76,5 +78,18 @@ public class HandlerPartida {
                         .flatMap(partida -> gestionarGanadorUseCase.gestionarGanador(partida))
                         .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida))
                 , Partida.class);
+    }
+
+    public Mono<ServerResponse> POSTRetirarJugador(ServerRequest serverRequest) {
+        var id = serverRequest.pathVariable("id");
+        return serverRequest.bodyToMono(Jugador.class)
+                .map(jugador -> jugador.id())
+                .map(jugadorId -> {
+                    return encontrarPartidaUseCase.encontrarPartida(id)
+                            .flatMap(partida -> retirarJugadorUseCase.retirarJugador(partida, jugadorId))
+                            .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
+                })
+                .flatMap(partida -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(partida, Partida.class));
     }
 }

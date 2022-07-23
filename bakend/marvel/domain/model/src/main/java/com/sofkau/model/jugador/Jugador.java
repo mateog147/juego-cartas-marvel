@@ -50,4 +50,8 @@ public class Jugador {
 
         return this.cartas.remove(carta);
     }
+
+    public void rendirse(){
+        this.cartas.clear();
+    }
 }

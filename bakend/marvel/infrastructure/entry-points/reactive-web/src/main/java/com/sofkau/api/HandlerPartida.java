@@ -55,6 +55,8 @@ public class HandlerPartida {
     public Mono<ServerResponse> PUTNuevaApuesta(ServerRequest serverRequest){
         var idPartida = serverRequest.pathVariable("id");
 
+        System.out.println("pase por nueva apuesta");
+
         return serverRequest.bodyToMono(Apuesta.class)
                 .flatMap(apuesta -> {
                             return encontrarPartidaUseCase.encontrarPartida(idPartida)
@@ -66,7 +68,7 @@ public class HandlerPartida {
                         .body(Mono.just(ronda), Ronda.class));
     }
 
-    public Mono<ServerResponse> POSTGanadorRonda(ServerRequest serverRequest) {
+    public Mono<ServerResponse> GETGanadorRonda(ServerRequest serverRequest) {
         var id = serverRequest.pathVariable("id");
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)

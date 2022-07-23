@@ -17,8 +17,8 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
-  {path: 'tablero', component: TableroComponent},
-  {path: 'crud', component: TablacrudComponent}
+  { path: 'tablero', component: TableroComponent },
+  { path: 'crud', component: TablacrudComponent }
 
 ];
 

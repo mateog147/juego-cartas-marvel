@@ -30,11 +30,14 @@ public class Ronda {
     public String determinarGanador(){
         return this.apuestas.stream()
                 .max(Comparator.comparingInt(Apuesta::getCartaXp))
-                .get()
+                .orElseThrow(IllegalArgumentException::new)
                 .getJugadorId();
     }
 
     public List<Carta> entregarCartas(){
+        if(this.apuestas.size()<=1){
+            return new ArrayList<Carta>();
+        }
         List<Carta> cartasEntregar =  this.apuestas.stream()
                 .map(apuesta -> apuesta.getCarta())
                 .collect(Collectors.toList());

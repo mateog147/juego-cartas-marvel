@@ -62,7 +62,7 @@ public class HandlerJugador {
     public Mono<ServerResponse> PUTEliminarCartaApostada(ServerRequest serverRequest) {
         var id = serverRequest.pathVariable("id");
         return serverRequest.bodyToMono(Carta.class)
-                .flatMap(cartaId -> eliminarCartaApostadaUseCase.eliminarCartaApostada(id, cartaId.id()))
+                .flatMap(carta -> eliminarCartaApostadaUseCase.eliminarCartaApostada(id, carta))
                 .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                         .body(Mono.just(jugador), Jugador.class));
     }

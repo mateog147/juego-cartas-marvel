@@ -28,6 +28,7 @@ public RouterFunction<ServerResponse> routerFunction(HandlerCarta cartaHandler, 
     .andRoute(GET("/api/ronda/"), rondaHandler::GETConsultarRondas) // endpoint de prueba este se lleva en la partida
     .andRoute(POST("/api/ronda/"), rondaHandler::POSTCrearRonda) // endpoint de prueba este se lleva en la partida
     .andRoute(GET("/api/partida/{id}"), partidaHandler::GETPartidaPorId)
-    .andRoute(POST("/api/partida/{id}"), partidaHandler::PUTNuevaApuesta);
+    .andRoute(POST("/api/partida/{id}"), partidaHandler::PUTNuevaApuesta)
+    .andRoute(GET("/api/ronda/ganador/{id}"), rondaHandler::GETGanadorRonda); // endpoint de prueba este se lleva en la partida
     }
 }

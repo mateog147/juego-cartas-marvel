@@ -8,6 +8,7 @@ import com.sofkau.model.ronda.Ronda;
 import com.sofkau.model.ronda.gateways.RondaRepository;
 import com.sofkau.usecase.ronda.consultarrondas.ConsultarRondasUseCase;
 import com.sofkau.usecase.ronda.crearronda.CrearRondaUseCase;
+import com.sofkau.usecase.ronda.ganadorronda.GanadorRondaUseCase;
 import com.sofkau.usecase.ronda.recibirapuesta.RecibirapuestaUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,6 +27,8 @@ public class HandlerRonda {
     private final RecibirapuestaUseCase recibirapuestaUseCase;
     private final ConsultarRondasUseCase consultarRondasUseCase;
     private final CrearRondaUseCase crearRondaUseCase;
+
+    private final GanadorRondaUseCase ganadorRondaUseCase;
 
 
     public Mono<ServerResponse> PUTRecibirApuesta(ServerRequest serverRequest){
@@ -53,4 +56,10 @@ public class HandlerRonda {
                         .body(Mono.just(ronda), Ronda.class));
     }
 
+    public Mono<ServerResponse> GETGanadorRonda (ServerRequest serverRequest){
+        var idRonda = serverRequest.pathVariable("id");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ganadorRondaUseCase.determinarGanadaorRonda(idRonda), Ronda.class);
+    }
 }

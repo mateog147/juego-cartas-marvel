@@ -17,14 +17,11 @@ export class JugadorserviceService {
   
   nuevoJugador() :Observable<any> {
     const data: Jugador = {
-      nombre: 'WOLVERINE',
-      xp: 12344,
-
-      
-		   
-		   imagen : "../../../assets/imgs/lobezno.jpg"
+      nombre: 'SPIDER MAN',
+      xp: 345621222,  		   
+		  imagen : "../../../assets/imgs/spider1.jpg"
     }
-    return this.http.put(this.jugadorURl+'62db490108cf801d22e295f7', data, this.httpOptions)
+    return this.http.post(this.jugadorURl, data, this.httpOptions)
   }
 
 }

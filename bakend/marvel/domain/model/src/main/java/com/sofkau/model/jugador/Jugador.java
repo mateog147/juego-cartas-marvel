@@ -12,14 +12,17 @@ import java.util.stream.Collectors;
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
+
 public class Jugador {
     private String id;
     private String uid;
     private String nombre;
     private Integer puntaje;
-    private List<Carta> cartas;
 
+    private List<Carta> cartas;
+    public Jugador(String uid) {
+        this.uid = uid;
+    }
 
     public String uid() {return uid;}
 

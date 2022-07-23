@@ -7,6 +7,5 @@ import reactor.core.publisher.Mono;
 
 public interface PartidaRepository {
     Mono<Partida> save(Partida partida);
-    Flux<Jugador> findAllById(Iterable<String> ids);
-
+    Mono<Partida> findById(String id);
 }

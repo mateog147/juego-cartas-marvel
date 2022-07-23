@@ -26,6 +26,8 @@ public RouterFunction<ServerResponse> routerFunction(HandlerCarta cartaHandler, 
     .andRoute(POST("/api/partida/"), partidaHandler::POSTCrearPartida)
     .andRoute(POST("/api/ronda/{idronda}/{idjugador}"), rondaHandler::PUTRecibirApuesta)
     .andRoute(GET("/api/ronda/"), rondaHandler::GETConsultarRondas)
-    .andRoute(POST("/api/ronda/"), rondaHandler::POSTCrearRonda);
+    .andRoute(POST("/api/ronda/"), rondaHandler::POSTCrearRonda)
+    .andRoute(GET("/api/partida/{id}"), partidaHandler::GETPartidaPorId)
+    .andRoute(POST("/api/partida/{id}"), partidaHandler::PUTNuevaApuesta);
     }
 }

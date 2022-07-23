@@ -23,9 +23,4 @@ public class PartidaMongoRepositoryAdapter extends AdapterOperations<Partida, Pa
     }
 
 
-    @Override
-    public Flux<Jugador> findAllById(Iterable<String> ids) {
-        return repository.findAllById(ids)
-                .map(document -> mapper.map(document, Jugador.class));
-    }
 }

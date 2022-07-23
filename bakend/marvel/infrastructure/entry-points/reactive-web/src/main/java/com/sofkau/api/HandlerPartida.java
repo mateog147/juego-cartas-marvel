@@ -9,6 +9,7 @@ import com.sofkau.usecase.partida.agregarronda.AgregarRondaUseCase;
 import com.sofkau.usecase.partida.crearpartida.CrearPartidaUseCase;
 import com.sofkau.usecase.partida.encontrarpartida.EncontrarPartidaUseCase;
 import com.sofkau.usecase.partida.gestionarapuesta.GestionarApuestaUseCase;
+import com.sofkau.usecase.partida.gestionarganador.GestionarGanadorUseCase;
 import com.sofkau.usecase.partida.guardarpartida.GuardarPartidaUseCase;
 import com.sofkau.usecase.partida.repartircartas.RepartirCartasUseCase;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class HandlerPartida {
     private final GuardarPartidaUseCase guardarPartidaUseCase;
     private final GestionarApuestaUseCase gestionarApuestaUseCase;
     private final EncontrarPartidaUseCase encontrarPartidaUseCase;
+    private final GestionarGanadorUseCase gestionarGanadorUseCase;
 
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
         return serverRequest.bodyToFlux(Jugador.class)
@@ -62,5 +64,15 @@ public class HandlerPartida {
                 .flatMap(ronda -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(Mono.just(ronda), Ronda.class));
+    }
+
+    public Mono<ServerResponse> POSTGanadorRonda(ServerRequest serverRequest) {
+        var id = serverRequest.pathVariable("id");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(encontrarPartidaUseCase.encontrarPartida(id)
+                        .flatMap(partida -> gestionarGanadorUseCase.gestionarGanador(partida))
+                        .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida))
+                , Partida.class);
     }
 }

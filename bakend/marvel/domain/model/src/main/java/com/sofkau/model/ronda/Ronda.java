@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @Builder(toBuilder = true)
@@ -27,11 +28,18 @@ public class Ronda {
 
 
     public String determinarGanador(){
-        var cartaGanadora = this.apuestas.stream()
-                //.reduce((x, y) -> x.getCarta().getXp().compareTo(y.getCarta().getXp()) <= 0  ? x : y).get();
-                .max(Comparator.comparingInt(apuesta -> apuesta.getCarta().getXp()));
-        return this.apuestas.get(apuestas.indexOf(cartaGanadora)).getJugadorId();
+        return this.apuestas.stream()
+                .max(Comparator.comparingInt(Apuesta::getCartaXp))
+                .get()
+                .getJugadorId();
+    }
 
+    public List<Carta> entregarCartas(){
+        List<Carta> cartasEntregar =  this.apuestas.stream()
+                .map(apuesta -> apuesta.getCarta())
+                .collect(Collectors.toList());
+        this.apuestas.clear();
+        return cartasEntregar;
     }
 
 }

@@ -56,10 +56,10 @@ public class HandlerRonda {
                         .body(Mono.just(ronda), Ronda.class));
     }
 
-    public Mono<ServerResponse> GETGanadorRonda (ServerRequest serverRequest){
+    /*public Mono<ServerResponse> GETGanadorRonda (ServerRequest serverRequest){
         var idRonda = serverRequest.pathVariable("id");
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ganadorRondaUseCase.determinarGanadaorRonda(idRonda), Ronda.class);
-    }
+    }*/
 }

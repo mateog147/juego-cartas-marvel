@@ -15,4 +15,8 @@ public class Apuesta {
     private String jugadorId;
     private Carta carta;
 
+    public Integer getCartaXp(){
+        return this.carta.getXp();
+    }
+
 }

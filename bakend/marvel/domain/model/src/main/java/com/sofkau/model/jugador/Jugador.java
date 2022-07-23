@@ -46,10 +46,8 @@ public class Jugador {
         return lista;
     }
 
-    public List<Carta> eliminarCarta(String cartaId){
+    public Boolean eliminarCarta(Carta carta){
 
-        return this.cartas.stream()
-                .filter(carta -> (!carta.id().equalsIgnoreCase(cartaId)) )
-                .collect(Collectors.toList());
+        return this.cartas.remove(carta);
     }
 }

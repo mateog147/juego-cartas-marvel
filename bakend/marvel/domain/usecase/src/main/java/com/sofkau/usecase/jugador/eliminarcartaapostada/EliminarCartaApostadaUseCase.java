@@ -11,12 +11,13 @@ import reactor.core.publisher.Mono;
 public class EliminarCartaApostadaUseCase {
     private final JugadorRepository jugadorRepository;
 
-    public Mono<Jugador> eliminarCartaApostada(String id, String cartaId){
+    public Mono<Jugador> eliminarCartaApostada(String id, Carta carta){
 
         return jugadorRepository.findById(id)
-                        .map(jugador -> jugador.toBuilder()
-                                .cartas(jugador.eliminarCarta(cartaId))
-                                .build())
+                        .map(jugador -> {
+                                jugador.eliminarCarta(carta);
+                                return jugador;
+                               })
                 .flatMap(this.jugadorRepository::save);
     }
 }

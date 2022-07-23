@@ -5,6 +5,7 @@ import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.model.ronda.Apuesta;
 import com.sofkau.model.ronda.Ronda;
+import com.sofkau.model.ronda.gateways.RondaRepository;
 import com.sofkau.usecase.ronda.consultarrondas.ConsultarRondasUseCase;
 import com.sofkau.usecase.ronda.crearronda.CrearRondaUseCase;
 import com.sofkau.usecase.ronda.recibirapuesta.RecibirapuestaUseCase;
@@ -26,18 +27,19 @@ public class HandlerRonda {
     private final ConsultarRondasUseCase consultarRondasUseCase;
     private final CrearRondaUseCase crearRondaUseCase;
 
+
     public Mono<ServerResponse> PUTRecibirApuesta(ServerRequest serverRequest){
         var idRonda = serverRequest.pathVariable("idronda");
         var idJugador = serverRequest.pathVariable("idjugador");
 
-        System.out.println("id: " + idJugador + "\n" + idRonda);
-        //ParameterizedTypeReference<Map<String, Carta>> modeloPeticion = new ParameterizedTypeReference<Map<String, Carta>>() {};
 
         return serverRequest.bodyToMono(Apuesta.class)
                 .log()
-                .flatMap(apuesta -> ServerResponse.ok()
+                .flatMap(apuesta -> recibirapuestaUseCase.recibirApuesta(idRonda, apuesta))
+                .flatMap(ronda -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(recibirapuestaUseCase.recibirApuesta(idRonda, apuesta), Ronda.class));
+                        .body(Mono.just(ronda), Ronda.class));
+
     }
 
     public Mono<ServerResponse> GETConsultarRondas(ServerRequest serverRequest) {

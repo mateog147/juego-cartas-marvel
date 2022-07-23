@@ -29,9 +29,7 @@ public class HandlerRonda {
 
 
     public Mono<ServerResponse> PUTRecibirApuesta(ServerRequest serverRequest){
-        var idRonda = serverRequest.pathVariable("idronda");
-        var idJugador = serverRequest.pathVariable("idjugador");
-
+        var idRonda = serverRequest.pathVariable("id");
 
         return serverRequest.bodyToMono(Apuesta.class)
                 .log()

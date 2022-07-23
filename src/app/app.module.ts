@@ -9,6 +9,14 @@ import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { HttpClientModule } from '@angular/common/http';
+import {MatTableModule} from '@angular/material/table';
+import {MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input'
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+
+
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
@@ -22,6 +30,7 @@ import { CardComponent } from './components/card/card.component';
 import { TableroComponent } from './components/tablero/tablero.component';
 import { AvatarjugadorComponent } from './components/avatarjugador/avatarjugador.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TablacrudComponent } from './components/tablacrud/tablacrud.component';
 
 
 @NgModule({
@@ -35,6 +44,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CardComponent,
     TableroComponent,
     AvatarjugadorComponent,
+    TablacrudComponent,
     
   ],
   imports: [
@@ -48,7 +58,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DragDropModule,
     BrowserAnimationsModule,
     MatGridListModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
    
     
   ],

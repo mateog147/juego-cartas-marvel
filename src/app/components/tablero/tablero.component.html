@@ -20,7 +20,7 @@
        <div  class="d-flex align-items-center flex-column mazo-cartas " cdkDropList
        [cdkDropListData]="mazo" (cdkDropListDropped)="drop($event)" >
        
-       <div *ngFor="let item of mazo" cdkDrag><app-card></app-card> </div>
+       <div *ngFor="let item of mazo" cdkDrag>{{item.imagen}}<app-card [nombre]="item.nombre" [xp]="item.xp" [img]="item.imagen"></app-card> </div>
 
        </div>
        <button class="btn btn-primary"  (click)="post()">post</button>

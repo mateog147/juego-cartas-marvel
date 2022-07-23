@@ -4,6 +4,7 @@ import {Card} from '../card/card.component'
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { User } from 'src/app/shared/services/user';
 import { JugadorserviceService } from 'src/app/shared/services/jugadorservice.service';
+import { CartaserviceService } from 'src/app/shared/services/cartaservice.service';
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
@@ -11,9 +12,9 @@ import { JugadorserviceService } from 'src/app/shared/services/jugadorservice.se
 })
 export class TableroComponent implements OnInit {
   tablero: {status:boolean} = {status : true}
-  apuestas: Card[] = [{nombre: 'Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}];
-  mazo: Card[] = [{nombre: 'Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999},{nombre: 'Tribunal Viviente', image: '../../../assets/maxresdefault.jpg', description:'El mejor de todos', xp: 99999999}]
-  constructor(public authService: AuthService, private jugador: JugadorserviceService) {}
+  apuestas: Card[] = [];
+  mazo: Card[] = [];
+  constructor(public authService: AuthService, private jugador: JugadorserviceService, private carta : CartaserviceService) {}
  
  console = console;
 
@@ -22,6 +23,9 @@ export class TableroComponent implements OnInit {
  
   
   ngOnInit(): void {
+    this.carta.getAll().subscribe(data=>{
+      data.forEach((item: Card) =>this.mazo.push(item));
+    })
     
   }
   drop(event: CdkDragDrop<Card[]>) {
@@ -41,7 +45,7 @@ export class TableroComponent implements OnInit {
   
   post(): void{
     console.log("hola");
-    this.jugador.nuevoJugador(this.authService.userData.uid, this.authService.userData.displayName)
+    this.jugador.nuevoJugador()
     .subscribe(data => console.log(data));
   } 
   newArray(){

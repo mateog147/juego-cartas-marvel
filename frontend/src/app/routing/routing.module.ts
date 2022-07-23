@@ -8,6 +8,7 @@ import { VerifyEmailComponent } from '../components/verify-email/verify-email.co
 import { SignInComponent } from '../components/sign-in/sign-in.component';
 import { AuthGuard } from '../shared/guard/auth.guard';
 import { TableroComponent } from '../components/tablero/tablero.component';
+import { TablacrudComponent } from '../components/tablacrud/tablacrud.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
   {path: 'tablero', component: TableroComponent},
+  {path: 'crud', component: TablacrudComponent}
 
 ];
 

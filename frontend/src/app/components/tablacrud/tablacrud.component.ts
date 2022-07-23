@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -16,11 +17,20 @@ import { Card } from '../card/card.component';
 export class TablacrudComponent implements AfterViewInit {
   displayedColumns: string[] = ['id','fruit', 'name', 'progress', 'boton'  ];
   dataSource: MatTableDataSource<Card> ;
-
+  form;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(private cardService: CartaserviceService) {
+ 
+  constructor(private cardService: CartaserviceService,
+    private formBuilder : FormBuilder) {
+      
+      this.form = this.formBuilder.group(
+      {
+        nombre : [''],
+        xp: [''],
+        imagen: ['']
+      }
+    )
     
     const dataCar = new Array;
     this.cardService.getAll().subscribe(item => item.forEach((e: any) => dataCar.push(e)));
@@ -43,6 +53,10 @@ export class TablacrudComponent implements AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  onSubmit(){
+    console.log(this.form.value);
   }
 }
 

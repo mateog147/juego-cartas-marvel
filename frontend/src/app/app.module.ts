@@ -32,6 +32,7 @@ import { AvatarjugadorComponent } from './components/avatarjugador/avatarjugador
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TablacrudComponent } from './components/tablacrud/tablacrud.component';
 import { JugadorserviceService } from './shared/services/jugadorservice.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import { JugadorserviceService } from './shared/services/jugadorservice.service'
     MatPaginatorModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    ReactiveFormsModule,
    
     
   ],

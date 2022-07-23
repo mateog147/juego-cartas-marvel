@@ -3,22 +3,24 @@
     <div class="shadow d-flex justify-content-evenly align-items-center" cdkDropListGroup>
         
         <div  class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
-            <app-avatarjugador></app-avatarjugador>
-            <app-avatarjugador></app-avatarjugador>
-            <app-avatarjugador></app-avatarjugador>
+           <div *ngFor="let jugador of jugadores">
+            <app-avatarjugador *ngIf=" authService.userData as user"  [imagen]="(user.photoURL) ? user.photoURL : '../../../assets/imgs/1AE.jpg'"></app-avatarjugador>
+           </div> 
+            
         </div>
        <div class="d-flex justify-content-around flex-wrap align-items-center w-50  tablero-apuestas " *ngIf=" authService.userData as user"  cdkDropList
        [cdkDropListData]="apuestas" (cdkDropListDropped)="drop($event)">
         <div class="ronda">Ronda : 1</div>
         <div class="tiempo">Tiempo : 10s</div>
         
-        <div *ngFor="let apuesta of apuestas"  cdkDrag >{{user.displayName}}<app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/1AE.jpg'" [nombre]="'nombre'" [xp]="2"></app-card>
+        <div *ngFor="let apuesta of apuestas" class="card-apuesta" cdkDrag ><p>{{user.displayName}}</p>
+            <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/1AE.jpg'" [nombre]="'nombre'" [xp]="2"></app-card>
             <app-card *ngIf="tablero.status " [nombre]="apuesta.nombre" [xp]="apuesta.xp" [img]="apuesta.imagen"></app-card> 
         </div>
           
        </div>
        <div class="mazojugador"> 
-        <div class="texto-mazo " *ngIf=" authService.userData as user"><h3>Mazo de {{user.displayName}}</h3></div>
+        <div class="texto-mazo " *ngIf="authService.userData as user"><h3>Mazo de {{user.displayName}}</h3></div>
        <div  class="d-flex align-items-center flex-column mazo-cartas " cdkDropList
        [cdkDropListData]="mazo" (cdkDropListDropped)="drop($event)" >
        

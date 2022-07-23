@@ -1,6 +1,29 @@
+
+<div class="d-flex">
+  <form class="d-flex w-75 m-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field  class="ms-2">
+      
+      <input matInput formControlName="nombre" placeholder="Nombre de  Heroe" class="form-control" name="nombre" type="text"  >
+    </mat-form-field>
+    <mat-form-field class="ms-2" >
+      
+      <input matInput type="number" formControlName="xp" placeholder="Poder de Heroe" class="form-control" name="xp">
+    </mat-form-field>
+    <mat-form-field  class="ms-2">
+      
+      <input matInput  placeholder="URL imagen"  formControlName="imagen" class="form-control" name="imagen" type="text">
+    </mat-form-field>
+  </form>
+  <button mat-mini-fab color="primary" class="m-4 " type="submit">
+    <mat-icon>save</mat-icon>
+  </button>
+
+</div>
+
+
 <mat-form-field appearance="fill">
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Buscar carta" #input>
   </mat-form-field>
   
   <div class="mat-elevation-z8">

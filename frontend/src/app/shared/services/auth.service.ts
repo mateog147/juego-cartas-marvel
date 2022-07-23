@@ -7,6 +7,7 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { JugadorserviceService } from './jugadorservice.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -17,7 +18,7 @@ export class AuthService {
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     public router: Router,
     public ngZone: NgZone, // NgZone service to remove outside scope warning
-    
+    public jugador : JugadorserviceService,
   ) {
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
@@ -25,7 +26,8 @@ export class AuthService {
       if (user) {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
-        JSON.parse(localStorage.getItem('user')!);
+      
+
       } else {
         localStorage.setItem('user', 'null');
         JSON.parse(localStorage.getItem('user')!);
@@ -55,6 +57,8 @@ export class AuthService {
         up and returns promise */
         this.SendVerificationMail();
         this.SetUserData(result.user);
+        this.nuevoJugador(result.user!.uid, result.user!.displayName!)
+        
       })
       .catch((error) => {
         window.alert(error.message);
@@ -101,6 +105,7 @@ export class AuthService {
           this.router.navigate(['dashboard']);
         });
         this.SetUserData(result.user);
+        
       })
       .catch((error) => {
         window.alert(error);
@@ -130,6 +135,10 @@ export class AuthService {
       localStorage.removeItem('user');
       this.router.navigate(['sign-in']);
     });
+  }
+
+  nuevoJugador(id: string, name: string) {
+    this.jugador.nuevoJugador(id, name);
   }
  
 

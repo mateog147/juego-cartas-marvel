@@ -1,7 +1,9 @@
 export interface Jugador{
     nombre: string;
-    xp: number;
+    uid: string;
+    cartas: [];
+    puntaje: number
     
-   imagen: string;
+   
 
 }

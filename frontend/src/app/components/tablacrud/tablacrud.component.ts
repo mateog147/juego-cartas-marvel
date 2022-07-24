@@ -157,7 +157,8 @@ export class TablacrudComponent implements AfterViewInit{
   
   onSubmit(){
     
-    const dataCarta : Card ={
+    const dataCarta  ={
+        id: this.formEdit.id,
         nombre: this.form.value.nombre!,
         imagen:`../../../assets/imgs/${this.form.value.imagen!}`,
         xp: Number(this.form.value.xp) 
@@ -165,9 +166,10 @@ export class TablacrudComponent implements AfterViewInit{
     this.formEdit.status?
     this.cardService.editCarta( this.formEdit.id, dataCarta).subscribe({next: (item: Card) => {console.log(item)}, error: (e)=>{console.log(e)}})
      :
-    this.cardService.crearNuevaCarta(dataCarta).subscribe({next: (item: Card) => {console.log(item)}, error: (e)=>{console.log(e)}})
+    this.cardService.crearNuevaCarta(dataCarta).subscribe({next: (item: Card) => {console.log(item)}, error: (e)=>{console.log(e)}});
+    this.formEdit.status = false;
+    this.get();
     
-    this.get()
     
   }
 

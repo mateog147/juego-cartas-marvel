@@ -14,29 +14,29 @@ import { Jugador } from 'src/app/interface/jugador';
 })
 
 export class TableroComponent implements OnInit , DoCheck {
-  
+
   tablero: {status:boolean} = {status : false}
-  
-  partidaId = "62dc5b92a90f4d384bc781d6";
+
+  partidaId = "62dd80882b9bb42533b8dc14";
 
   apuestas: Card[] = [];
   mazo: Card[] = [];
-  
+
   partida:any;
   jugadoruid: any;
   jugadorInfo: any;
 
-  constructor(public authService: AuthService, 
+  constructor(public authService: AuthService,
             private partidaService: PartidaService) {}
-  
+
   ngDoCheck(): void {
     if(this.apuestas.length === 3){
       this.tablero.status = true;
     }
   }
-  
+
   ngOnInit(): void {
-    
+
     this.getPartidaPorId(this.partidaId);
 
   }
@@ -52,7 +52,7 @@ export class TableroComponent implements OnInit , DoCheck {
         event.container.data,
         event.previousIndex,
         event.currentIndex,
-        
+
       );
 
       this.newArray()
@@ -64,11 +64,11 @@ export class TableroComponent implements OnInit , DoCheck {
       this.enviarApuesta(this.partidaId , cartaApostada)
 
     }}
-  
-  
+
+
   post(): void{
     console.log("hola");
-  } 
+  }
 
   newArray(){
     localStorage.setItem('mazo', JSON.stringify(this.mazo));
@@ -77,7 +77,7 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   imprimir(){
-    this.jugadoruid = this.authService.userData.uid;   
+    this.jugadoruid = this.authService.userData.uid;
     this.getJugadorInfo();
     this.getMazo();
     console.log(this.jugadorInfo);
@@ -91,7 +91,7 @@ export class TableroComponent implements OnInit , DoCheck {
   //TODO: cambiar "xxx" por this.jugadoruid
   getJugadorInfo(){
     this.partida.jugadores.forEach((jugador: Jugador) => {
-      if(jugador.uid == this.authService.userData.uid){ this.jugadorInfo = jugador} 
+      if(jugador.uid == this.authService.userData.uid){ this.jugadorInfo = jugador}
     })
   }
 
@@ -100,7 +100,7 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   enviarApuesta(partidaId : string , carta: Card){
-  
+
     const apuesta: ApuestaModel = {
       jugadorId: this.jugadorInfo.id,
       carta: {
@@ -109,7 +109,7 @@ export class TableroComponent implements OnInit , DoCheck {
         xp: carta.xp,
         imagen: carta.imagen
       }
-    }     
+    }
     this.partidaService.enviarApuesta(partidaId, apuesta).subscribe(item => console.log(item))
   }
 

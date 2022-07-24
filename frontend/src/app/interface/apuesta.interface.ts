@@ -1,6 +1,6 @@
 import { Card } from "../components/card/card.component";
 
-export class ApuestaModel {
+export interface ApuestaModel {
     jugadorId: string | undefined;
     carta: Card | undefined;
 

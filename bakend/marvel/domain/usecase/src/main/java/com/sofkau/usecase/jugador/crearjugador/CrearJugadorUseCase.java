@@ -10,6 +10,7 @@ public class CrearJugadorUseCase {
     private final JugadorRepository jugadorRepository;
 
     public Mono<Jugador> crearNuevoJugador(Jugador jugador){
-        return jugadorRepository.save(jugador);
+        return jugadorRepository.findByUid(jugador.uid())
+                .switchIfEmpty(jugadorRepository.save(jugador));
     }
 }

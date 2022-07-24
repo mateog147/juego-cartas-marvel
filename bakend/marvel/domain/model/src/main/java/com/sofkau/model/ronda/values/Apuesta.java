@@ -1,4 +1,4 @@
-package com.sofkau.model.ronda;
+package com.sofkau.model.ronda.values;
 
 import com.sofkau.model.carta.Carta;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.sofkau.model.ronda;
 import com.sofkau.model.carta.Carta;
-import com.sofkau.model.jugador.Jugador;
+import com.sofkau.model.ronda.values.Apuesta;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,14 +23,16 @@ public class Ronda {
         Objects.requireNonNull(apuesta);
         if(apuestas == null){this.apuestas = new ArrayList<>(); };
         this.apuestas.add(apuesta);
-        //return this.apuestas;
     }
 
 
     public String determinarGanador(){
+        if(this.apuestas.size()<=1){
+            return "non";
+        }
         return this.apuestas.stream()
                 .max(Comparator.comparingInt(Apuesta::getCartaXp))
-                .orElseThrow(IllegalArgumentException::new)
+                .orElse(new Apuesta("non",null))
                 .getJugadorId();
     }
 

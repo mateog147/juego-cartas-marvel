@@ -1,6 +1,5 @@
 package com.sofkau.usecase.ronda.ganadorronda;
 
-import com.sofkau.model.ronda.Apuesta;
 import com.sofkau.model.ronda.Ronda;
 import com.sofkau.model.ronda.gateways.RondaRepository;
 import lombok.RequiredArgsConstructor;

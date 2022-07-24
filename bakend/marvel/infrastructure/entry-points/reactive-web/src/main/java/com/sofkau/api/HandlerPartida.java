@@ -59,6 +59,7 @@ public class HandlerPartida {
         System.out.println("pase por nueva apuesta");
 
         return serverRequest.bodyToMono(Apuesta.class)
+                .log()
                 .flatMap(apuesta -> {
                             return encontrarPartidaUseCase.encontrarPartida(idPartida)
                                     .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta))

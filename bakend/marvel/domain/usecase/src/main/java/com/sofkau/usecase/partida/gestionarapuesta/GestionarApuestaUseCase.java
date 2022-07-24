@@ -20,6 +20,7 @@ private final RecibirapuestaUseCase recibirapuestaUseCase;
                             }
                             return jugador;
                         })
+                        .log()
                         .collectList()
                         .map(lista -> partida.toBuilder().jugadores(lista).build())
                         .flatMap(partida1 -> {

@@ -17,11 +17,8 @@ import java.util.Set;
 public class Partida {
 
     private String id;
-
     private  List<Jugador> jugadores;
-
     private  Ronda ronda;
-
     private  Mazo mazo;
 
 }

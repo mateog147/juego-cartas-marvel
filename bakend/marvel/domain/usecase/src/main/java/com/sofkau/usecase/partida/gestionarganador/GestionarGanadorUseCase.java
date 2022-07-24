@@ -8,7 +8,8 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 public class GestionarGanadorUseCase {
-    private GanadorRondaUseCase ganadorRondaUseCase;
+    private final GanadorRondaUseCase ganadorRondaUseCase;
+
     public Mono<Partida> gestionarGanador(Partida partida){
         String ganadorId = partida.getRonda().determinarGanador();
         return  Flux.fromIterable(partida.getJugadores())
@@ -18,7 +19,11 @@ public class GestionarGanadorUseCase {
                                         }
                                         return jugador;
                                     }).collectList()
-                                    .map(lista -> partida.toBuilder().jugadores(lista).build());
+                                    .map(lista -> partida.toBuilder().jugadores(lista).build())
+                                    .flatMap(partida1 -> {
+                                        return ganadorRondaUseCase.terminarRonda(partida1.getRonda());
+                                    })
+                                    .map(ronda -> partida.toBuilder().ronda(ronda).build());
 
     }
 }

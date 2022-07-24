@@ -23,7 +23,6 @@ public class CrearPartidaUseCase {
         Ronda ronda = new Ronda();
         mostrarCartasUseCase
                 .mostrarCartas()
-                .log()
                 .subscribe(carta -> cartas.add(carta));
 
         Mazo mazo =  Mazo.getMazo(cartas);

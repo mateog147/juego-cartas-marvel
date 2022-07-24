@@ -12,23 +12,21 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class RouterRest {
 @Bean
-public RouterFunction<ServerResponse> routerFunction(HandlerCarta cartaHandler, HandlerJugador jugadorHandler, HandlerPartida partidaHandler, HandlerRonda rondaHandler) {
+public RouterFunction<ServerResponse> routerFunction(HandlerCarta cartaHandler, HandlerJugador jugadorHandler, HandlerPartida partidaHandler) {
     return route(GET("/api/carta/"), cartaHandler::GETMostrarCartasUseCase)
     .andRoute(POST("/api/carta/"), cartaHandler::POSTCrearCartaUseCase)
     .andRoute(GET("/api/carta/{id}"), cartaHandler::GETBuscarCartaPorId)
     .andRoute(DELETE("/api/carta/{id}"),cartaHandler::DELETEEliminarCartaUseCase)
     .andRoute(PUT("/api/carta/{id}"),cartaHandler::PUTModificarPorId)
+
     .andRoute(POST("/api/jugador/"), jugadorHandler::POSTCrearJugador)
     .andRoute(PUT("/api/jugador/puntaje/{id}"), jugadorHandler::PUTActualizarPuntajeJugador)
     .andRoute(GET("/api/jugador/"), jugadorHandler::GETConsultarJugadores)
-    .andRoute(PUT("/api/jugador/cartaagregada/{id}"), jugadorHandler::PUTAgregarCartasJugador) // endpoint de prueba este se lleva en la partida
-    .andRoute(PUT("/api/jugador/cartaeliminada/{id}"), jugadorHandler::PUTEliminarCartaApostada) // endpoint de prueba este se lleva en la partida
+
     .andRoute(POST("/api/partida/"), partidaHandler::POSTCrearPartida)
-    .andRoute(PUT("/api/ronda/{id}"), rondaHandler::PUTRecibirApuesta) // endpoint de prueba este se lleva en la partida
-    .andRoute(GET("/api/ronda/"), rondaHandler::GETConsultarRondas) // endpoint de prueba este se lleva en la partida
-    .andRoute(POST("/api/ronda/"), rondaHandler::POSTCrearRonda) // endpoint de prueba este se lleva en la partida
     .andRoute(GET("/api/partida/{id}"), partidaHandler::GETPartidaPorId)
-    .andRoute(POST("/api/partida/{id}"), partidaHandler::PUTNuevaApuesta)
-    .andRoute(GET("/api/ronda/ganador/{id}"), rondaHandler::GETGanadorRonda); // endpoint de prueba este se lleva en la partida
+    .andRoute(POST("/api/partida/{id}"), partidaHandler::POSTNuevaApuesta)
+    .andRoute(GET("/api/partida/ganador/{id}"), partidaHandler::GETGanadorRonda)
+    .andRoute(POST("/api/partida/rendirse/{id}"), partidaHandler::POSTRetirarJugador);
     }
 }

@@ -1,12 +1,13 @@
 package com.sofkau.model.ronda;
 import com.sofkau.model.carta.Carta;
-import com.sofkau.model.jugador.Jugador;
+import com.sofkau.model.ronda.values.Apuesta;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @Builder(toBuilder = true)
@@ -22,16 +23,28 @@ public class Ronda {
         Objects.requireNonNull(apuesta);
         if(apuestas == null){this.apuestas = new ArrayList<>(); };
         this.apuestas.add(apuesta);
-        //return this.apuestas;
     }
 
 
     public String determinarGanador(){
-        var cartaGanadora = this.apuestas.stream()
-                //.reduce((x, y) -> x.getCarta().getXp().compareTo(y.getCarta().getXp()) <= 0  ? x : y).get();
-                .max(Comparator.comparingInt(apuesta -> apuesta.getCarta().getXp()));
-        return this.apuestas.get(apuestas.indexOf(cartaGanadora)).getJugadorId();
+        if(this.apuestas.size()<=1){
+            return "non";
+        }
+        return this.apuestas.stream()
+                .max(Comparator.comparingInt(Apuesta::getCartaXp))
+                .orElse(new Apuesta("non",null))
+                .getJugadorId();
+    }
 
+    public List<Carta> entregarCartas(){
+        if(this.apuestas.size()<=1){
+            return new ArrayList<Carta>();
+        }
+        List<Carta> cartasEntregar =  this.apuestas.stream()
+                .map(apuesta -> apuesta.getCarta())
+                .collect(Collectors.toList());
+        this.apuestas.clear();
+        return cartasEntregar;
     }
 
 }

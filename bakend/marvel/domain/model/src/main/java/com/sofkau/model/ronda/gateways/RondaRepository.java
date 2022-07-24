@@ -14,6 +14,5 @@ public interface RondaRepository {
     Mono<Ronda> save(Ronda ronda);
     Mono<Ronda> findById(String id);
     Flux<Ronda> findAll();
-    //Mono<Ronda> agregarApuesta(String rondaId, Map<Carta, String> apuesta);
 
 }

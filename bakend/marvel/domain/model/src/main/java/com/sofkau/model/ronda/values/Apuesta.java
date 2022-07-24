@@ -1,4 +1,4 @@
-package com.sofkau.model.ronda;
+package com.sofkau.model.ronda.values;
 
 import com.sofkau.model.carta.Carta;
 import lombok.AllArgsConstructor;
@@ -14,5 +14,9 @@ public class Apuesta {
 
     private String jugadorId;
     private Carta carta;
+
+    public Integer getCartaXp(){
+        return this.carta.getXp();
+    }
 
 }

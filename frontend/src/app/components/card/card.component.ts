@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 
 export interface Card{
-  id: string;
+  id?: string;
   nombre: string;
   imagen: string;
   

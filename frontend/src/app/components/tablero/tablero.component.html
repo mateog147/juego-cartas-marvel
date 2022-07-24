@@ -6,9 +6,9 @@
     <div class="shadow d-flex justify-content-evenly align-items-center" cdkDropListGroup>
         
         <div  class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
-           <div *ngFor="let jugador of jugadores">
+           <!-- <div *ngFor="let jugador of jugadores">
             <app-avatarjugador *ngIf=" authService.userData as user"  [imagen]="(user.photoURL) ? user.photoURL : '../../../assets/imgs/1AE.jpg'"></app-avatarjugador>
-           </div> 
+           </div>  -->
             
         </div>
        <div class="d-flex justify-content-around flex-wrap align-items-center w-50  tablero-apuestas " *ngIf=" authService.userData as user"  cdkDropList
@@ -17,7 +17,7 @@
         <div class="tiempo">Tiempo : 10s</div>
         
         <div *ngFor="let apuesta of apuestas" class="card-apuesta" cdkDrag ><p>{{user.displayName}}</p>
-            <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/1AE.jpg'" [nombre]="'nombre'" [xp]="2"></app-card>
+            <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/boomboom.jpg'" [nombre]="'nombre'" [xp]="2"></app-card>
             <app-card *ngIf="tablero.status " [nombre]="apuesta.nombre" [xp]="apuesta.xp" [img]="apuesta.imagen"></app-card> 
         </div>
           

@@ -3,10 +3,13 @@ package com.sofkau.usecase.jugador.consultarjugadores;
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.jugador.gateways.JugadorRepository;
 import org.assertj.core.util.Arrays;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import reactor.core.publisher.Flux;
@@ -24,8 +27,12 @@ class ConsultarjugadoresUseCaseTest {
     ConsultarjugadoresUseCase useCase;
 
     @Mock
-    private JugadorRepository jugadorRepository;
+    private final JugadorRepository jugadorRepository;
 
+    @BeforeAll
+    public void setUp(){
+        MockitoAnnotations.openMocks(this);
+    }
     @Test
     public void consultar_un_jugador(){
         //List<Jugador> jugadores = Arrays.asList(new Jugador("1","uid","test1",10,null));

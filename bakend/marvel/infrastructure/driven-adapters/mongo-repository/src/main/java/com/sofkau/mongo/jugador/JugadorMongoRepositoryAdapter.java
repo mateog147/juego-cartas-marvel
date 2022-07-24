@@ -27,13 +27,10 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
     }
 
 
-
-
     @Override
     public Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador) {
         return null;
     }
-
 
     @Override
     public Flux<Jugador> findAllById(Iterable<String> ids) {

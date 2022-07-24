@@ -62,6 +62,7 @@ export class AuthService {
         this.SetUserData(result.user);
         this.nuevoJugador(result.user!.uid, result.user!.displayName!)
         
+        
       })
       .catch((error) => {
         window.alert(error.message);
@@ -142,7 +143,9 @@ export class AuthService {
   }
 
   nuevoJugador(id: string, name: string) {
-    this.jugador.nuevoJugador(id, name).subscribe(data => {console.log(data);});
+    this.jugador.nuevoJugador(id, name).subscribe(data => {
+      localStorage.setItem('jugador', JSON.stringify(data));
+    });
   }
  
 

@@ -27,20 +27,14 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
     }
 
 
-    @Override
-    public Flux<Carta> agregarCartas(String jugadorId, List<Carta> cartas) {
-        return null;
-    }
+
 
     @Override
     public Mono<Jugador> rendirseEnRonda(String jugadorId, Jugador jugador) {
         return null;
     }
 
-    @Override
-    public Mono<Jugador> eliminarcartaApostada(String jugadorId, Carta carta) {
-        return null;
-    }
+
 
     @Override
     public Flux<Jugador> findAllById(Iterable<String> ids) {

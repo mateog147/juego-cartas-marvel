@@ -77,7 +77,8 @@ import { ReactiveFormsModule } from '@angular/forms';
   providers: [AuthService, JugadorserviceService],
   bootstrap: [AppComponent],
   exports: [
-    CardComponent
+    CardComponent,
+    TableroComponent,
   ],
 })
 export class AppModule {}

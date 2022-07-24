@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
-  {path: 'tablero', component: TableroComponent},
+  {path: 'tablero/:params', component: TableroComponent},
   {path: 'crud', component: TablacrudComponent, canActivate: [AuthGuard, AdminGuard], },
 
 ];
@@ -26,8 +26,14 @@ const routes: Routes = [
 @NgModule({
 
  
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes),
+  ],
   exports: [RouterModule],
   
 })
-export class RoutingModule { }
+export class RoutingModule { 
+  
+
+
+
+}

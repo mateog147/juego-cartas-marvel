@@ -38,7 +38,7 @@
                   alt="{{user.displayName}}">
                 <div class="media-body">
                   <h1>Hello: <strong>{{(user.displayName) ? user.displayName : 'User'}}</strong></h1>
-                  
+
                   <p>Email: <strong>{{user.email}}</strong></p>
                   <p>Email Verified: <strong>{{user.emailVerified}}</strong></p>
                   <app-card></app-card>
@@ -49,7 +49,7 @@
                     {{u.nombre}}
                   </div>
                   <div>
-                    <button mat-raised-button color="accent" (click)="todosJugadores()" >Partida</button>
+                    <button mat-raised-button color="accent" (click)="crearPartidaNueva()" >Partida</button>
                     <h3>{{linkPartida}}</h3>
                   </div>
                 </div>

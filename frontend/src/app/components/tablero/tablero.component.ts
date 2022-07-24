@@ -1,5 +1,6 @@
 import { Component, DoCheck, OnInit } from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {ActivatedRoute} from "@angular/router";
 
 import {Card} from '../card/card.component'
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -17,7 +18,7 @@ export class TableroComponent implements OnInit , DoCheck {
 
   tablero: {status:boolean} = {status : false}
 
-  partidaId = "62dd80882b9bb42533b8dc14";
+  partidaId: any = "";
 
   apuestas: Card[] = [];
   mazo: Card[] = [];
@@ -27,7 +28,8 @@ export class TableroComponent implements OnInit , DoCheck {
   jugadorInfo: any;
 
   constructor(public authService: AuthService,
-            private partidaService: PartidaService) {}
+            private partidaService: PartidaService,
+            private route: ActivatedRoute) {}
 
   ngDoCheck(): void {
     if(this.apuestas.length === 3){
@@ -36,8 +38,8 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   ngOnInit(): void {
-
-    this.getPartidaPorId(this.partidaId);
+    this.partidaId = this.route.snapshot.paramMap.get('partidaId');
+    this.getPartidaPorId(this.partidaId ? this.partidaId : " ");
 
   }
 
@@ -85,7 +87,10 @@ export class TableroComponent implements OnInit , DoCheck {
 
   getPartidaPorId(partidaId : string){
     this.partidaService.getPartidaporId(partidaId)
-    .subscribe(item => this.partida = item)
+    .subscribe(item => {
+      this.partida = item;
+      this.imprimir();
+    })
   }
 
   //TODO: cambiar "xxx" por this.jugadoruid

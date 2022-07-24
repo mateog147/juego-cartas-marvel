@@ -1,5 +1,6 @@
 import { Component, DoCheck, OnInit } from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+
 import {Card} from '../card/card.component'
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ApuestaModel } from 'src/app/interface/apuesta.interface';
@@ -41,7 +42,7 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   drop(event: CdkDragDrop<Card[]>) {
-    if (event.previousContainer === event.container) {
+    if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
     } else {
@@ -62,8 +63,8 @@ export class TableroComponent implements OnInit , DoCheck {
       let cartaApostada: Card = event.container.data[0]
       this.enviarApuesta(this.partidaId , cartaApostada)
 
-    }
-  }
+    }}
+  
   
   post(): void{
     console.log("hola");
@@ -90,7 +91,7 @@ export class TableroComponent implements OnInit , DoCheck {
   //TODO: cambiar "xxx" por this.jugadoruid
   getJugadorInfo(){
     this.partida.jugadores.forEach((jugador: Jugador) => {
-      if(jugador.uid == "xxx" ){ this.jugadorInfo = jugador} 
+      if(jugador.uid == this.authService.userData.uid){ this.jugadorInfo = jugador} 
     })
   }
 

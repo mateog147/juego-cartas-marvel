@@ -27,5 +27,12 @@ export class PartidaService {
   ganadorRonda(partidaId : string): Observable<any>{
     return this.http.get(`${this.partidaURl}/ganador/${partidaId}`)
   }
+
+  crearPartida(jugadores : string[]): Observable<any>{
+    return this.http.put(this.partidaURl, jugadores, this.httpOptions)
+
+  }
+
+  
   
 }

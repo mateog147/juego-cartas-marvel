@@ -50,6 +50,7 @@ export class AuthService {
         window.alert(error.message);
       });
   }
+  
   // Sign up with email/password
   SignUp(email: string, password: string) {
     return this.afAuth
@@ -107,6 +108,7 @@ export class AuthService {
           this.router.navigate(['dashboard']);
         });
         this.SetUserData(result.user);
+        this.nuevoJugador(result.user!.uid, result.user!.displayName!)
         
       })
       .catch((error) => {
@@ -140,7 +142,7 @@ export class AuthService {
   }
 
   nuevoJugador(id: string, name: string) {
-    this.jugador.nuevoJugador(id, name);
+    this.jugador.nuevoJugador(id, name).subscribe(data => {console.log(data);});
   }
  
 

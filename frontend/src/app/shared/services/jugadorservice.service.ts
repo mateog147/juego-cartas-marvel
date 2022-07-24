@@ -27,5 +27,9 @@ export class JugadorserviceService {
     return this.http.post(this.jugadorURl, data, this.httpOptions)
   }
 
+  getJugadoresDB() : Observable<any>{
+   return this.http.get(this.jugadorURl, this.httpOptions)
+  }
+
 
 }

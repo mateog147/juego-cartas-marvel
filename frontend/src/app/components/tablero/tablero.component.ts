@@ -108,7 +108,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
    this.getJugadorInfo();
    this.getMazo();
     console.log(this.jugadoruid)
-    console.log(this.partidaId);
+    console.log(this.partida);
     console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }
 

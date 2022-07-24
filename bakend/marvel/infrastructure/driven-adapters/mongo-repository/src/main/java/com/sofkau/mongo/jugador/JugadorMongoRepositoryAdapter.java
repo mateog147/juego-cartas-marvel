@@ -5,6 +5,7 @@ import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.jugador.gateways.JugadorRepository;
 import com.sofkau.mongo.helper.AdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,6 +45,13 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
     @Override
     public Flux<Jugador> findAllById(Iterable<String> ids) {
         return repository.findAllById(ids).map(d -> mapper.map(d, Jugador.class));
+    }
+
+    @Override
+    public Mono<Jugador> findByUid(String jugadorUid) {
+        Example<JugadorDocument> jugadorExample = Example.of(new JugadorDocument(null,jugadorUid,null,null,null));
+
+        return repository.findOne(jugadorExample).map(d -> mapper.map(d, Jugador.class));
     }
 
 

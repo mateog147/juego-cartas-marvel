@@ -1,35 +1,35 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, DoCheck, OnInit } from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {ActivatedRoute} from "@angular/router";
 
 import {Card} from '../card/card.component'
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ApuestaModel } from 'src/app/interface/apuesta.interface';
 import { PartidaService } from 'src/app/shared/services/partida.service';
 import { Jugador } from 'src/app/interface/jugador';
-
+import { ActivatedRoute, Params } from '@angular/router';
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
   styleUrls: ['./tablero.component.css']
 })
 
+
 export class TableroComponent implements OnInit , DoCheck {
 
   tablero: {status:boolean} = {status : false}
+  partidaId !: string;
 
-  partidaId: any = "";
 
   apuestas: Card[] = [];
   mazo: Card[] = [];
-
   partida:any;
   jugadoruid: any;
   jugadorInfo: any;
 
   constructor(public authService: AuthService,
             private partidaService: PartidaService,
-            private route: ActivatedRoute) {}
+            private rutaActiva : ActivatedRoute) {}
+
 
   ngDoCheck(): void {
     if(this.apuestas.length === 3){
@@ -38,8 +38,29 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   ngOnInit(): void {
-    this.partidaId = this.route.snapshot.paramMap.get('partidaId');
-    this.getPartidaPorId(this.partidaId ? this.partidaId : " ");
+     this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
+     this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
+     this.getPartidaPorId(this.partidaId);
+  }
+
+  ngAfterViewInit(){
+
+
+  }
+  ngAfterViewChecked(){
+    //this.imprimir()
+  }
+
+  ngOnChanges() {
+
+    //if(changes.mazo.currentValue != changes.partida.previousValue){
+
+    this.getPartidaPorId(this.partidaId);
+    this.imprimir();
+    console.log("algo cambio");
+    //}
+
+
 
   }
 
@@ -63,14 +84,18 @@ export class TableroComponent implements OnInit , DoCheck {
       console.log(event.previousContainer.data);
 
       let cartaApostada: Card = event.container.data[0]
+
+      console.log(cartaApostada);
+
       this.enviarApuesta(this.partidaId , cartaApostada)
 
     }}
 
 
-  post(): void{
-    console.log("hola");
-  }
+
+
+
+
 
   newArray(){
     localStorage.setItem('mazo', JSON.stringify(this.mazo));
@@ -79,29 +104,34 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   imprimir(){
-    this.jugadoruid = this.authService.userData.uid;
-    this.getJugadorInfo();
-    this.getMazo();
-    console.log(this.jugadorInfo);
+
+   this.getJugadorInfo();
+   this.getMazo();
+    console.log(this.jugadoruid)
+    console.log(this.partidaId);
+    console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }
 
   getPartidaPorId(partidaId : string){
     this.partidaService.getPartidaporId(partidaId)
     .subscribe(item => {
       this.partida = item;
-      this.imprimir();
-    })
+      this.imprimir()})
   }
 
-  //TODO: cambiar "xxx" por this.jugadoruid
-  getJugadorInfo(){
+
+   getJugadorInfo()  {
+
+
     this.partida.jugadores.forEach((jugador: Jugador) => {
-      if(jugador.uid == this.authService.userData.uid){ this.jugadorInfo = jugador}
+      if(jugador.uid === this.jugadoruid){ this.jugadorInfo = jugador
+      console.log(jugador);
+      }
     })
   }
 
   getMazo(){
-    this.mazo = this.jugadorInfo.cartas;
+    this.mazo = this.jugadorInfo.cartas
   }
 
   enviarApuesta(partidaId : string , carta: Card){
@@ -119,7 +149,10 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   ganadorRonda(idPartida : string = this.partidaId){
-    this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item))
+    this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item));
+     if(this.jugadorInfo.cartas.length === 0){
+      alert("Has perdido noob")
+     }
   }
 
 }

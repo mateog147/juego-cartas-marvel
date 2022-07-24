@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { JugadorId } from 'src/app/components/dashboard/dashboard.component';
 import { ApuestaModel } from 'src/app/interface/apuesta.interface';
-import { JugadorId } from 'src/app/interface/jugadorId';
+//import { JugadorId } from 'src/app/interface/jugadorId';
 
 @Injectable({
   providedIn: 'root'
@@ -26,11 +27,11 @@ export class PartidaService {
   }
 
   ganadorRonda(partidaId : string): Observable<any>{
-    return this.http.get(`${this.partidaURl}/ganador/${partidaId}`)
+    return this.http.get(`${this.partidaURl}ganador/${partidaId}`)
   }
 
-  crearPartida(jugadoresId : JugadorId[]): Observable<any>{
-    return this.http.post(this.partidaURl, jugadoresId, this.httpOptions)
+  crearPartida(jugadores : JugadorId[]): Observable<any>{
+    return this.http.post(this.partidaURl, jugadores, this.httpOptions)
 
   }
 

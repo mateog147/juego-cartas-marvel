@@ -12,9 +12,9 @@ import { JugadorserviceService } from './jugadorservice.service';
   providedIn: 'root',
 })
 export class AuthService {
-  
+
   userData: any; // Save logged in user data
-  
+
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service
@@ -22,13 +22,13 @@ export class AuthService {
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     public jugador : JugadorserviceService,
   ) {
-    /* Saving user data in localstorage when 
+    /* Saving user data in localstorage when
     logged in and setting up null when logged out */
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
-      
+
 
       } else {
         localStorage.setItem('user', 'null');
@@ -50,18 +50,19 @@ export class AuthService {
         window.alert(error.message);
       });
   }
-  
+
   // Sign up with email/password
   SignUp(email: string, password: string) {
     return this.afAuth
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
-        /* Call the SendVerificaitonMail() function when new user sign 
+        /* Call the SendVerificaitonMail() function when new user sign
         up and returns promise */
         this.SendVerificationMail();
         this.SetUserData(result.user);
         this.nuevoJugador(result.user!.uid, result.user!.displayName!)
-        
+
+
       })
       .catch((error) => {
         window.alert(error.message);
@@ -108,15 +109,15 @@ export class AuthService {
           this.router.navigate(['dashboard']);
         });
         this.SetUserData(result.user);
-        this.nuevoJugador(result.user!.uid, result.user!.displayName!)
-        
+        this.nuevoJugador(result.user!.uid, result.user!.displayName!);
+
       })
       .catch((error) => {
         window.alert(error);
       });
   }
-  /* Setting up user data when sign in with username/password, 
-  sign up with username/password and sign in with social auth  
+  /* Setting up user data when sign in with username/password,
+  sign up with username/password and sign in with social auth
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   SetUserData(user: any) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
@@ -142,9 +143,9 @@ export class AuthService {
   }
 
   nuevoJugador(id: string, name: string) {
-    this.jugador.nuevoJugador(id, name).subscribe(data => {console.log(data);});
+    this.jugador.nuevoJugador(id, name).subscribe(data => {
+      localStorage.setItem('jugador', JSON.stringify(data));
+    });
   }
- 
-
 
 }

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Jugador } from 'src/app/interface/jugador';
-import { JugadorId } from 'src/app/interface/jugadorId';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { JugadorserviceService } from 'src/app/shared/services/jugadorservice.service';
 import { PartidaService } from 'src/app/shared/services/partida.service';
 
+export interface JugadorId {
+  id: string;
+}
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -14,17 +16,29 @@ import { PartidaService } from 'src/app/shared/services/partida.service';
 export class DashboardComponent implements OnInit {
   linkPartida: string = ''
   jugadores: string[] = [];
-  usuarios!: Jugador[];
-  constructor(public authService: AuthService, private partida: PartidaService, private router: Router, private jugador : JugadorserviceService) { }
+  usuarios: Jugador[] = [];
+  constructor(public authService: AuthService,
+    private partida: PartidaService,
+    private router: Router,
+    private jugador : JugadorserviceService) { }
 
   ngOnInit(): void {
-    this.todosJugadores()
+    this.todosJugadores();
+
+
   }
 
   todosJugadores(){
-    this.jugador.getJugadoresDB().subscribe((data) => this.usuarios = data)
+    let userId = JSON.parse(localStorage.getItem('jugador')!).id;
+    this.jugadores.push(userId);
+    this.jugador.getJugadoresDB().subscribe((data) => {
+      data.filter((jugador: Jugador) => jugador.id != userId)
+      .forEach((user: Jugador)=> this.usuarios.push(user))
+      })
   }
+  ngDoCheck(){
 
+  }
   elegirJugador(ju : string) : void {
     if(!this.jugadores.includes(ju)){
      this.jugadores.push(ju);
@@ -44,12 +58,16 @@ export class DashboardComponent implements OnInit {
         id: jugador
       }))
     });
-    console.log(dataTransfer)
+    //console.log(dataTransfer)
     this.partida.crearPartida(dataTransfer)
-    .subscribe(data => {
-      this.router.navigate(['tablero',data.id]);
-    });
+    .subscribe(data => this.router.navigate(['tablero', data.id]))
+    ;
+
+
+
   }
+
+
 
 
 

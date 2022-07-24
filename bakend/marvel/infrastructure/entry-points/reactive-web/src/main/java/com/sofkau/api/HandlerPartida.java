@@ -1,9 +1,8 @@
 package com.sofkau.api;
 
-import com.sofkau.model.carta.Carta;
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.partida.Partida;
-import com.sofkau.model.ronda.Apuesta;
+import com.sofkau.model.ronda.values.Apuesta;
 import com.sofkau.model.ronda.Ronda;
 import com.sofkau.usecase.partida.agregarronda.AgregarRondaUseCase;
 import com.sofkau.usecase.partida.crearpartida.CrearPartidaUseCase;
@@ -54,7 +53,7 @@ public class HandlerPartida {
                 .body(encontrarPartidaUseCase.encontrarPartida(id), Partida.class);
     }
 
-    public Mono<ServerResponse> PUTNuevaApuesta(ServerRequest serverRequest){
+    public Mono<ServerResponse> POSTNuevaApuesta(ServerRequest serverRequest){
         var idPartida = serverRequest.pathVariable("id");
 
         System.out.println("pase por nueva apuesta");

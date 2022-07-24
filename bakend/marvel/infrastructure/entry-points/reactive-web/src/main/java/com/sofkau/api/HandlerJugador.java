@@ -50,22 +50,5 @@ public class HandlerJugador {
                 .body(consultarJuegadoresUseCase.consultarJugadores(), Jugador.class);
     }
 
-    public Mono<ServerResponse> PUTAgregarCartasJugador(ServerRequest serverRequest) {
-        var id = serverRequest.pathVariable("id");
-        return serverRequest.bodyToFlux(Carta.class)
-                .collectList()
-                .flatMap(lista-> agregarCartasUseCase.agregarCartas(id, lista))
-                .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                        .body(Mono.just(jugador), Jugador.class));
-    }
-
-    public Mono<ServerResponse> PUTEliminarCartaApostada(ServerRequest serverRequest) {
-        var id = serverRequest.pathVariable("id");
-        return serverRequest.bodyToMono(Carta.class)
-                .flatMap(carta -> eliminarCartaApostadaUseCase.eliminarCartaApostada(id, carta))
-                .flatMap(jugador -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                        .body(Mono.just(jugador), Jugador.class));
-    }
-
 
 }

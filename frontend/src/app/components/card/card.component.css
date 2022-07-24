@@ -1,10 +1,23 @@
 .card{
     background-color: #cbc7e9;
     width: 150px;
+   
+    font-size: 30px;
     
 }
 ul{
     list-style: none;
     
+}
+h3{
+    color: black;
+    text-align: left;
+}
+h3:hover,h5:hover{ 
+
+    transform:scale(1.2);
+    
+    color: rebeccapurple;
+
 }
 

@@ -1,14 +1,10 @@
-.avatar{
-    border: 1px solid tomato;
-    border-radius: 30px;
-    width: 80px !important;
+.avatar {
+    width: 80px;
     height: 80px;
-    background-image: url(../../../assets/descarga.jpg);
-    background-position: center;
-    text-align: center;
-    
-    
+   text-align: center;
+
 }
-p{
+
+p {
     margin-top: 15px
 }

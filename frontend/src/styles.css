@@ -533,9 +533,6 @@ body .table thead th {
   color: rgba(255, 255, 255, 1);
 }
 
-.card {
-  border: none;
-}
 
 .list-group-item {
   padding: 0 1.25rem 15px;

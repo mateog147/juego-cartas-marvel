@@ -43,6 +43,16 @@
                   <p>Email Verified: <strong>{{user.emailVerified}}</strong></p>
                   <app-card></app-card>
                 </div>
+                <div class="usuarios">
+                  <div *ngFor="let u of usuarios">
+                    <img class="img-thumbnail rounded-circle" whidth="80px" src="../../../assets/34057.jpg" alt="u.nombre" (click)="elegirJugador(u.id!)">
+                    {{u.nombre}}
+                  </div>
+                  <div>
+                    <button mat-raised-button color="accent" (click)="todosJugadores()" >Partida</button>
+                    <h3>{{linkPartida}}</h3>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

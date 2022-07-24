@@ -50,6 +50,7 @@ export class AuthService {
         window.alert(error.message);
       });
   }
+  
   // Sign up with email/password
   SignUp(email: string, password: string) {
     return this.afAuth

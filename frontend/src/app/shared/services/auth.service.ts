@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { User } from '../services/user';
+import { User } from '../../interface/user';
 import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
@@ -12,7 +12,9 @@ import { JugadorserviceService } from './jugadorservice.service';
   providedIn: 'root',
 })
 export class AuthService {
+  
   userData: any; // Save logged in user data
+  
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service

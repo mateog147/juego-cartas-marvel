@@ -4,7 +4,6 @@ export interface Card{
   id?: string;
   nombre: string;
   imagen: string;
-  
   xp: number;
 }
 

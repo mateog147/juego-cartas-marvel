@@ -22,6 +22,7 @@ export class TableroComponent implements OnInit , DoCheck {
             private carta : CartaserviceService) {}
   
   ngDoCheck(): void {
+
     if(this.apuestas.length === 4){
       this.tablero.status = true;
     }
@@ -39,26 +40,31 @@ export class TableroComponent implements OnInit , DoCheck {
     
   }
   drop(event: CdkDragDrop<Card[]>) {
-    if (event.previousContainer === event.container) {
+    if (event.previousContainer === event.container ) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       
-    } else {
+    } else if((event.previousContainer === event.container) &&  event.container.data.length > 1 ) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
+      console.log(event.container.id);
+      console.log(event.container.data.length)
+    }else{
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex,
         
-      );
+      );}
+      
       // toda la partida
       console.log(event.previousContainer.data);
       
       // la carta apostada
-      console.log(event.container.data);
+      console.log(event.container.id);
       
       this.newArray()
     }
-  }
+  
   
   post(): void{
     console.log("hola");

@@ -13,15 +13,15 @@
             
         </div>
        <div class="d-flex justify-content-around flex-wrap align-items-center w-50  tablero-apuestas " *ngIf=" authService.userData as user"  cdkDropList
-       [cdkDropListData]="apuestas" (cdkDropListDropped)="drop($event)">
+       [cdkDropListData]="apuestadrop" (cdkDropListDropped)="drop($event)">
         <div class="ronda">Ronda : 1</div>
         <div class="tiempo">Tiempo : 10s</div>
         
-        <div *ngFor="let apuesta of apuestas" class="card-apuesta" cdkDrag ><p>{{user.displayName}}</p>
+        <div *ngFor="let apuesta of apuestas" class="card-apuesta" ><p>{{apuesta.jugadorId}}</p>
             <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/boomboom.jpg'" [nombre]="'nombre'" [xp]="2"></app-card>
-            <app-card *ngIf="tablero.status " [nombre]="apuesta.nombre" [xp]="apuesta.xp" [img]="apuesta.imagen"></app-card> 
+            <app-card *ngIf="tablero.status " [nombre]="apuesta.carta.nombre" [xp]="apuesta.carta.xp" [img]="apuesta.carta.imagen"></app-card> 
         </div>
-          
+         
        </div>
        <div class="mazojugador"> 
         <div class="texto-mazo " *ngIf="authService.userData as user"><h3>Mazo de {{user.displayName}}</h3></div>

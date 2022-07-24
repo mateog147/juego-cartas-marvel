@@ -18,10 +18,10 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   tablero: {status:boolean} = {status : false}
   
   partidaId !: string;
-
-  apuestas: Card[] = [];
+   
+  apuestas!: any[] ;
   mazo: Card[] = [];
-
+  apuestadrop: Card[] = [];
   partida:any;
   jugadoruid: any;
   jugadorInfo: any;
@@ -32,7 +32,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   
   
   ngDoCheck(): void {
-    if(this.apuestas.length === 3){
+    if(this.apuestas.length === this.partida.jugadores.length) {
       this.tablero.status = true;
     }
   }
@@ -52,7 +52,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   ngOnChanges() {
-
+   
     //if(changes.mazo.currentValue != changes.partida.previousValue){
       
     this.getPartidaPorId(this.partidaId);
@@ -77,18 +77,19 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
         event.currentIndex,
 
       );
-
-      this.newArray()
+      
+      //this.newArray()
 
       // toda la partida
-      console.log(event.previousContainer.data);
+      console.log('apuestadrop'+ this.apuestadrop);
 
       let cartaApostada: Card = event.container.data[0]
 
       console.log(cartaApostada);
       
-      this.enviarApuesta(this.partidaId , cartaApostada)
-
+      this.enviarApuesta(this.partidaId , cartaApostada);
+      this.renderTableroApuestas()
+      window.location.reload();
     }}
 
   
@@ -104,9 +105,10 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   imprimir(){
-          
+   this.renderTableroApuestas();
    this.getJugadorInfo();
    this.getMazo();
+   
     console.log(this.jugadoruid)
     console.log(this.partida);
     console.log(JSON.parse(localStorage.getItem('user')!).uid)
@@ -119,7 +121,12 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
       this.imprimir()})
   }
 
-  
+  renderTableroApuestas(){
+    this.partida.ronda.apuestas.length > 0 ? 
+    this.apuestas = this.partida.ronda.apuestas :
+    this.apuestas = [];  
+    
+  }
    getJugadorInfo()  { 
    
     
@@ -150,7 +157,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
 
   ganadorRonda(idPartida : string = this.partidaId){
     this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item));
-     if(this.jugadorInfo.cartas.length === 0){ 
+     if(this.partida.length === 0){ 
       alert("Has perdido noob")
      }
   }

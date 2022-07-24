@@ -1,4 +1,4 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, DoCheck, OnInit, SimpleChanges } from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {Card} from '../card/card.component'
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -16,7 +16,7 @@ export class TableroComponent implements OnInit , DoCheck {
   
   tablero: {status:boolean} = {status : false}
   
-  partidaId = "62dc5b92a90f4d384bc781d6";
+  partidaId = "62dd80882b9bb42533b8dc14";
 
   apuestas: Card[] = [];
   mazo: Card[] = [];
@@ -26,7 +26,9 @@ export class TableroComponent implements OnInit , DoCheck {
   jugadorInfo: any;
 
   constructor(public authService: AuthService, 
-            private partidaService: PartidaService) {}
+            private partidaService: PartidaService) {
+
+            }
   
   ngDoCheck(): void {
     if(this.apuestas.length === 3){
@@ -38,6 +40,13 @@ export class TableroComponent implements OnInit , DoCheck {
     
     this.getPartidaPorId(this.partidaId);
 
+  }
+
+  ngOnChanges() {
+    this.getPartidaPorId(this.partidaId);
+    this.imprimir();
+    console.log("algo cambio");
+    
   }
 
   drop(event: CdkDragDrop<Card[]>) {
@@ -60,6 +69,9 @@ export class TableroComponent implements OnInit , DoCheck {
       console.log(event.previousContainer.data);
 
       let cartaApostada: Card = event.container.data[0]
+
+      console.log(cartaApostada);
+      
       this.enviarApuesta(this.partidaId , cartaApostada)
 
     }
@@ -87,10 +99,10 @@ export class TableroComponent implements OnInit , DoCheck {
     .subscribe(item => this.partida = item)
   }
 
-  //TODO: cambiar "xxx" por this.jugadoruid
+  //TODO: cambiar "ABCD123456" por this.jugadoruid
   getJugadorInfo(){
     this.partida.jugadores.forEach((jugador: Jugador) => {
-      if(jugador.uid == "xxx" ){ this.jugadorInfo = jugador} 
+      if(jugador.uid == this.jugadoruid ){ this.jugadorInfo = jugador} 
     })
   }
 
@@ -113,7 +125,7 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   ganadorRonda(idPartida : string = this.partidaId){
-    this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item))
+    this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item));
   }
 
 }

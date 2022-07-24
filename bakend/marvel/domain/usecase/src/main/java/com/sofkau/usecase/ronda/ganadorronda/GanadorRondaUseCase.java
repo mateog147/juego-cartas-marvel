@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 public class GanadorRondaUseCase {
     private final RondaRepository repository;
 
-    public Mono<String> determinarGanadaorRonda (Ronda ronda) {
+    public Mono<Ronda> terminarRonda (Ronda ronda) {
 
-        return Mono.just(ronda.determinarGanador());
+        return repository.save(ronda);
     }
 }

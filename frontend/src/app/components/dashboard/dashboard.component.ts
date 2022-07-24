@@ -16,17 +16,22 @@ export interface JugadorId {
 export class DashboardComponent implements OnInit {
   linkPartida: string = ''
   jugadores: string[] = [];
-  usuarios!: Jugador[];
+  usuarios: Jugador[] = [];
   constructor(public authService: AuthService, private partida: PartidaService, private router: Router, private jugador : JugadorserviceService) { }
   
   ngOnInit(): void {
     this.todosJugadores();
     
+    
   }
 
   todosJugadores(){
+    let userId = JSON.parse(localStorage.getItem('jugador')!).id;
+    this.jugadores.push(userId);
     this.jugador.getJugadoresDB().subscribe((data) => {
-      this.usuarios = data})
+      data.filter((jugador: Jugador) => jugador.id != userId)
+      .forEach((user: Jugador)=> this.usuarios.push(user))
+      })
   }
   ngDoCheck(){
 

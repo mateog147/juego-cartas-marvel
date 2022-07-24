@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
-  {path: 'tablero/:params', component: TableroComponent},
+  {path: 'tablero/:idPartida', component: TableroComponent},
   {path: 'crud', component: TablacrudComponent, canActivate: [AuthGuard, AdminGuard], },
 
 ];

@@ -40,7 +40,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   ngOnInit(): void {
      this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
      this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
-     this.getPartidaPorId(this.partidaId? this.partidaId : '');
+     this.getPartidaPorId(this.partidaId);
   }
 
   ngAfterViewInit(){
@@ -90,9 +90,9 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   imprimir(){
           
    this.getJugadorInfo();
-   //this.getMazo();
+   this.getMazo();
     console.log(this.jugadoruid)
-    console.log(this.partida.jugadores);
+    console.log(this.partidaId);
     console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }
 

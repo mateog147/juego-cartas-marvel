@@ -15,6 +15,7 @@ public class RecibirapuestaUseCase {
             return repository.findById(rondaId)
                     .map(ronda -> {
                         ronda.agregarApuesta(apuesta);
+
                         return ronda;
                     })
                     .flatMap(ronda -> repository.save(ronda));

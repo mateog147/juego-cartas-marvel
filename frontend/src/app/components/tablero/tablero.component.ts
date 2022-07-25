@@ -31,7 +31,7 @@ export class TableroComponent implements OnInit , DoCheck {
   jugadoruid: any;
   jugadorInfo: any;
   timeInterval : number = 1000;
-  time = new Date('2020-1-1 00:02:00');
+  time!: number;
   subscripcion!: Subscription;
   constructor(public authService: AuthService, 
             private partidaService: PartidaService, 
@@ -50,6 +50,8 @@ export class TableroComponent implements OnInit , DoCheck {
      this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
      this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
      this.getPartidaPorId();
+     
+     
      this.subscripcion = this.partidaService.getRefresh$().subscribe(
       () => this.ganadorRonda()
      )
@@ -59,7 +61,7 @@ export class TableroComponent implements OnInit , DoCheck {
   ngAfterViewInit(){
     this.partidaService.getPartidaporId(this.partidaId)
     .subscribe((data : any) => {
-      data.jugadores.length > 1 ?
+      data.jugadores.length === 1 ?
       this.onTime():     
       Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
       <span style='font-size:100px;'>&#129321;</span>`)
@@ -118,12 +120,13 @@ export class TableroComponent implements OnInit , DoCheck {
     
    
   onTime(){
-    let fina = 120;
+    
+    let fina = this.partida.ronda.isTimerOn;
     interval(1000).pipe(
         takeWhile(() => fina -- > 0))
-        .subscribe({next: () => {
-          this.time = add(this.time, {seconds: -1} )
-       console.log(`${this.time.getMinutes()}:${this.time.getUTCSeconds()}`)},
+        .subscribe({next: () => {this.time --},
+      //     this.time = add(this.time, {seconds: -1} )
+      //  console.log(`${this.time.getMinutes()}:${this.time.getUTCSeconds()}`)},
       complete: () => {
       this.tomarCartaRandom();
     this.ganadorRonda()}})
@@ -157,7 +160,7 @@ export class TableroComponent implements OnInit , DoCheck {
    this.renderTableroApuestas();
    this.getJugadorInfo();
    this.getMazo();
-
+   this.time = this.partida.ronda.isTimerOn;
     //console.log(this.jugadoruid)
     //console.log(this.partida);
     //console.log(JSON.parse(localStorage.getItem('user')!).uid)
@@ -167,6 +170,7 @@ export class TableroComponent implements OnInit , DoCheck {
     this.partidaService.getPartidaporId(this.partidaId)
     .subscribe(item => {
       this.partida = item;
+      
       this.imprimir()})
       return this
   }
@@ -217,5 +221,6 @@ export class TableroComponent implements OnInit , DoCheck {
       alert("Has perdido noob")
      }
   }
+
 
 }

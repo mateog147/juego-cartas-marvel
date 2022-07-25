@@ -19,9 +19,9 @@ export class TableroComponent implements OnInit , DoCheck {
   tablero: {status:boolean} = {status : false}
   partidaId !: string;
 
-
-  apuestas: Card[] = [];
+  apuestas!: {jugadorId: string, carta:Card}[] ;
   mazo: Card[] = [];
+  apuestadrop: Card[] = [];
   partida:any;
   jugadoruid: any;
   jugadorInfo: any;
@@ -32,7 +32,7 @@ export class TableroComponent implements OnInit , DoCheck {
 
 
   ngDoCheck(): void {
-    if(this.apuestas.length === 3){
+    if(this.apuestas.length === this.partida.jugadores.length) {
       this.tablero.status = true;
     }
   }
@@ -65,30 +65,33 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   drop(event: CdkDragDrop<Card[]>) {
-    if (event.previousContainer === event.container ) {
+    if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
-    } else {
+    } else if (this.apuestas.filter(item =>
+      item.jugadorId === this.jugadorInfo.id).length > 0) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
+
+
+    }else {
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex,
+        event.currentIndex,)
 
-      );
+      ;
 
       this.newArray()
-
-      // toda la partida
-      console.log(event.previousContainer.data);
 
       let cartaApostada: Card = event.container.data[0]
 
       console.log(cartaApostada);
 
-      this.enviarApuesta(this.partidaId , cartaApostada)
-
+      this.enviarApuesta(this.partidaId , cartaApostada);
+      this.renderTableroApuestas()
+      window.location.reload();
     }}
 
 
@@ -99,16 +102,17 @@ export class TableroComponent implements OnInit , DoCheck {
 
   newArray(){
     localStorage.setItem('mazo', JSON.stringify(this.mazo));
-    localStorage.setItem('apuesta', JSON.stringify(this.apuestas));
+    localStorage.setItem('apuestadrop', JSON.stringify(this.apuestadrop));
 
   }
 
   imprimir(){
-
+   this.renderTableroApuestas();
    this.getJugadorInfo();
    this.getMazo();
+
     console.log(this.jugadoruid)
-    console.log(this.partidaId);
+    console.log(this.partida);
     console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }
 
@@ -119,7 +123,12 @@ export class TableroComponent implements OnInit , DoCheck {
       this.imprimir()})
   }
 
+  renderTableroApuestas(){
+    this.partida.ronda.apuestas.length > 0 ?
+    this.apuestas = this.partida.ronda.apuestas :
+    this.apuestas = [];
 
+  }
    getJugadorInfo()  {
 
 
@@ -150,7 +159,7 @@ export class TableroComponent implements OnInit , DoCheck {
 
   ganadorRonda(idPartida : string = this.partidaId){
     this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item));
-     if(this.jugadorInfo.cartas.length === 0){
+     if(this.partida.length === 0){
       alert("Has perdido noob")
      }
   }

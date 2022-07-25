@@ -17,6 +17,7 @@ export class DashboardComponent implements OnInit {
   linkPartida: string = ''
   jugadores: string[] = [];
   usuarios: Jugador[] = [];
+  rivales: Jugador[] = [];
   constructor(public authService: AuthService,
     private partida: PartidaService,
     private router: Router,
@@ -39,13 +40,13 @@ export class DashboardComponent implements OnInit {
   ngDoCheck(){
 
   }
-  elegirJugador(ju : string) : void {
-    if(!this.jugadores.includes(ju)){
-     this.jugadores.push(ju);
+  elegirJugador(ju : Jugador) : void {
+    let id:string = ju.id ? ju.id : "";
+    if(!this.jugadores.includes(id)){
+     this.jugadores.push(id);
+     this.rivales.push(ju);
     }else{alert('Jugador ya agregado')}
 
-    console.log(ju);
-    console.log(this.jugadores);
 
 
   }

@@ -7,6 +7,9 @@ import { ApuestaModel } from 'src/app/interface/apuesta.interface';
 import { PartidaService } from 'src/app/shared/services/partida.service';
 import { Jugador } from 'src/app/interface/jugador';
 import { ActivatedRoute, Params } from '@angular/router';
+import {  interval } from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
+import { add } from 'date-fns';
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
@@ -25,7 +28,8 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   partida:any;
   jugadoruid: any;
   jugadorInfo: any;
-
+  timeInterval : number = 1000;
+  time = new Date('2020-1-1 00:02:00');
   constructor(public authService: AuthService, 
             private partidaService: PartidaService, 
             private rutaActiva : ActivatedRoute) {}
@@ -44,11 +48,11 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   ngAfterViewInit(){
-    
+    this.onTime()
     
   }
   ngAfterViewChecked(){
-    //this.imprimir()
+    //this.onTime()
   }
 
   ngOnChanges() {
@@ -63,6 +67,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
     
     
   }
+  
 
   drop(event: CdkDragDrop<Card[]>) {
     if (event.previousContainer === event.container) {
@@ -94,11 +99,24 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
       window.location.reload();
     }}
 
+    
+   
+  onTime(){
+    
+    //output: 0,1,2,3,4,5
+    let fina = 120;
+    interval(1000).pipe(
+        takeWhile(() => fina -- > 100))
+        .subscribe(() => {
+          this.time = add(this.time, {seconds: -1} )
+       console.log(`${this.time.getMinutes()}:${this.time.getUTCSeconds()}`); })
+    
+    
+    
+  }
   
   
   
-  
- 
 
   newArray(){
     localStorage.setItem('mazo', JSON.stringify(this.mazo));

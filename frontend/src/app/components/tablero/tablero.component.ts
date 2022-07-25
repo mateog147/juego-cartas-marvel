@@ -19,7 +19,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   
   partidaId !: string;
    
-  apuestas!: any[] ;
+  apuestas!: {jugadorId: string, carta:Card}[] ;
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
   partida:any;
@@ -65,23 +65,25 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   drop(event: CdkDragDrop<Card[]>) {
-    if (event.previousContainer === event.container ) {
+    if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
-    } else {
+    } else if (this.apuestas.filter(item => 
+      item.jugadorId === this.jugadorInfo.id).length > 0) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        
 
+      
+    }else {
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex,
+        event.currentIndex,)
 
-      );
+      ;
       
-      //this.newArray()
-
-      // toda la partida
-      console.log('apuestadrop'+ this.apuestadrop);
+      this.newArray()
 
       let cartaApostada: Card = event.container.data[0]
 
@@ -100,7 +102,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
 
   newArray(){
     localStorage.setItem('mazo', JSON.stringify(this.mazo));
-    localStorage.setItem('apuesta', JSON.stringify(this.apuestas));
+    localStorage.setItem('apuestadrop', JSON.stringify(this.apuestadrop));
 
   }
 
@@ -142,7 +144,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   enviarApuesta(partidaId : string , carta: Card){
-
+    
     const apuesta: ApuestaModel = {
       jugadorId: this.jugadorInfo.id,
       carta: {

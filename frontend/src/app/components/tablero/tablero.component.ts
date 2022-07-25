@@ -94,9 +94,9 @@ export class TableroComponent implements OnInit , DoCheck {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
     } else if (this.apuestas.filter(item =>
-      item.jugadorId === this.jugadorInfo.id).length > 0) {
+      item.jugadorId === this.jugadorInfo.id).length > 0 ) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-
+        Swal.fire(`Ya hiciste tu apuesta, espera a los demas jugadores`);
     }else {
       transferArrayItem(
         event.previousContainer.data,
@@ -137,7 +137,7 @@ export class TableroComponent implements OnInit , DoCheck {
   //!TOMAR CARTA AL FINALIZAR RELOJ
   tomarCartaRandom(){
     if(this.mazo.length > 0 && this.filtrarJugadorEnapuesta().length === 0 ){
-   this.enviarApuesta(this.partidaId, this.mazo[0])} 
+    this.enviarApuesta(this.partidaId, this.mazo[0])} 
    
    
    

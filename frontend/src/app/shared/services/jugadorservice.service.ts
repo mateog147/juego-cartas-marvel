@@ -8,19 +8,19 @@ import { Jugador } from '../../interface/jugador';
 })
 export class JugadorserviceService {
 
-  private jugadorURl = '/api/jugador/';
+  private jugadorURl = 'http://127.0.0.1:8080/api/jugador/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
-  
+
 
   constructor( private http: HttpClient) { }
-  
+
   nuevoJugador(uid: string, name: string): Observable<any> {
     const data: Jugador = {
       nombre: name,
-      uid: uid,  		   
+      uid: uid,
 		  cartas : [],
       puntaje: 0
     }

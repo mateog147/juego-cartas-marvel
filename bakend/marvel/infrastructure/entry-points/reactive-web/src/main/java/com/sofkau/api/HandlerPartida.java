@@ -12,6 +12,7 @@ import com.sofkau.usecase.partida.gestionarganador.GestionarGanadorUseCase;
 import com.sofkau.usecase.partida.guardarpartida.GuardarPartidaUseCase;
 import com.sofkau.usecase.partida.repartircartas.RepartirCartasUseCase;
 import com.sofkau.usecase.partida.retirarjugador.RetirarJugadorUseCase;
+import com.sofkau.usecase.partida.verificarganadorpartida.VerificarGanadorPartidaUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ public class HandlerPartida {
     private final EncontrarPartidaUseCase encontrarPartidaUseCase;
     private final GestionarGanadorUseCase gestionarGanadorUseCase;
     private  final RetirarJugadorUseCase retirarJugadorUseCase;
+    private final VerificarGanadorPartidaUseCase verificarGanadorPartidaUseCase;
 
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
         return serverRequest.bodyToFlux(Jugador.class)
@@ -56,13 +58,12 @@ public class HandlerPartida {
     public Mono<ServerResponse> POSTNuevaApuesta(ServerRequest serverRequest){
         var idPartida = serverRequest.pathVariable("id");
 
-        System.out.println("pase por nueva apuesta");
 
         return serverRequest.bodyToMono(Apuesta.class)
-                .log()
                 .flatMap(apuesta -> {
                             return encontrarPartidaUseCase.encontrarPartida(idPartida)
                                     .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta))
+                                    .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                                     .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                         })
                 .flatMap(ronda -> ServerResponse.ok()
@@ -76,6 +77,7 @@ public class HandlerPartida {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(encontrarPartidaUseCase.encontrarPartida(id)
                         .flatMap(partida -> gestionarGanadorUseCase.gestionarGanador(partida))
+                        .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                         .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida))
                 , Partida.class);
     }

@@ -12,7 +12,6 @@ public class GestionarGanadorUseCase {
     private String nombreGanador;
     public Mono<Partida> gestionarGanador(Partida partida){
         String ganadorId = partida.getRonda().determinarGanador();
-        System.out.println("GANO:" + ganadorId);
         return  Flux.fromIterable(partida.getJugadores())
                                     .map(jugador -> {
                                         if(jugador.id().equals(ganadorId)){
@@ -22,7 +21,6 @@ public class GestionarGanadorUseCase {
                                         return jugador;
                                     })
                                     .filter(jugador -> !jugador.cartas().isEmpty())
-                                     .log()
                                     .collectList()
                                     .map(lista -> {
                                         partida.setJugadores(lista);

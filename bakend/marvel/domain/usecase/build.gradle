@@ -1,7 +1,3 @@
 dependencies {
     implementation project(':model')
 }
-
-test {
-    useJUnitPlatform()
-}

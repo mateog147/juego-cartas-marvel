@@ -32,11 +32,11 @@ public class GestionarApuestaUseCase {
                             return Mono.just(partida1.getRonda());
                         })
                         .map(ronda -> partida.toBuilder().ronda(ronda).build())
-                        .flatMap(partida1 -> {
+                        /*.flatMap(partida1 -> {
                             if(partida.getJugadores().size()<=partida1.getRonda().getApuestas().size() && partida.getJugadores().size()>1){
                                 return gestionarGanadorUseCase.gestionarGanador(partida1);
                             }
                             return Mono.just(partida1);
-                        });
+                        })*/;
     }
 }

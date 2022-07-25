@@ -63,7 +63,7 @@ public class HandlerPartida {
                 .flatMap(apuesta -> {
                             return encontrarPartidaUseCase.encontrarPartida(idPartida)
                                     .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta))
-                                    .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
+                                    //.flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                                     .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                         })
                 .flatMap(ronda -> ServerResponse.ok()

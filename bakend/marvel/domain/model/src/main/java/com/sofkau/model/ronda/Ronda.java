@@ -27,6 +27,10 @@ public class Ronda {
     @Builder.Default
     private String ultimoGanador = "";
 
+    @Builder.Default
+    private int isTimerOn = 120; //TODO modifique waca
+
+
     public void agregarApuesta ( Apuesta apuesta ) {
         Objects.requireNonNull(apuesta);
         if(apuestas == null){this.apuestas = new ArrayList<>(); };

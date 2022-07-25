@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { JugadorId } from 'src/app/components/dashboard/dashboard.component';
 import { ApuestaModel } from 'src/app/interface/apuesta.interface';
+//import { JugadorId } from 'src/app/interface/jugadorId';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class PartidaService {
   };
 
   constructor( private http: HttpClient) { }
-  
+
   getPartidaporId(partidaId: string){
     return this.http.get(this.partidaURl + partidaId )
   }
@@ -34,6 +35,6 @@ export class PartidaService {
 
   }
 
-  
-  
+
+
 }

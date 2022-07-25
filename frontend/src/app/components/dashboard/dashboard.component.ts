@@ -8,24 +8,26 @@ import { PartidaService } from 'src/app/shared/services/partida.service';
 export interface JugadorId {
   id: string;
 }
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+
 export class DashboardComponent implements OnInit {
   linkPartida: string = ''
   jugadores: string[] = [];
   usuarios: Jugador[] = [];
-  constructor(public authService: AuthService, 
-    private partida: PartidaService, 
-    private router: Router, 
+  rivales: Jugador[] = [];
+  constructor(public authService: AuthService,
+    private partida: PartidaService,
+    private router: Router,
     private jugador : JugadorserviceService) { }
-  
+
   ngOnInit(): void {
     this.todosJugadores();
-    
-    
+
   }
 
   todosJugadores(){
@@ -39,36 +41,42 @@ export class DashboardComponent implements OnInit {
   ngDoCheck(){
 
   }
-  elegirJugador(ju : string) : void {
-    if(!this.jugadores.includes(ju)){
-     this.jugadores.push(ju);
+
+  elegirJugador(ju : Jugador) : void {
+    let id:string = ju.id ? ju.id : "";
+    if(!this.jugadores.includes(id)){
+     this.jugadores.push(id);
+     this.rivales.push(ju);
     }else{alert('Jugador ya agregado')}
-    
-    console.log(ju);
-    console.log(this.jugadores);
-    
-    
+
   }
-  
+
+  retirarRival(ju : Jugador) : void {
+    let id:string = ju.id ? ju.id : "";
+    if(this.jugadores.includes(id)){
+      this.rivales = this.rivales.filter(rival => rival.id !== id);
+      this.jugadores = this.jugadores.filter(jugador => jugador !== id);
+    }else{alert('Jugador no está agregado')}
+
+  }
+
   crearPartidaNueva(): void {
     let dataTransfer: JugadorId[] = [];
-    
+
     this.jugadores.forEach(jugador => {
       dataTransfer.push(({
         id: jugador
       }))
     });
+
     //console.log(dataTransfer)
     this.partida.crearPartida(dataTransfer)
-    .subscribe(data => this.router.navigate(['tablero', data.id]))
-    ;
+    .subscribe(data => this.router.navigate(['tablero', data.id]));
 
-    
-    
   }
 
-  
 
-  
+
+
 
 }

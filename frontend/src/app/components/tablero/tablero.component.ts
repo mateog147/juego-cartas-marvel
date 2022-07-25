@@ -16,12 +16,12 @@ import { add } from 'date-fns';
   styleUrls: ['./tablero.component.css']
 })
 
-export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit , DoCheck {
-  
+
+export class TableroComponent implements OnInit , DoCheck {
+
   tablero: {status:boolean} = {status : false}
-  
   partidaId !: string;
-   
+
   apuestas!: {jugadorId: string, carta:Card}[] ;
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
@@ -33,8 +33,8 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   constructor(public authService: AuthService, 
             private partidaService: PartidaService, 
             private rutaActiva : ActivatedRoute) {}
-  
-  
+
+
   ngDoCheck(): void {
     if(this.apuestas.length === this.partida.jugadores.length) {
       this.tablero.status = true;
@@ -56,16 +56,14 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   ngOnChanges() {
-   
+
     //if(changes.mazo.currentValue != changes.partida.previousValue){
-      
+
     this.getPartidaPorId(this.partidaId);
     this.imprimir();
     console.log("algo cambio");
-    //} 
+    //}
 
-    
-    
   }
   
 
@@ -73,12 +71,10 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
-    } else if (this.apuestas.filter(item => 
+    } else if (this.apuestas.filter(item =>
       item.jugadorId === this.jugadorInfo.id).length > 0) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        
 
-      
     }else {
       transferArrayItem(
         event.previousContainer.data,
@@ -87,13 +83,13 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
         event.currentIndex,)
 
       ;
-      
+
       this.newArray()
 
       let cartaApostada: Card = event.container.data[0]
 
       console.log(cartaApostada);
-      
+
       this.enviarApuesta(this.partidaId , cartaApostada);
       this.renderTableroApuestas()
       window.location.reload();
@@ -128,7 +124,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
    this.renderTableroApuestas();
    this.getJugadorInfo();
    this.getMazo();
-   
+
     console.log(this.jugadoruid)
     console.log(this.partida);
     console.log(JSON.parse(localStorage.getItem('user')!).uid)
@@ -142,18 +138,18 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   renderTableroApuestas(){
-    this.partida.ronda.apuestas.length > 0 ? 
+    this.partida.ronda.apuestas.length > 0 ?
     this.apuestas = this.partida.ronda.apuestas :
-    this.apuestas = [];  
-    
+    this.apuestas = [];
+
   }
-   getJugadorInfo()  { 
-   
-    
+   getJugadorInfo()  {
+
+
     this.partida.jugadores.forEach((jugador: Jugador) => {
       if(jugador.uid === this.jugadoruid){ this.jugadorInfo = jugador
       console.log(jugador);
-      } 
+      }
     })
   }
 
@@ -162,7 +158,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
   }
 
   enviarApuesta(partidaId : string , carta: Card){
-    
+
     const apuesta: ApuestaModel = {
       jugadorId: this.jugadorInfo.id,
       carta: {
@@ -177,7 +173,7 @@ export class TableroComponent implements AfterViewChecked, AfterViewInit ,OnInit
 
   ganadorRonda(idPartida : string = this.partidaId){
     this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item));
-     if(this.partida.length === 0){ 
+     if(this.partida.length === 0){
       alert("Has perdido noob")
      }
   }

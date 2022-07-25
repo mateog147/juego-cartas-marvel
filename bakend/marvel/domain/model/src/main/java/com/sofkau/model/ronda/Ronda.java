@@ -16,8 +16,16 @@ import java.util.stream.Collectors;
 public class Ronda {
 
     private String id;
+
+
     @Builder.Default
     private List<Apuesta> apuestas = new ArrayList<>();
+
+    @Builder.Default
+    private Integer numero = 1;
+
+    @Builder.Default
+    private String ultimoGanador = "";
 
     public void agregarApuesta ( Apuesta apuesta ) {
         Objects.requireNonNull(apuesta);
@@ -47,4 +55,7 @@ public class Ronda {
         return cartasEntregar;
     }
 
+    public void next() {
+        this.numero++;
+    }
 }

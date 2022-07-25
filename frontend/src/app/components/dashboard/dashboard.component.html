@@ -1,72 +1,118 @@
 <!-- Top navigation -->
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://github.com/juanir33">
-      <img class="brand-logo" src="../../../assets/descarga.jpg"   alt="Sofka logo">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="">
+      <img class="brand-logo" src="https://avatars.githubusercontent.com/u/70767641?v=4" alt="Sofka logo"> 
+      <span> Perfil de usuario </span>      
+    </a>
+    <a class="btn btn-danger m-3" (click)="authService.SignOut()">
+      <i class="fas fa-sign-out-alt"></i>Log out
     </a>
   </nav>
+
   <!-- Sidebar navigation -->
   <div class="container-fluid">
     <div class="row">
       <nav class="col-md-2 d-md-block bg-light sidebar">
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
+            <br>
+            <br>
+            <li class="nav-item">
+              <div class="row" *ngIf="authService.userData as user">
+                    <img class="align-self-start mr-5 img-thumbnail rounded-circle img-fluid p-2" 
+                    src="{{(user.photoURL) ? user.photoURL : '/assets/dummy-user.png'}}"
+                      alt="{{user.displayName}}">
+              </div>
+            </li>
+            <br>
+            <br>
             <li class="nav-item">
               <a class="nav-link active">
                 <i class="fas fa-user"></i>Perfil de usuario
               </a>
             </li>
+
             <!-- Lllamar al singout para cerrar sesion -->
             <li class="nav-item">
-              <a class="nav-link" (click)="authService.SignOut()">
-                <i class="fas fa-sign-out-alt"></i>Log out
-              </a>
+              
             </li>
           </ul>
         </div>
       </nav>
+      
       <!-- Main content -->
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-        <div class="inner-adjust">
+        <div class="inner-adjust" *ngIf="authService.userData as user">
           <div class="pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Perfil de usuario</h1>
+            <h1>Bienvenido: <strong>{{(user.displayName) ? user.displayName : 'User'}}</strong></h1>
+            <span>Email: <strong>{{user.email}}</strong></span>
           </div>
-          <!-- Show user data when logged in -->
-          <div class="row" *ngIf="authService.userData as user">
-            <div class="col-md-12">
-              <div class="media">
-                <img class="align-self-start mr-5 img-thumbnail rounded-circle" src="{{(user.photoURL) ? user.photoURL : '/assets/dummy-user.png'}}"
-                  alt="{{user.displayName}}">
-                <div class="media-body">
-                  <h1>Hola: <strong>{{(user.displayName) ? user.displayName : 'User'}}</strong></h1>
+        </div>
 
-                  <p>Email: <strong>{{user.email}}</strong></p>
-                </div>
-            </div>
+          <!-- Show user data when logged in -->
+          <div class="row">
+            <div class="col-md-12">
+
                 <div class="usuarios">
                   <h2>Elije tus rivales</h2>
-                  <div *ngFor="let u of usuarios">
-                    <img class="img-thumbnail rounded-circle" whidth="80px" src="../../../assets/34057.jpg" alt="u.nombre" (click)="elegirJugador(u!)">
-                    {{u.nombre}}
+
+                  <div class="row row-cols-1 row-cols-md-3 g-4" >
+                    <div class="col" *ngFor="let u of usuarios" (click)="elegirJugador(u!)">
+                      <div  class="card mb-3" >
+                        <div class="row g-0">
+                          <div class="col-md-4 text-center">
+                            <img src="https://cdn-icons.flaticon.com/png/512/4352/premium/4352171.png?token=exp=1658723028~hmac=d33945f59c1006e5b03bec39fceeae12" 
+                            class="img-fluid p-2" alt="...">
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="card-title">{{u.nombre}}</h5>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+
+                  <hr>
+                  
+                  <div class="row row-cols-2 row-cols-md-2">
+                    <h2 class="">Rivales</h2>
+                    <span class="row align-items-end">
+                      <a class="btn btn-primary" (click)="crearPartidaNueva()" >Comenzar Partida</a>
+                      <h2 color="accent">{{linkPartida}}</h2>
+                    </span>
+                  </div>
+
+                  <br>
+
 
                   <section class="rivales">
-                    <ul>
-                      <li *ngFor="let rival of rivales">
-                        {{rival.nombre}}
-                      </li>
-                    </ul>
+                    <div class="row row-cols-1 row-cols-md-3 g-4" >
+                      <div class="col" *ngFor="let rival of rivales">
+                        <div  class="card mb-3">
+                          <div class="row g-0">
+                            <div class="col-md-4">
+                              <img src="https://cdn-icons.flaticon.com/png/512/2346/premium/2346281.png?token=exp=1658724061~hmac=f80a5079d85accfeaf10c886b812f6b2" 
+                              class="img-fluid rounded-start p-2" alt="...">
+                            </div>
+                            <div class="col-md-8">
+                              <div class="card-body ">
+                                <h5 class="card-title">{{rival.nombre}}</h5>
+                                <a type="button" class="btn btn-outline-light btn-sm"  (click) = "retirarRival(rival!)"> &#10060;</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </section>
-
-                  <div>
-                    <button mat-raised-button color="accent" (click)="crearPartidaNueva()" >Comenzar Partida</button>
-                    <h1 color="accent">{{linkPartida}}</h1>
-                  </div>
                 </div>
 
               </div>
             </div>
 
-        </div>
+        
       </main>
     </div>
   </div>

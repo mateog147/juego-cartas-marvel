@@ -8,11 +8,13 @@ import { PartidaService } from 'src/app/shared/services/partida.service';
 export interface JugadorId {
   id: string;
 }
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+
 export class DashboardComponent implements OnInit {
   linkPartida: string = ''
   jugadores: string[] = [];
@@ -25,7 +27,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.todosJugadores();
-
 
   }
 
@@ -40,6 +41,7 @@ export class DashboardComponent implements OnInit {
   ngDoCheck(){
 
   }
+
   elegirJugador(ju : Jugador) : void {
     let id:string = ju.id ? ju.id : "";
     if(!this.jugadores.includes(id)){
@@ -47,7 +49,14 @@ export class DashboardComponent implements OnInit {
      this.rivales.push(ju);
     }else{alert('Jugador ya agregado')}
 
+  }
 
+  retirarRival(ju : Jugador) : void {
+    let id:string = ju.id ? ju.id : "";
+    if(this.jugadores.includes(id)){
+      this.rivales = this.rivales.filter(rival => rival.id !== id);
+      this.jugadores = this.jugadores.filter(jugador => jugador !== id);
+    }else{alert('Jugador no está agregado')}
 
   }
 
@@ -59,12 +68,10 @@ export class DashboardComponent implements OnInit {
         id: jugador
       }))
     });
+
     //console.log(dataTransfer)
     this.partida.crearPartida(dataTransfer)
-    .subscribe(data => this.router.navigate(['tablero', data.id]))
-    ;
-
-
+    .subscribe(data => this.router.navigate(['tablero', data.id]));
 
   }
 

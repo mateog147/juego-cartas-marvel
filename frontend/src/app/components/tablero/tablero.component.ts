@@ -60,8 +60,6 @@ export class TableroComponent implements OnInit , DoCheck {
     console.log("algo cambio");
     //}
 
-
-
   }
 
   drop(event: CdkDragDrop<Card[]>) {
@@ -71,8 +69,6 @@ export class TableroComponent implements OnInit , DoCheck {
     } else if (this.apuestas.filter(item =>
       item.jugadorId === this.jugadorInfo.id).length > 0) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-
-
 
     }else {
       transferArrayItem(

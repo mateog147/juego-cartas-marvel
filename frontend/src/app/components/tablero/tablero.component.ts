@@ -8,7 +8,7 @@ import { PartidaService } from 'src/app/shared/services/partida.service';
 import { Jugador } from 'src/app/interface/jugador';
 import { ActivatedRoute, Params } from '@angular/router';
 import {  interval, Subscription } from 'rxjs';
-import {takeWhile} from 'rxjs/operators';
+import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
 @Component({
   selector: 'app-tablero',
@@ -21,7 +21,7 @@ export class TableroComponent implements OnInit , DoCheck {
 
   tablero: {status:boolean} = {status : false}
   partidaId !: string;
-
+  ronda: number = 0;
   apuestas!: {jugadorId: string, carta:Card}[] ;
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
@@ -47,12 +47,21 @@ export class TableroComponent implements OnInit , DoCheck {
      this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
      this.getPartidaPorId();
      this.subscripcion = this.partidaService.getRefresh$().subscribe(
-      () => this.getPartidaPorId()
+      () => this.ganadorRonda()
      )
   }
 
   ngAfterViewInit(){
-    this.onTime() 
+    this.partidaService.getPartidaporId(this.partidaId)
+    .subscribe((data : any) => {
+      data.jugadores.length > 1 ?
+      this.onTime():     
+      alert(this.partida.ronda.ultimoGanador)
+    })
+     
+    
+    
+    console.log(this.partida)
     
   
   }
@@ -64,10 +73,10 @@ export class TableroComponent implements OnInit , DoCheck {
 
     //if(changes.mazo.currentValue != changes.partida.previousValue){
 
-    this.getPartidaPorId();
-    this.imprimir();
-    console.log("algo cambio");
-    //}
+    // this.getPartidaPorId();
+    // this.imprimir();
+    // console.log("algo cambio");
+    
 
   }
   
@@ -97,17 +106,15 @@ export class TableroComponent implements OnInit , DoCheck {
 
       this.enviarApuesta(this.partidaId , cartaApostada);
       this.renderTableroApuestas()
-      window.location.reload();
+      //window.location.reload();
     }}
 
     
    
   onTime(){
-    
-    //output: 0,1,2,3,4,5
     let fina = 120;
     interval(1000).pipe(
-        takeWhile(() => fina -- > 100))
+        takeWhile(() => fina -- > 0))
         .subscribe({next: () => {
           this.time = add(this.time, {seconds: -1} )
        console.log(`${this.time.getMinutes()}:${this.time.getUTCSeconds()}`)},
@@ -124,7 +131,7 @@ export class TableroComponent implements OnInit , DoCheck {
    this.enviarApuesta(this.partidaId, this.mazo[0])} 
    
    
-   this.getPartidaPorId()
+   
   }
 
   //!PREGUNTAR SI HAY APUESTA DEL JUGADOR
@@ -162,6 +169,7 @@ export class TableroComponent implements OnInit , DoCheck {
     this.partida.ronda.apuestas.length > 0 ?
     this.apuestas = this.partida.ronda.apuestas :
     this.apuestas = [];
+    this.ronda = this.partida.ronda.numero;
 
   }
    getJugadorInfo()  {
@@ -193,7 +201,10 @@ export class TableroComponent implements OnInit , DoCheck {
   }
 
   ganadorRonda(idPartida : string = this.partidaId){
-    this.partidaService.ganadorRonda(idPartida).subscribe(item => console.log(item));
+    this.tablero.status? 
+    this.partidaService.ganadorRonda(idPartida).subscribe(item => 
+      alert(item)):
+    this.getPartidaPorId()
      if(this.partida.length === 0){
       alert("Has perdido noob")
      }

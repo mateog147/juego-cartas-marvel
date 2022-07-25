@@ -5,11 +5,13 @@ import {Card} from '../card/card.component'
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ApuestaModel } from 'src/app/interface/apuesta.interface';
 import { PartidaService } from 'src/app/shared/services/partida.service';
+
 import { Jugador } from 'src/app/interface/jugador';
 import { ActivatedRoute, Params } from '@angular/router';
 import {  interval, Subscription } from 'rxjs';
 import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
@@ -33,7 +35,9 @@ export class TableroComponent implements OnInit , DoCheck {
   subscripcion!: Subscription;
   constructor(public authService: AuthService, 
             private partidaService: PartidaService, 
-            private rutaActiva : ActivatedRoute) {}
+            private rutaActiva : ActivatedRoute,
+            
+            ) {}
 
  
   ngDoCheck(): void {
@@ -49,6 +53,7 @@ export class TableroComponent implements OnInit , DoCheck {
      this.subscripcion = this.partidaService.getRefresh$().subscribe(
       () => this.ganadorRonda()
      )
+     
   }
 
   ngAfterViewInit(){
@@ -56,7 +61,8 @@ export class TableroComponent implements OnInit , DoCheck {
     .subscribe((data : any) => {
       data.jugadores.length > 1 ?
       this.onTime():     
-      alert(this.partida.ronda.ultimoGanador)
+      Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
+      <span style='font-size:100px;'>&#129321;</span>`)
     })
      
     
@@ -203,9 +209,11 @@ export class TableroComponent implements OnInit , DoCheck {
   ganadorRonda(idPartida : string = this.partidaId){
     this.tablero.status? 
     this.partidaService.ganadorRonda(idPartida).subscribe(item => 
-      alert(item)):
-    this.getPartidaPorId()
-     if(this.partida.length === 0){
+    Swal.fire(`<h2>El ganador de la ronda: ${item.ronda.ultimoGanador} </h2></hr>
+    <span style='font-size:100px;'>&#128526;</span>`)):
+    this.getPartidaPorId();
+     
+    if(this.mazo.length === 0){
       alert("Has perdido noob")
      }
   }

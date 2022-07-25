@@ -36,6 +36,7 @@ import { JugadorserviceService } from './shared/services/jugadorservice.service'
 import { ReactiveFormsModule } from '@angular/forms';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -70,11 +71,12 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatButtonModule,
     MatIconModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    
    
     
   ],
-  providers: [AuthService, JugadorserviceService],
+  providers: [AuthService, JugadorserviceService,],
   bootstrap: [AppComponent],
   exports: [
     CardComponent,

@@ -10,6 +10,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import {  interval, Subscription } from 'rxjs';
 import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
+
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',

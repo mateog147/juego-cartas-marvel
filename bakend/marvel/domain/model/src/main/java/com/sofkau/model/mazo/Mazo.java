@@ -30,7 +30,7 @@ public class Mazo {
 
     public List<Carta> asignarCartas(){
 
-        int cantidadCartasARepartir = 2;
+        int cantidadCartasARepartir = 5;
         List<Carta> cartas = new ArrayList<>();
 
         for (int i = 0; i < cantidadCartasARepartir; i++) {

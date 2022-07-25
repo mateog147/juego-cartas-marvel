@@ -12,6 +12,7 @@ import {  interval, Subscription } from 'rxjs';
 import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
 import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',

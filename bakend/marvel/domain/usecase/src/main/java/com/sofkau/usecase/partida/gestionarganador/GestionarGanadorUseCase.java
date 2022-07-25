@@ -12,14 +12,21 @@ public class GestionarGanadorUseCase {
 
     public Mono<Partida> gestionarGanador(Partida partida){
         String ganadorId = partida.getRonda().determinarGanador();
+        System.out.println("GANO:" + ganadorId);
         return  Flux.fromIterable(partida.getJugadores())
                                     .map(jugador -> {
                                         if(jugador.id().equals(ganadorId)){
                                             jugador.agregarCartas(partida.getRonda().entregarCartas());
                                         }
                                         return jugador;
-                                    }).collectList()
-                                    .map(lista -> partida.toBuilder().jugadores(lista).build())
+                                    })
+                                    .filter(jugador -> !jugador.cartas().isEmpty())
+                                     .log()
+                                    .collectList()
+                                    .map(lista -> {
+                                        partida.setJugadores(lista);
+                                        return partida;
+                                    })
                                     .flatMap(partida1 -> {
                                         return ganadorRondaUseCase.terminarRonda(partida1.getRonda());
                                     })

@@ -2,6 +2,7 @@ package com.sofkau.usecase.partida.gestionarapuesta;
 
 import com.sofkau.model.partida.Partida;
 import com.sofkau.model.ronda.values.Apuesta;
+import com.sofkau.usecase.partida.gestionarganador.GestionarGanadorUseCase;
 import com.sofkau.usecase.ronda.recibirapuesta.RecibirapuestaUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -9,7 +10,8 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 public class GestionarApuestaUseCase {
-private final RecibirapuestaUseCase recibirapuestaUseCase;
+    private final RecibirapuestaUseCase recibirapuestaUseCase;
+    private final GestionarGanadorUseCase gestionarGanadorUseCase;
     private Boolean flag = Boolean.FALSE;
 
     public Mono<Partida> gestionarApuesta(Partida partida,Apuesta apuesta){
@@ -29,6 +31,12 @@ private final RecibirapuestaUseCase recibirapuestaUseCase;
                             }
                             return Mono.just(partida1.getRonda());
                         })
-                        .map(ronda -> partida.toBuilder().ronda(ronda).build());
+                        .map(ronda -> partida.toBuilder().ronda(ronda).build())
+                        .flatMap(partida1 -> {
+                            if(partida.getJugadores().size()<=partida1.getRonda().getApuestas().size() && partida.getJugadores().size()>1){
+                                return gestionarGanadorUseCase.gestionarGanador(partida1);
+                            }
+                            return Mono.just(partida1);
+                        });
     }
 }

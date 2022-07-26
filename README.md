@@ -82,7 +82,7 @@ Corra el proyecto desde el archivo MainApplication en el modulo Applications.
 
 Inicie el servidor del backend que correra en el puerto http://localhost:8080
 
-##Aplicación desplegada usando Heroku y Firebase
+## Aplicación desplegada usando Heroku y Firebase
 https://sofkau-heroes.web.app/sign-in
 
 ## Autores

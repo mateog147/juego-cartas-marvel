@@ -13,6 +13,7 @@ public class RepartirCartasUseCase {
 
     private final JugadorRepository jugadorRepository;
     public Mono<Partida> repartir(Partida partida, List<String> jugadoresIds) {
+        //TODO separar agregar jugadores de repartir cartas para cumplir con Single Responsability
         return jugadorRepository.findAllById(jugadoresIds)
                 .map(jugador -> {
                     partida.getMazo().barajar();

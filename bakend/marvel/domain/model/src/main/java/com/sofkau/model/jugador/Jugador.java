@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 
 public class Jugador {
+    //todo agregar rol y foto
     private String id;
     private String uid;
     private String nombre;

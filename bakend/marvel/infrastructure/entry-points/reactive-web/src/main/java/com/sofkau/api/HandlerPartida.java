@@ -66,9 +66,9 @@ public class HandlerPartida {
                                     //.flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                                     .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                         })
-                .flatMap(ronda -> ServerResponse.ok()
+                .flatMap(partida-> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(Mono.just(ronda), Ronda.class));
+                        .body(Mono.just(partida), Partida.class));
     }
 
     public Mono<ServerResponse> GETGanadorRonda(ServerRequest serverRequest) {

@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Partida {
-
+    //TODO trasladar logica basica de casos de uso a entidad para mejorar mantenibilidad
     private String id;
     private  List<Jugador> jugadores;
     private  Ronda ronda;

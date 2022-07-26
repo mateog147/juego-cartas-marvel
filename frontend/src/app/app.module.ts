@@ -35,7 +35,7 @@ import { TablacrudComponent } from './components/tablacrud/tablacrud.component';
 import { JugadorserviceService } from './shared/services/jugadorservice.service';
 import { ReactiveFormsModule } from '@angular/forms';
 
-
+//TODO agregar un componente 404 y manejo de errores para redireccion
 
 @NgModule({
   declarations: [

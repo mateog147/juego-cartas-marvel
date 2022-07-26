@@ -7,29 +7,31 @@
     <div class="shadow d-flex justify-content-evenly align-items-center" cdkDropListGroup>
         
         <div  class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
-           <!-- <div *ngFor="let jugador of jugadores">
-            <app-avatarjugador *ngIf=" authService.userData as user"  [imagen]="(user.photoURL) ? user.photoURL : '../../../assets/imgs/1AE.jpg'"></app-avatarjugador>
-           </div>  -->
+           <div *ngFor="let jugador of partida.jugadores; let i = index" >
+            <app-avatarjugador [nombre]="jugador.nombre"   [imagen]="'../../../assets/character-3.png'"></app-avatarjugador>
+           </div> 
             
         </div>
-       <div class="d-flex justify-content-around flex-wrap align-items-center w-50  tablero-apuestas " *ngIf=" authService.userData as user"  cdkDropList
+       <div class="d-flex justify-content-around flex-wrap align-items-center w-75 mx-2  tablero-apuestas " *ngIf=" authService.userData as user"  cdkDropList
        [cdkDropListData]="apuestadrop" (cdkDropListDropped)="drop($event)">
         <div class="ronda">Ronda: {{ronda}}</div>
         <div class="tiempo"><h3>
-            Time: {{ time}}</h3>
+            Time: {{ time > 0 ? time : 0 }}</h3>
             
         </div>
+        
+        <div class="apuesta d-flex justify-content-around flex-wrap align-items-center w-100 mx-2 ">
           
         <div *ngFor="let apuesta of apuestas" class="card-apuesta" ><p>{{apuesta.jugadorId}}</p>
             <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/boomboom.jpg'" [nombre]="'nombre'" [xp]="2"></app-card>
             <app-card *ngIf="tablero.status " [nombre]="apuesta.carta.nombre" [xp]="apuesta.carta.xp" [img]="apuesta.carta.imagen"></app-card> 
         </div>
-         
+        </div>
        </div>
        <div class="mazojugador"> 
         <div class="texto-mazo " *ngIf="authService.userData as user"><h3>Mazo de {{user.displayName}}</h3></div>
        <div  class="d-flex align-items-center flex-column mazo-cartas " cdkDropList
-       [cdkDropListData]="mazo" (cdkDropListDropped)="drop($event)" >
+       [cdkDropListData]="mazo" (cdkDropListDropped)="drop($event)">
        
        <div *ngFor="let item of mazo" cdkDrag><app-card [nombre]="item.nombre" [xp]="item.xp" [img]="item.imagen"></app-card> </div>
 

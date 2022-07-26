@@ -16,7 +16,7 @@
        [cdkDropListData]="apuestadrop" (cdkDropListDropped)="drop($event)">
         <div class="ronda">Ronda: {{ronda}}</div>
         <div class="tiempo"><h3>
-            Time: {{ time}}</h3>
+            Time: {{ time > 0? time : 0 }}</h3>
             
         </div>
           

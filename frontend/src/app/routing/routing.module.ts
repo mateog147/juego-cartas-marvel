@@ -11,6 +11,7 @@ import { TableroComponent } from '../components/tablero/tablero.component';
 import { TablacrudComponent } from '../components/tablacrud/tablacrud.component';
 import { AdminGuard } from '../shared/guard/admin.guard';
 
+//TODO agregar ruteos para una eventual 404
 const routes: Routes = [
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: 'sign-in', component: SignInComponent },

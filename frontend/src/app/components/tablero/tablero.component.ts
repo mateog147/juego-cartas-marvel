@@ -63,10 +63,10 @@ export class TableroComponent implements OnInit , DoCheck {
   ngAfterViewInit(){
     this.partidaService.getPartidaporId(this.partidaId)
     .subscribe((data : any) => {
-      data.jugadores.length === 1 ?
-      this.onTime():     
+      data.jugadores.length === 1 ?   
       Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
-      <span style='font-size:100px;'>&#129321;</span>`);
+      <span style='font-size:100px;'>&#129321;</span>`) :
+      this.onTime();
       this.jugadores = data.jugadores;
     })
      

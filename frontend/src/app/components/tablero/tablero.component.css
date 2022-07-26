@@ -56,12 +56,6 @@
 
 }
 
-.tablero::after {
-    width: 100%;
-    height: 100%;
-
-    background-color: rgba(0, 0, 0);
-}
 
 .mazojugador {
     border: 3px solid white;
@@ -102,4 +96,38 @@
     height: 90vh;
     width: 8rem;
     position: relative;
+}
+
+
+@media(max-width: 786px){
+    .shadow{
+        flex-direction: column ;
+
+    }
+    .jugadores-partida{
+        width: 100%;
+        height: 15vh;
+        flex-direction: row !important;
+        display: none !important;
+    }
+    .tablero-apuestas{
+        width: 100% !important;
+        height: 70% !important;
+    }
+    .mazo-cartas{
+        flex-direction: row !important;
+    }
+    .mazojugador{
+        display: flex;
+        flex-direction: column;
+        width: 100% ;
+        height: auto;
+        
+    }
+}
+
+@media(max-width: 500px){
+    .tablero{
+        background-position: calc(-100vh + 50vw);
+    }
 }

@@ -8,7 +8,7 @@ import { Jugador } from '../../interface/jugador';
 })
 export class JugadorserviceService {
 
-  private jugadorURl = 'http://127.0.0.1:8080/api/jugador/';
+  private jugadorURl = 'https://sofkau-marvels.herokuapp.com/api/jugador/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

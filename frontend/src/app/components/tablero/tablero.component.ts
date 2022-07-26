@@ -28,6 +28,7 @@ export class TableroComponent implements OnInit , DoCheck {
   apuestas!: {jugadorId: string, carta:Card}[] ;
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
+  jugadores: any;
   partida:any;
   jugadoruid: any;
   jugadorInfo: any;
@@ -65,7 +66,8 @@ export class TableroComponent implements OnInit , DoCheck {
       data.jugadores.length === 1 ?
       this.onTime():     
       Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
-      <span style='font-size:100px;'>&#129321;</span>`)
+      <span style='font-size:100px;'>&#129321;</span>`);
+      this.jugadores = data.jugadores;
     })
      
     
@@ -167,13 +169,13 @@ export class TableroComponent implements OnInit , DoCheck {
     //console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }
 
-  getPartidaPorId(): TableroComponent{
+  getPartidaPorId() {
     this.partidaService.getPartidaporId(this.partidaId)
     .subscribe(item => {
       this.partida = item;
       
       this.imprimir()})
-      return this
+      
   }
 
   renderTableroApuestas(){

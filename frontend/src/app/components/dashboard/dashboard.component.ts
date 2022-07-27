@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit {
         id: jugador
       }))
     });
-    this.linkPartida = 'link de la partida para compartir'
+    //this.linkPartida = 'link de la partida para compartir'
     //console.log(dataTransfer)
     this.partida.crearPartida(dataTransfer)
    .subscribe(data => {

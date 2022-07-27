@@ -44,10 +44,15 @@ export class DashboardComponent implements OnInit {
 
   elegirJugador(ju : Jugador) : void {
     let id:string = ju.id ? ju.id : "";
-    if(!this.jugadores.includes(id)){
-     this.jugadores.push(id);
-     this.rivales.push(ju);
-    }else{alert('Jugador ya agregado')}
+    if(this.jugadores.includes(id) ){
+     alert('Jugador ya agregado')
+    }else if (this.jugadores.length > 6){
+      alert('El juego ha llegado al limite de jugadores')
+    }
+    else{
+      this.jugadores.push(id);
+      this.rivales.push(ju);
+    }
 
   }
 

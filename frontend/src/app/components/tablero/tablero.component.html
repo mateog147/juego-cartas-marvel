@@ -7,8 +7,12 @@
     <div class="shadow d-flex justify-content-evenly align-items-center" cdkDropListGroup>
         
         <div  class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
-           <div *ngFor="let jugador of partida.jugadores; let i = index" >
-            <app-avatarjugador [nombre]="jugador.nombre"   [imagen]="'../../../assets/character-3.png'"></app-avatarjugador>
+           <div *ngFor="let jugador of jugadores; let i = index" >
+            <!-- <app-avatarjugador [nombre]="jugador.nombre" [imagen]="'../../../assets/character-{{i}}.png'"></app-avatarjugador> -->
+            <div class="avatar text-center">
+                <img src="../../../assets/character-{{i}}.png" alt="foto usuario" class="rounded-circle img-fluid p-2" >
+                <span class="badge text-bg-warning p-1">{{jugador.nombre}}</span>
+             </div>
            </div> 
             
         </div>

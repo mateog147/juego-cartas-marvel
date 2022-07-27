@@ -4,6 +4,14 @@ package com.sofkau.usecase.jugador.consultarjugadores;
 
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.jugador.gateways.JugadorRepository;
+import lombok.AllArgsConstructor;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import com.sofkau.model.jugador.Jugador;
+import com.sofkau.model.jugador.gateways.JugadorRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,8 +23,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+
+
 import java.util.ArrayList;
 import java.util.Collections;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 
 @SpringBootTest(classes = ConsultarjugadoresUseCaseTest.class)
-class ConsultarjugadoresUseCaseTest {
+class ConsultarjugadoresUseCaseTest {/*
 
     static class Invento implements JugadorRepository{
 
@@ -77,5 +88,5 @@ class ConsultarjugadoresUseCaseTest {
                 .thenCancel()
                 .verify();
 
-    }
+    }*/
 }

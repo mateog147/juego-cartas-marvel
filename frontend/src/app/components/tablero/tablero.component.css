@@ -113,6 +113,21 @@
     .tablero-apuestas{
         width: 100% !important;
         height: 70% !important;
+       
+    }
+    .apuesta{
+        width: 100%;
+        height: 80%;
+        flex-wrap: nowrap!important;
+        flex-direction: row !important;
+        justify-content: flex-end;
+        overflow-x: scroll;
+        scroll-behavior: smooth;
+        padding: 1rem;
+
+    }
+    .apuesta .card{
+        scroll-snap-align: start;
     }
     .mazo-cartas{
         flex-direction: row !important;

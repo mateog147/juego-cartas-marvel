@@ -69,7 +69,9 @@ public class HandlerPartida {
                                     //TODO .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                                     .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                         })
-                .flatMap(partida -> ServerResponse.ok()
+
+                .flatMap(partida-> ServerResponse.ok()
+                
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(Mono.just(partida), Partida.class));
     }

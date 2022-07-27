@@ -14,9 +14,7 @@ public class RepartirCartasUseCase {
     private final JugadorRepository jugadorRepository;
     public Mono<Partida> repartir(Partida partida, List<String> jugadoresIds) {
 
-        if (jugadoresIds.size()<2 && jugadoresIds.size() > 6){
-            return Mono.error(new IllegalArgumentException());
-        }
+        //TODO separar agregar jugadores de repartir cartas para cumplir con Single Responsability
         return jugadorRepository.findAllById(jugadoresIds)
                 .map(jugador -> {
                     partida.getMazo().barajar();

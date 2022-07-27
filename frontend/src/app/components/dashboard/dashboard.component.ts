@@ -4,7 +4,7 @@ import { Jugador } from 'src/app/interface/jugador';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { JugadorserviceService } from 'src/app/shared/services/jugadorservice.service';
 import { PartidaService } from 'src/app/shared/services/partida.service';
-
+import { Clipboard } from '@angular/cdk/clipboard';
 export interface JugadorId {
   id: string;
 }
@@ -17,13 +17,17 @@ export interface JugadorId {
 
 export class DashboardComponent implements OnInit {
   linkPartida: string = ''
+  baseUrl: string = 'localhost:4200/tablero/';
+  idPartida: string = '';
   jugadores: string[] = [];
   usuarios: Jugador[] = [];
   rivales: Jugador[] = [];
+  jugadorLog!: Jugador;
   constructor(public authService: AuthService,
     private partida: PartidaService,
     private router: Router,
-    private jugador : JugadorserviceService) { }
+    private jugador : JugadorserviceService,
+    private clipboard: Clipboard) { }
 
   ngOnInit(): void {
     this.todosJugadores();
@@ -31,11 +35,12 @@ export class DashboardComponent implements OnInit {
   }
 
   todosJugadores(){
-    let userId = JSON.parse(localStorage.getItem('jugador')!).id;
-    this.jugadores.push(userId);
+    let user = JSON.parse(localStorage.getItem('jugador')!);
+    this.jugadores.push(user.id);
+    this.jugadorLog = user
     this.jugador.getJugadoresDB().subscribe((data) => {
-      data.filter((jugador: Jugador) => jugador.id != userId)
-      .forEach((user: Jugador)=> this.usuarios.push(user))
+      data.filter((jugador: Jugador) => jugador.id != user.id)
+      .forEach((item: Jugador)=> this.usuarios.push(item))
       })
   }
   ngDoCheck(){
@@ -44,11 +49,17 @@ export class DashboardComponent implements OnInit {
 
   elegirJugador(ju : Jugador) : void {
     let id:string = ju.id ? ju.id : "";
-    if(!this.jugadores.includes(id)){
-     this.jugadores.push(id);
-     this.rivales.push(ju);
-    }else{alert('Jugador ya agregado')}
-
+    if(this.jugadores.includes(id) ){
+     alert('Jugador ya agregado')
+    }else if (this.jugadores.length > 5){
+      alert('El juego ha llegado al limite de jugadores')
+    }
+    else{
+      this.jugadores.push(id);
+      this.rivales.push(ju);
+    }
+    console.log(this.jugadores, this.rivales);
+    
   }
 
   retirarRival(ju : Jugador) : void {
@@ -61,19 +72,29 @@ export class DashboardComponent implements OnInit {
   }
 
   crearPartidaNueva(): void {
+    if(this.jugadores.length < 2){
+      alert('No puedes jugar solo!');
+    }else{    
     let dataTransfer: JugadorId[] = [];
-
+    
     this.jugadores.forEach(jugador => {
       dataTransfer.push(({
         id: jugador
       }))
     });
-
+    this.linkPartida = 'link de la partida para compartir'
     //console.log(dataTransfer)
     this.partida.crearPartida(dataTransfer)
-    .subscribe(data => this.router.navigate(['tablero', data.id]));
+   .subscribe(data => {
+    this.linkPartida = this.baseUrl + data.id ;
+    this.idPartida = data.id});
 
-  }
-
-
+  }}
+ empezarPartida(){
+  this.router.navigate(['tablero', this.idPartida])
+ }
+  
+ copyLink(){
+  this.clipboard.copy(this.linkPartida)
+ }
 }

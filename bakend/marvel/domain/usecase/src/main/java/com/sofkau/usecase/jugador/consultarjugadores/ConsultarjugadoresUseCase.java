@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 public class ConsultarjugadoresUseCase {
     private final JugadorRepository repository;
 
+
     public Flux<Jugador> consultarJugadores(){
         return repository.findAll();
     }

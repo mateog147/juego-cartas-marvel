@@ -1,47 +1,41 @@
 package com.sofkau.usecase.jugador.consultarjugadores;
 
+
 import com.sofkau.model.jugador.Jugador;
 import com.sofkau.model.jugador.gateways.JugadorRepository;
-import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static reactor.core.publisher.Mono.when;
-
+@SpringBootTest(classes=ConsultarjugadoresUseCase.class)
+@DataMongoTest
+@Import(ConsultarjugadoresUseCase.class)
 class ConsultarjugadoresUseCaseTest {
 
-    @Autowired
-    ConsultarjugadoresUseCase useCase;
+        private final JugadorRepository repository;
+        private  final ConsultarjugadoresUseCase useCase;
 
-    /*@Mock
-    private final JugadorRepository jugadorRepository;
-
-    @BeforeAll
-    public void setUp(){
-        MockitoAnnotations.openMocks(this);
+    public ConsultarjugadoresUseCaseTest(@Autowired JugadorRepository repository,@Autowired ConsultarjugadoresUseCase useCase) {
+        this.repository = repository;
+        this.useCase = useCase;
     }
+
     @Test
-    public void consultar_un_jugador(){
-        //List<Jugador> jugadores = Arrays.asList(new Jugador("1","uid","test1",10,null));
-        Jugador jugador = new Jugador("1","uid","test1",10,null);
-        when(jugadorRepository.findAll()).thenReturn(Flux.just(jugador));
+        public void consultar(){
 
-        StepVerifier.create(useCase.consultarJugadores())
-                .expectNextMatches(jugador1 -> jugador1.id().equals("1"))
-                .verifyComplete();
+            Mono<Jugador> gurdados = repository.save(new Jugador("1","1","nombre",1,null));
 
-    }*/
+            Flux<Jugador> consulta = useCase.consultarJugadores();
+
+        StepVerifier.create(consulta)
+                .expectNextMatches(jugador -> jugador.id().equals("1"))
+                .thenCancel()
+                .verify();
+        }
 }

@@ -11,8 +11,10 @@ public class GanadorRondaUseCase {
 
     public Mono<Ronda> terminarRonda (Ronda ronda, String nombreGanador) {
 
-        ronda.next();
-        ronda.setUltimoGanador(nombreGanador);
+        if(ronda.getApuestas().size()<=0){
+            ronda.next();
+            ronda.setUltimoGanador(nombreGanador);
+        }
         return repository.save(ronda);
     }
 }

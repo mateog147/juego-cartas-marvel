@@ -28,7 +28,7 @@ public class Ronda {
     private String ultimoGanador = "";
 
     @Builder.Default
-    private int isTimerOn = 120; //TODO modifique waca
+    private int isTimerOn = 60; //TODO modifique waca
 
 
     public void agregarApuesta ( Apuesta apuesta ) {

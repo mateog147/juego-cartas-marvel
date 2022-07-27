@@ -2,7 +2,7 @@
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="">
       <img class="brand-logo" src="https://avatars.githubusercontent.com/u/70767641?v=4" alt="Sofka logo"> 
-      <span> Perfil de usuario </span>      
+      <span> SofkaUMarvels </span>      
     </a>
     <a class="btn btn-danger m-3" (click)="authService.SignOut()">
       <i class="fas fa-sign-out-alt"></i>Log out
@@ -19,7 +19,7 @@
             <br>
             <li class="nav-item">
               <div class="row" *ngIf="authService.userData as user">
-                    <img class="align-self-start mr-5 img-thumbnail rounded-circle img-fluid p-2" 
+                    <img class=" m-auto img-thumbnail rounded-circle img-fluid p-2" 
                     src="{{(user.photoURL) ? user.photoURL : '/assets/imgs/dummy.png'}}"
                       alt="{{user.displayName}}">
               </div>
@@ -31,7 +31,12 @@
                 <i class="fas fa-user"></i>Perfil de usuario
               </a>
             </li>
-          </ul>
+            
+            </ul>
+             
+           
+            
+          
         </div>
       </nav>
       
@@ -40,7 +45,7 @@
         <div class="inner-adjust" *ngIf="authService.userData as user">
           <div class="pt-3 pb-2 mb-3 border-bottom">
             <h1>Bienvenido: <strong>{{(user.displayName) ? user.displayName : 'User'}}</strong></h1>
-            <span>Email: <strong>{{user.email}}</strong></span>
+            <span>Puntaje: <strong>{{jugadorLog.puntaje}}</strong></span>
           </div>
         </div>
 
@@ -62,6 +67,7 @@
                           <div class="col-md-8">
                             <div class="card-body">
                               <h5 class="card-title">{{u.nombre}}</h5>
+                              <span >{{u.puntaje}}</span>
                             </div>
                           </div>
                         </div>
@@ -71,12 +77,22 @@
 
                   <hr>
                   
-                  <div class="row row-cols-2 row-cols-md-2">
-                    <h2 class="">Rivales</h2>
-                    <span class="row align-items-end">
-                      <a class="btn btn-primary" (click)="crearPartidaNueva()" >Comenzar Partida</a>
-                      <h2 color="accent">{{linkPartida}}</h2>
-                    </span>
+                  <div class="row ">
+                    <h2 class="col-3">Rivales</h2>
+                    <div  class="row col-9 align-items-end">
+                      <a *ngIf=" linkPartida === '' " class="btn btn-primary ms-5 w-50" (click)="crearPartidaNueva()" >Crear Partida</a>
+                      <div *ngIf=" linkPartida !== '' " class="row ">
+                       <a class="btn btn-warning w-50" type="button" (click)="empezarPartida()" >Empezar partida</a>
+                       <mat-form-field appearance="outline" class="w-50">
+                        <mat-label>Copia el link para enviar a tus rivales</mat-label>
+                        <input matInput [value]="linkPartida" type="text">
+                        <button mat-icon-button matSuffix (click)="copyLink()" >
+                          <mat-icon>file_copy</mat-icon>
+                        </button>
+                      </mat-form-field>
+                      </div>
+                    </div>
+                   
                   </div>
 
                   <br>

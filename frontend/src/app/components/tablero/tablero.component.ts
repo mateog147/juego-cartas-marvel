@@ -165,7 +165,9 @@ export class TableroComponent implements OnInit , DoCheck {
    this.getMazo();
    this.time = this.partida.ronda.isTimerOn;
     //console.log(this.jugadoruid)
-    //console.log(this.partida);
+    console.log(this.partida);
+    console.log(this.jugadores);
+    
     //console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }
 

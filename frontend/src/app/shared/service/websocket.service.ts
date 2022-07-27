@@ -5,7 +5,7 @@ import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { map } from 'rxjs/operators';
 import { ApuestaModel } from "src/app/interface/apuesta.interface";
 
-const CHAT_URL = "ws://localhost:5000";
+const CHAT_URL = "ws://localhost:8080/ws/apuestas";
 
 
 

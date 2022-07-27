@@ -12,11 +12,12 @@ import {  interval, Subscription } from 'rxjs';
 import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
 import Swal from 'sweetalert2';
-
+import { WebsocketService } from 'src/app/shared/service/websocket.service';
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
-  styleUrls: ['./tablero.component.css']
+  styleUrls: ['./tablero.component.css'],
+  
 })
 
 
@@ -38,8 +39,15 @@ export class TableroComponent implements OnInit , DoCheck {
   constructor(public authService: AuthService, 
             private partidaService: PartidaService, 
             private rutaActiva : ActivatedRoute,
+            private websocket: WebsocketService,
             
-            ) {}
+            ) {
+              websocket.messages.subscribe(message => {
+                this.apuestas = (message.apuestas);
+                console.log('Recibi una apuesta de ' + message.apuestas[0]);
+                
+              })
+            }
 
  
   ngDoCheck(): void {
@@ -212,7 +220,8 @@ export class TableroComponent implements OnInit , DoCheck {
         imagen: carta.imagen
       }
     }
-    this.partidaService.enviarApuesta(partidaId, apuesta).subscribe(item => console.log(item))
+    this.websocket.messages.next(apuesta)
+   // this.partidaService.enviarApuesta(partidaId, apuesta).subscribe(item => console.log(item))
   }
 
   ganadorRonda(idPartida : string = this.partidaId){

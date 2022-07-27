@@ -1,16 +1,36 @@
 .card{
-    background-color: #cbc7e9;
+    /* background-color: #cbc7e9; */
     width: 150px;
-   
+    height: 230px;
+    color: rgb(255, 255, 255);
     font-size: 30px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     
+    
+}
+.card-body{
+    background-color: rgba(10, 10, 10, 0.4);
+   
+}
+.card h3 , .card h5{
+    font-family: 'Bangers', cursive !important;
+    
+    
+}
+.card h3{
+    font-size: 1.5rem;
+}
+.card h5{ 
+    font-size: 1.1rem;
 }
 ul{
     list-style: none;
     
 }
 h3{
-    color: black;
+    
     text-align: left;
 }
 h3:hover,h5:hover{ 
@@ -20,4 +40,10 @@ h3:hover,h5:hover{
     color: rebeccapurple;
 
 }
+.card:hover{
+    /* transform: scale(1.2); */
+    animation: tada;
+    animation-duration: 2s;
+}
+
 

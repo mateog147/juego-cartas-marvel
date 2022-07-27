@@ -11,7 +11,7 @@ import { ApuestaModel } from 'src/app/interface/apuesta.interface';
 })
 export class PartidaService {
 
-  private partidaURl = 'http://127.0.0.1:8080/api/partida/';
+  private partidaURl = 'https://sofkau-marvels.herokuapp.com/api/partida/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

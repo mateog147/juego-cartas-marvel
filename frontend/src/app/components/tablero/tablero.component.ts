@@ -28,6 +28,7 @@ export class TableroComponent implements OnInit , DoCheck {
   apuestas!: {jugadorId: string, carta:Card}[] ;
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
+  jugadores: any;
   partida:any;
   jugadoruid: any;
   jugadorInfo: any;
@@ -62,10 +63,11 @@ export class TableroComponent implements OnInit , DoCheck {
   ngAfterViewInit(){
     this.partidaService.getPartidaporId(this.partidaId)
     .subscribe((data : any) => {
-      data.jugadores.length === 1 ?
-      this.onTime():     
+      data.jugadores.length === 1 ?   
       Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
-      <span style='font-size:100px;'>&#129321;</span>`)
+      <span style='font-size:100px;'>&#129321;</span>`) :
+      this.onTime();
+      this.jugadores = data.jugadores;
     })
      
     
@@ -95,9 +97,9 @@ export class TableroComponent implements OnInit , DoCheck {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
     } else if (this.apuestas.filter(item =>
-      item.jugadorId === this.jugadorInfo.id).length > 0) {
+      item.jugadorId === this.jugadorInfo.id).length > 0 ) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-
+        Swal.fire(`Ya hiciste tu apuesta, espera a los demas jugadores`);
     }else {
       transferArrayItem(
         event.previousContainer.data,
@@ -138,7 +140,7 @@ export class TableroComponent implements OnInit , DoCheck {
   //!TOMAR CARTA AL FINALIZAR RELOJ
   tomarCartaRandom(){
     if(this.mazo.length > 0 && this.filtrarJugadorEnapuesta().length === 0 ){
-   this.enviarApuesta(this.partidaId, this.mazo[0])} 
+    this.enviarApuesta(this.partidaId, this.mazo[0])} 
    
    
    
@@ -167,13 +169,13 @@ export class TableroComponent implements OnInit , DoCheck {
     //console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }
 
-  getPartidaPorId(): TableroComponent{
+  getPartidaPorId() {
     this.partidaService.getPartidaporId(this.partidaId)
     .subscribe(item => {
       this.partida = item;
       
       this.imprimir()})
-      return this
+      
   }
 
   renderTableroApuestas(){

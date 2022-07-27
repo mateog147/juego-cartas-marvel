@@ -51,14 +51,15 @@ export class DashboardComponent implements OnInit {
     let id:string = ju.id ? ju.id : "";
     if(this.jugadores.includes(id) ){
      alert('Jugador ya agregado')
-    }else if (this.jugadores.length > 6){
+    }else if (this.jugadores.length > 5){
       alert('El juego ha llegado al limite de jugadores')
     }
     else{
       this.jugadores.push(id);
       this.rivales.push(ju);
     }
-
+    console.log(this.jugadores, this.rivales);
+    
   }
 
   retirarRival(ju : Jugador) : void {

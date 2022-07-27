@@ -24,3 +24,4 @@ public class VerificarGanadorPartidaUseCase {
         return Mono.just(partida);
     }
 }
+

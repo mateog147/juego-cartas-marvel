@@ -1,8 +1,7 @@
 package com.sofkau.api;
 
-import com.sofkau.model.carta.Carta;
 import com.sofkau.model.jugador.Jugador;
-import com.sofkau.usecase.jugador.agregarcartas.AgregarCartasUseCase;
+import com.sofkau.usecase.partida.crearpartida.agregarcartas.AgregarCartasUseCase;
 import com.sofkau.usecase.jugador.consultarjugadores.ConsultarjugadoresUseCase;
 import com.sofkau.usecase.jugador.actualizarpuntaje.ActualizarPuntajeJugadorUseCase;
 import com.sofkau.usecase.jugador.crearjugador.CrearJugadorUseCase;

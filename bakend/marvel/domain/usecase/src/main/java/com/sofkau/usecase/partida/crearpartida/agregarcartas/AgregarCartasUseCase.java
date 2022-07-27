@@ -1,4 +1,4 @@
-package com.sofkau.usecase.jugador.agregarcartas;
+package com.sofkau.usecase.partida.crearpartida.agregarcartas;
 
 import com.sofkau.model.carta.Carta;
 import com.sofkau.model.jugador.Jugador;

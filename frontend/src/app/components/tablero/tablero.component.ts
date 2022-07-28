@@ -43,9 +43,10 @@ export class TableroComponent implements OnInit , DoCheck {
             
             ) {
               this.websocket.messages.subscribe(message => {
-                
-               this.apuestas = message.apuestas;
-                console.log('recibi', message);
+                message.id === this.partida.ronda.id ?
+                this.apuestas = message.apuestas :
+
+                ''//console.log('recibi', message);''
                 
               })
             }
@@ -54,9 +55,11 @@ export class TableroComponent implements OnInit , DoCheck {
   ngDoCheck(): void {
     //this.partidaService.getPartidaporId(this.partidaId).subscribe((partida : any)=> {
       
-    if(this.partida.ronda.apuestas.length === this.partida.jugadores.length) {
+    if(this.apuestas.length === this.partida.jugadores.length) {
       this.tablero.status = true;
-    }}
+      console.log(this.apuestas);
+      
+    }else{ this.tablero.status = false}}
   
 
   ngOnInit(): void {
@@ -64,6 +67,9 @@ export class TableroComponent implements OnInit , DoCheck {
      this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
      this.getPartidaPorId();
      
+     this.subscripcion = this.partidaService.getRefresh$().subscribe(
+     ()=> this.ganadorRonda()
+     ) 
      
      
      
@@ -75,8 +81,10 @@ export class TableroComponent implements OnInit , DoCheck {
       data.jugadores.length === 1 ?   
       Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
       <span style='font-size:100px;'>&#129321;</span>`) :
-      this.onTime();
+  
       this.jugadores = data.jugadores;
+      this.time = data.ronda.isTimerOn;
+      this.onTime();
     })
      
     
@@ -133,15 +141,16 @@ export class TableroComponent implements OnInit , DoCheck {
    
   onTime(){
     
-    let fina = this.partida.ronda.isTimerOn;
+    let fina = 12000;
     interval(1000).pipe(
         takeWhile(() => fina -- > 0))
-        .subscribe({next: () => {this.time --},
-      //     this.time = add(this.time, {seconds: -1} )
-      //  console.log(`${this.time.getMinutes()}:${this.time.getUTCSeconds()}`)},
-      complete: () => {
-      this.tomarCartaRandom();
-    this.ganadorRonda()}})
+        .subscribe({next: () => {
+          this.time --;
+         if( this.time == 0 ) {this.tomarCartaRandom();
+          this.ganadorRonda()
+        }
+      
+      }})
     
     
     
@@ -172,9 +181,9 @@ export class TableroComponent implements OnInit , DoCheck {
    this.renderTableroApuestas();
    this.getJugadorInfo();
    this.getMazo();
-   this.time = this.partida.ronda.isTimerOn;
+   
     //console.log(this.jugadoruid)
-    console.log(this.partida);
+    //console.log(this.partida);
     //console.log(this.jugadores);
     
     //console.log(JSON.parse(localStorage.getItem('user')!).uid)
@@ -221,7 +230,7 @@ export class TableroComponent implements OnInit , DoCheck {
         imagen: carta.imagen
       }
     }
-    //this.websocket.messages.next(apuesta)
+    this.websocket.messages.next(apuesta)
     this.partidaService.enviarApuesta(partidaId, apuesta).subscribe()
   }
 
@@ -229,8 +238,13 @@ export class TableroComponent implements OnInit , DoCheck {
     this.tablero.status ? 
     this.partidaService.ganadorRonda(idPartida).subscribe(item => 
     Swal.fire(`<h2>El ganador de la ronda: ${item.ronda.ultimoGanador} </h2></hr>
-    <span style='font-size:100px;'>&#128526;</span>`)):
-    this.getPartidaPorId();
+    <span style='font-size:100px;'>&#128526;</span>`).then(result => {
+      if(result.isConfirmed){
+        this.getPartidaPorId();
+        this.time = this.partida.ronda.isTimerOn;
+      }
+    })):
+    this.getPartidaPorId()
      
     if(this.mazo.length === 0){
       alert("Has perdido noob")

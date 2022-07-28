@@ -45,7 +45,7 @@ export class WebsocketService {
             error: () =>{console.log('eroor')},
             complete: ()=>{},
             next: (data: Object) => {
-                console.log( data);
+                console.log('apuesta hecha', data);
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.send(JSON.stringify(data));
                 }

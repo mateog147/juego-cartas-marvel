@@ -12,20 +12,21 @@ import { interval, Subscription } from 'rxjs';
 import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
 import Swal from 'sweetalert2';
-
+import { WebsocketService } from 'src/app/shared/service/websocket.service';
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
-  styleUrls: ['./tablero.component.css']
+  styleUrls: ['./tablero.component.css'],
+  
 })
 
 
 export class TableroComponent implements OnInit , DoCheck {
 
-  tablero: {status:boolean} = {status : false}
+  tablero: {status:boolean} = {status : false};
   partidaId !: string;
   ronda: number = 0;
-  apuestas!: {jugadorId: string, carta:Card}[] ;
+  apuestas!: {jugadorId: string, carta:Card}[];
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
   jugadores: any;
@@ -38,25 +39,39 @@ export class TableroComponent implements OnInit , DoCheck {
   constructor(public authService: AuthService, 
             private partidaService: PartidaService, 
             private rutaActiva : ActivatedRoute,
+            private websocket: WebsocketService,
             
-            ) {}
+            ) {
+              this.websocket.messages.subscribe(message => {
+                message.id === this.partida.ronda.id ?
+                this.apuestas = message.apuestas :
+
+                ''//console.log('recibi', message);''
+                
+              })
+            }
 
  
   ngDoCheck(): void {
+    //this.partidaService.getPartidaporId(this.partidaId).subscribe((partida : any)=> {
+      
     if(this.apuestas.length === this.partida.jugadores.length) {
       this.tablero.status = true;
-    }
-  }
+      console.log(this.apuestas);
+      
+    }else{ this.tablero.status = false}}
+  
 
   ngOnInit(): void {
      this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
      this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
      this.getPartidaPorId();
      
-     
      this.subscripcion = this.partidaService.getRefresh$().subscribe(
-      () => this.ganadorRonda()
-     )
+     ()=> this.ganadorRonda()
+     ) 
+     
+     
      
   }
 
@@ -66,12 +81,14 @@ export class TableroComponent implements OnInit , DoCheck {
       data.jugadores.length === 1 ?   
       Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
       <span style='font-size:100px;'>&#129321;</span>`) :
-      this.onTime();
+  
       this.jugadores = data.jugadores;
+      this.time = data.ronda.isTimerOn;
+      this.onTime();
     })
         
     
-    console.log(this.partida)
+   // console.log(this.partida)
     
   
   }
@@ -112,7 +129,7 @@ export class TableroComponent implements OnInit , DoCheck {
 
       let cartaApostada: Card = event.container.data[0]
 
-      console.log(cartaApostada);
+     // console.log(cartaApostada);
 
       this.enviarApuesta(this.partidaId , cartaApostada);
       this.renderTableroApuestas()
@@ -123,15 +140,16 @@ export class TableroComponent implements OnInit , DoCheck {
    
   onTime(){
     
-    let fina = this.partida.ronda.isTimerOn;
+    let fina = 12000;
     interval(1000).pipe(
         takeWhile(() => fina -- > 0))
-        .subscribe({next: () => {this.time --},
-      //     this.time = add(this.time, {seconds: -1} )
-      //  console.log(`${this.time.getMinutes()}:${this.time.getUTCSeconds()}`)},
-      complete: () => {
-      this.tomarCartaRandom();
-    this.ganadorRonda()}})
+        .subscribe({next: () => {
+          this.time --;
+         if( this.time == 0 ) {this.tomarCartaRandom();
+          this.ganadorRonda()
+        }
+      
+      }})
     
     
     
@@ -162,7 +180,7 @@ export class TableroComponent implements OnInit , DoCheck {
    this.renderTableroApuestas();
    this.getJugadorInfo();
    this.getMazo();
-   this.time = this.partida.ronda.isTimerOn;
+   
     //console.log(this.jugadoruid)
     //console.log(this.partida);
     //console.log(this.jugadores);
@@ -191,7 +209,7 @@ export class TableroComponent implements OnInit , DoCheck {
 
     this.partida.jugadores.forEach((jugador: Jugador) => {
       if(jugador.uid === this.jugadoruid){ this.jugadorInfo = jugador
-      console.log(jugador);
+      //console.log(jugador);
       }
     })
   }
@@ -211,15 +229,21 @@ export class TableroComponent implements OnInit , DoCheck {
         imagen: carta.imagen
       }
     }
-    this.partidaService.enviarApuesta(partidaId, apuesta).subscribe(item => console.log(item))
+    this.websocket.messages.next(apuesta)
+    this.partidaService.enviarApuesta(partidaId, apuesta).subscribe()
   }
 
   ganadorRonda(idPartida : string = this.partidaId){
-    this.tablero.status? 
+    this.tablero.status ? 
     this.partidaService.ganadorRonda(idPartida).subscribe(item => 
     Swal.fire(`<h2>El ganador de la ronda: ${item.ronda.ultimoGanador} </h2></hr>
-    <span style='font-size:100px;'>&#128526;</span>`)):
-    this.getPartidaPorId();
+    <span style='font-size:100px;'>&#128526;</span>`).then(result => {
+      if(result.isConfirmed){
+        this.getPartidaPorId();
+        this.time = this.partida.ronda.isTimerOn;
+      }
+    })):
+    this.getPartidaPorId()
      
     if(this.mazo.length === 0){
       alert("Has perdido noob")

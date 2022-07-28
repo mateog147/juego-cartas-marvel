@@ -7,12 +7,16 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.22/9c08ea24c6eb714e2d6170e8122c069a0ba9aacf/lombok-1.18.22.jar" />
         </processorPath>
-        <module name="marvel.model.main" />
+        <module name="marvel.reactive-web.test" />
         <module name="marvel.app-service.main" />
+        <module name="marvel.reactive-web.main" />
+        <module name="marvel.app-service.test" />
+        <module name="marvel.model.main" />
+        <module name="marvel.mongo-repository.main" />
         <module name="marvel.model.test" />
+        <module name="marvel.mongo-repository.test" />
         <module name="marvel.usecase.test" />
         <module name="marvel.usecase.main" />
-        <module name="marvel.app-service.test" />
       </profile>
     </annotationProcessing>
   </component>

@@ -50,7 +50,7 @@ public class GestionarGanadorUseCase {
                                         return ganadorRondaUseCase.terminarRonda(partida1.getRonda(), nombreGanador);
                                     })
                                     .map(ronda -> partida.toBuilder().ronda(ronda).build());
-        
+
 
     }
 

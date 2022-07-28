@@ -13,6 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class GestionarApuestaUseCase {
+
     private final RecibirapuestaUseCase recibirapuestaUseCase;
     private final GestionarGanadorUseCase gestionarGanadorUseCase;
     private Boolean flag = Boolean.FALSE;
@@ -34,13 +35,7 @@ public class GestionarApuestaUseCase {
                             }
                             return Mono.just(partida1.getRonda());
                         })
-                        .map(ronda -> partida.toBuilder().ronda(ronda).build())
-                        /*.flatMap(partida1 -> {
-                            if(partida.getJugadores().size()<=partida1.getRonda().getApuestas().size() && partida.getJugadores().size()>1){
-                                return gestionarGanadorUseCase.gestionarGanador(partida1);
-                            }
-                            return Mono.just(partida1);
-                        })*/;
+                        .map(ronda -> partida.toBuilder().ronda(ronda).build());
     }
 
 }

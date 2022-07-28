@@ -1,7 +1,6 @@
 package com.sofkau.api;
 
 import com.sofkau.model.jugador.Jugador;
-import com.sofkau.usecase.partida.crearpartida.agregarcartas.AgregarCartasUseCase;
 import com.sofkau.usecase.jugador.consultarjugadores.ConsultarjugadoresUseCase;
 import com.sofkau.usecase.jugador.actualizarpuntaje.ActualizarPuntajeJugadorUseCase;
 import com.sofkau.usecase.jugador.crearjugador.CrearJugadorUseCase;
@@ -22,7 +21,6 @@ public class HandlerJugador {
     private final RendirseEnRondaUseCase rendirseEnRondaUseCase;
     private final ActualizarPuntajeJugadorUseCase actualizarPuntajeJugadorUseCase;
     private final ConsultarjugadoresUseCase consultarJuegadoresUseCase;
-    private final AgregarCartasUseCase agregarCartasUseCase;
 
     private final EliminarCartaApostadaUseCase eliminarCartaApostadaUseCase;
 

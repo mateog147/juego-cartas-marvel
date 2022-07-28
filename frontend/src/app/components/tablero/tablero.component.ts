@@ -8,7 +8,7 @@ import { PartidaService } from 'src/app/shared/services/partida.service';
 
 import { Jugador } from 'src/app/interface/jugador';
 import { ActivatedRoute, Params } from '@angular/router';
-import {  interval, Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
 import Swal from 'sweetalert2';
@@ -69,8 +69,7 @@ export class TableroComponent implements OnInit , DoCheck {
       this.onTime();
       this.jugadores = data.jugadores;
     })
-     
-    
+        
     
     console.log(this.partida)
     
@@ -165,8 +164,8 @@ export class TableroComponent implements OnInit , DoCheck {
    this.getMazo();
    this.time = this.partida.ronda.isTimerOn;
     //console.log(this.jugadoruid)
-    console.log(this.partida);
-    console.log(this.jugadores);
+    //console.log(this.partida);
+    //console.log(this.jugadores);
     
     //console.log(JSON.parse(localStorage.getItem('user')!).uid)
   }

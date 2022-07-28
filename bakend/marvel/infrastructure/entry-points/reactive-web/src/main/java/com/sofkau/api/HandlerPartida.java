@@ -35,12 +35,15 @@ public class HandlerPartida {
     private final VerificarGanadorPartidaUseCase verificarGanadorPartidaUseCase;
 
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
+
         return serverRequest.bodyToFlux(Jugador.class)
                 .map(jugador -> jugador.id())
                 .collectList()
                 .map(lista -> {
                     return crearPartidaUseCase.crearPartida()
                             .flatMap(partida -> repartirCartasUseCase.repartir(partida, lista))
+                            .onErrorStop()
+                            .doOnNext(partida -> System.out.println("No pauso"))
                             .flatMap(partida -> agregarRondaUseCase.agregarRonda(partida))
                             .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                 })
@@ -62,10 +65,12 @@ public class HandlerPartida {
                 .flatMap(apuesta -> {
                             return encontrarPartidaUseCase.encontrarPartida(idPartida)
                                     .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta)) //TODO
-                                    //.flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
+                                    //TODO .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                                     .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                         })
+
                 .flatMap(partida-> ServerResponse.ok()
+                
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(Mono.just(partida), Partida.class));
     }

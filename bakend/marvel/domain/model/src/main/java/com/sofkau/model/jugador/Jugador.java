@@ -23,6 +23,10 @@ public class Jugador {
 
     private List<Carta> cartas;
 
+    public static Jugador of (String id, String uid, String nombre){
+        return new Jugador(id, uid, nombre, 0, new ArrayList<>());
+    }
+
     public String uid() {return uid;}
 
     public Integer puntaje() {

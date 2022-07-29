@@ -12,6 +12,7 @@ import java.util.List;
 public class AgregarCartasUseCase {
     private final JugadorRepository repository;
 
+    //TODO:
     public Mono<Jugador> agregarCartas(String jugadorId, List<Carta> cartasNuevas){
         return repository.findById(jugadorId)
                 .map(jugador -> jugador.toBuilder()

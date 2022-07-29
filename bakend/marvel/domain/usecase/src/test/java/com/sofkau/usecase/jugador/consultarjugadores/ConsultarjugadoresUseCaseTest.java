@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -31,43 +32,15 @@ class ConsultarjugadoresUseCaseTest {
     public void consultar_un_jugador(){
 
         //Arrange
-        Jugador jugador = Jugador.of("1","uid2", "jugador1");
-        Flux<Jugador> jugadores = Flux.fromIterable(List.of(jugador));
+        Jugador jugador1 = new Jugador("1","uid1", "jugador1", 0, new ArrayList<>());
+        Jugador jugador2 = new Jugador("2","uid2", "jugador2", 0, new ArrayList<>());
+        Flux<Jugador> jugadores = Flux.fromIterable(List.of(jugador1, jugador2));
         when(repository.findAll()).thenReturn(jugadores);
-
-        // act
-        List<Jugador> prueba = new ArrayList<>();
-        var event = useCase.consultarJugadores().subscribe(jugador1 -> prueba.add(jugador1));
-
-        Assertions.assertEquals(prueba.get(0).getId(), "1");
-
-
-
-        /*
-        var jugadorUsecase = new ArrayList<>();
-        var events = useCase.consultarJugadores()
-                .subscribe(jugador1 -> jugadorUsecase.add(jugador1));
-
-
-        UseCaseHandler
-
-        publisher.subscribe(subscriber);
-        useCase.setRequest(values);
-        useCase.setIdentify(identifyExecutor());
-        useCase.setUseCaseCallback((UseCase.UseCaseFormat<R>) publisher);
-        useCase.run();
-
-        List<Jugador> jugadores = Arrays.asList(Jugador.builder().id("1").build());
-
-        when(repository.findAll()).thenReturn(Flux.fromIterable(jugadores));
 
         StepVerifier.create(useCase.consultarJugadores())
                 .expectNextMatches(jugador -> jugador.id().equals("1"))
-                .thenCancel()
+                .expectNextMatches(jugador -> jugador.id().equals("2"))
+                .expectComplete()
                 .verify();
-
-        useCase.M
-
-         */
     }
 }

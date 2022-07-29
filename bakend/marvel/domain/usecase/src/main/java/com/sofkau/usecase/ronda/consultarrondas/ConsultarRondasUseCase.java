@@ -11,6 +11,7 @@ public class ConsultarRondasUseCase {
 
     private final RondaRepository repository;
 
+    //TODO: impl
     public Flux<Ronda> consultarRondas(){
         return repository.findAll();
     }

@@ -23,10 +23,10 @@ import { WebsocketService } from 'src/app/shared/service/websocket.service';
 
 export class TableroComponent implements OnInit , DoCheck {
 
-  tablero: {status:boolean} = {status : false};
+  tablero: {status:boolean} = {status : false}
   partidaId !: string;
   ronda: number = 0;
-  apuestas!: {jugadorId: string, carta:Card}[];
+  apuestas!: {jugadorId: string, carta:Card}[] ;
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
   jugadores: any;
@@ -67,9 +67,10 @@ export class TableroComponent implements OnInit , DoCheck {
      this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
      this.getPartidaPorId();
      
+     
      this.subscripcion = this.partidaService.getRefresh$().subscribe(
-     ()=> this.ganadorRonda()
-     ) 
+     () => this.ganadorRonda()
+     )
      
      
      
@@ -239,7 +240,7 @@ export class TableroComponent implements OnInit , DoCheck {
     Swal.fire(`<h2>El ganador de la ronda: ${item.ronda.ultimoGanador} </h2></hr>
     <span style='font-size:100px;'>&#128526;</span>`).then(result => {
       if(result.isConfirmed){
-        this.getPartidaPorId();
+    this.getPartidaPorId();
         this.time = this.partida.ronda.isTimerOn;
       }
     })):

@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 public class EliminarCartaApostadaUseCase {
     private final JugadorRepository jugadorRepository;
 
+    //TODO:
     public Mono<Jugador> eliminarCartaApostada(String id, Carta carta){
 
         return jugadorRepository.findById(id)

@@ -1,7 +1,6 @@
 package com.sofkau.usecase.ronda.recibirapuesta;
 
 import com.sofkau.model.carta.Carta;
-import com.sofkau.model.jugador.gateways.JugadorRepository;
 import com.sofkau.model.ronda.Ronda;
 import com.sofkau.model.ronda.gateways.RondaRepository;
 import com.sofkau.model.ronda.values.Apuesta;
@@ -33,34 +32,33 @@ class RecibirapuestaUseCaseTest {
     @Test
     public void recibir_apuesta_test(){
 
-        //Jugador jugador = new Jugador("jugadorId","uid1", "jugador1", 0, new ArrayList<>());
-        Carta carta = new Carta("cartaId", "Hulk", 100, "XXX");
-        Apuesta apuesta = new Apuesta( "jugadorId", carta);
+        Carta carta = new Carta("cartaId", "Hulk", 100, "xxx");
+        Apuesta apuesta = new Apuesta("jugadorId", carta);
         Ronda ronda = new Ronda("rondaId", new ArrayList<>(), 1, "", 60);
 
-        when( repository.findById(ronda.getId())).thenReturn(Mono.just(ronda));
-        when(repository.save(Mockito.any(Ronda.class)))
-                .thenReturn(Mono.just(ronda.toBuilder().apuestas(List.of(apuesta)).build()));
+        when(repository.findById("rondaId")).thenReturn(Mono.just(ronda));
+        when(repository.save(Mockito.any()))
+                .thenReturn(Mono.just(ronda));
 
         // comprobar que la informacion arojada por la operación
         Ronda rondaActualizada = ronda;
-        useCase.recibirApuesta("jugadorId", apuesta )
-                .flatMap(apuesta1 -> {
-                    rondaActualizada.setApuestas(apuesta1.getApuestas());
-                    return Mono.just(apuesta1);
+        useCase.recibirApuesta("rondaId", apuesta)
+                .flatMap(ronda1 -> {
+                    rondaActualizada.setApuestas(ronda1.getApuestas());
+                    return Mono.just(ronda1);
                 })
-                .subscribe(i -> System.out.println(i));
+                .subscribe(i-> System.out.println(i));
 
         var cartaApostada = rondaActualizada.getApuestas().stream().findFirst().get().getCarta();
         Assertions.assertEquals("Hulk", cartaApostada.getNombre());
 
-        StepVerifier.create(useCase.recibirApuesta("jugadorId", apuesta))
-                .expectNextMatches(ronda1 -> ronda1.getApuestas()
-                        .stream()
-                        .findFirst()
-                        .get()
-                        .getCarta()
-                        .getNombre().equals("Hulk"))
+
+        StepVerifier.create(useCase.recibirApuesta("rondaId", apuesta))
+                .expectNextMatches(ronda1 -> ronda1
+                        .getApuestas()
+                        .get(0)
+                        .getJugadorId()
+                        .equals("jugadorId"))
                 .expectComplete()
                 .verify();
     }

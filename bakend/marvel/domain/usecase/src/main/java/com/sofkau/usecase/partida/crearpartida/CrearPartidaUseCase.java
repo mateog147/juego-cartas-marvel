@@ -19,7 +19,7 @@ public class CrearPartidaUseCase {
 
     public Mono<Partida> crearPartida(){
 
-        List<Carta> cartas =new ArrayList<>();
+        List<Carta> cartas = new ArrayList<>();
         Ronda ronda = new Ronda();
         mostrarCartasUseCase
                 .mostrarCartas()

@@ -55,9 +55,7 @@ export class DashboardComponent implements OnInit {
      alert('Jugador ya agregado')
     }else if (this.jugadores.length > 5){
       alert('El juego ha llegado al limite de jugadores')
-    } else if (this.jugadores.length < 2){
-      alert('Necesitas al menos dos jugadores para crear la partida')
-    }
+    } 
     else{
       this.jugadores.push(id);
       this.rivales.push(ju);

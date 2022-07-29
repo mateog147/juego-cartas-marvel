@@ -86,9 +86,10 @@
                        <mat-form-field appearance="outline" class="w-50">
                         <mat-label>Copia el link para enviar a tus rivales</mat-label>
                         <input matInput [value]="linkPartida" type="text">
-                        <button mat-icon-button matSuffix (click)="copyLink()" >
-                          <mat-icon>file_copy</mat-icon>
-                        </button>
+                        <button mat-icon-button matSuffix (click)="copyLink()" ><mat-icon>file_copy</mat-icon></button>
+                        <a  mat-icon-button matSuffix  href="https://api.whatsapp.com/send/?text={{linkPartida}}" >
+                          <mat-icon>whatsapp</mat-icon>
+                        </a>
                       </mat-form-field>
                       </div>
                     </div>
@@ -127,3 +128,4 @@
       </main>
     </div>
   </div>
+  <router-outlet></router-outlet>

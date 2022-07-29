@@ -61,11 +61,10 @@ public class HandlerPartida {
     public Mono<ServerResponse> POSTNuevaApuesta(ServerRequest serverRequest){
         var idPartida = serverRequest.pathVariable("id");
 
-
         return serverRequest.bodyToMono(Apuesta.class)
                 .flatMap(apuesta -> {
                             return encontrarPartidaUseCase.encontrarPartida(idPartida)
-                                    .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta))
+                                    .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta)) //TODO
                                     //TODO .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                                     .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
                         })
@@ -81,7 +80,7 @@ public class HandlerPartida {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(encontrarPartidaUseCase.encontrarPartida(id)
-                        .flatMap(partida -> gestionarGanadorUseCase.gestionarGanador(partida))
+                        .flatMap(partida -> gestionarGanadorUseCase.gestionarGanador(partida))  //TODO
                         .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
                         .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida))
                 , Partida.class);

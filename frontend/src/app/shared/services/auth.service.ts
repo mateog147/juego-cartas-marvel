@@ -62,7 +62,6 @@ export class AuthService {
         this.SetUserData(result.user);
         this.nuevoJugador(result.user!.uid, name)       
 
-
       })
       .catch((error) => {
         window.alert(error.message);

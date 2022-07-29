@@ -48,11 +48,15 @@ export class DashboardComponent implements OnInit {
   }
 
   elegirJugador(ju : Jugador) : void {
+
     let id:string = ju.id ? ju.id : "";
+
     if(this.jugadores.includes(id) ){
      alert('Jugador ya agregado')
     }else if (this.jugadores.length > 5){
       alert('El juego ha llegado al limite de jugadores')
+    } else if (this.jugadores.length < 2){
+      alert('Necesitas al menos dos jugadores para crear la partida')
     }
     else{
       this.jugadores.push(id);
@@ -82,8 +86,7 @@ export class DashboardComponent implements OnInit {
         id: jugador
       }))
     });
-    this.linkPartida = 'link de la partida para compartir'
-    //console.log(dataTransfer)
+   
     this.partida.crearPartida(dataTransfer)
    .subscribe(data => {
     this.linkPartida = this.baseUrl + data.id ;
@@ -95,6 +98,7 @@ export class DashboardComponent implements OnInit {
  }
   
  copyLink(){
+  
   this.clipboard.copy(this.linkPartida)
  }
 }

@@ -9,6 +9,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AgregarRondaUseCase {
     private final CrearRondaUseCase crearRondaUseCase;
+
+    //TODO: se puede unir con crear ronda
     public Mono<Partida> agregarRonda(Partida partida){
         return crearRondaUseCase.crearRonda(new Ronda())
                 .map(ronda -> partida.toBuilder().ronda(ronda).build());

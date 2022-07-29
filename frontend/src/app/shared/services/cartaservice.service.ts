@@ -6,9 +6,11 @@ import { Card } from 'src/app/components/card/card.component';
 @Injectable({
   providedIn: 'root'
 })
+
+//TODO: Corregir nombre
 export class CartaserviceService {
 
-  private cartaURL = '/api/carta/';
+  private cartaURL = 'https://sofkau-marvels.herokuapp.com/api/carta/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -28,7 +30,7 @@ export class CartaserviceService {
     return this.http.delete(`${this.cartaURL}/${cartaId}`, this.httpOptions)
   }
   editCarta( cartaId: string , carta: Card ): Observable<any>{
-       return this.http.put(`${this.cartaURL}/${cartaId}`, carta , this.httpOptions)
+    return this.http.put(`${this.cartaURL}/${cartaId}`, carta , this.httpOptions)
   }
 
 }

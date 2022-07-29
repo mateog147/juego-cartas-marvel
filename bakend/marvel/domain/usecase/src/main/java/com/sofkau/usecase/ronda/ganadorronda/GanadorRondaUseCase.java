@@ -13,9 +13,7 @@ public class GanadorRondaUseCase {
     private final ApplicationEventPublisher publisher;
     public Mono<Ronda> terminarRonda (Ronda ronda, String nombreGanador) {
 
-
         if(ronda.getApuestas().size()<=0){
-
             ronda.next();
             ronda.setUltimoGanador(nombreGanador);
         }

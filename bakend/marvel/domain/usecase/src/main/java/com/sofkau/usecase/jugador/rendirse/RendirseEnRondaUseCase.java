@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 public class RendirseEnRondaUseCase {
     private final JugadorRepository jugadorRepository;
 
+    //TODO:
     Mono<Jugador> rendirse(String id, Jugador jugador){
         return jugadorRepository.rendirseEnRonda(id, jugador);
     }

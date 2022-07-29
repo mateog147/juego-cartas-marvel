@@ -4,4 +4,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    /*implementation 'org.springframework:spring-core:5.3.22'
+    implementation 'org.springframework.security:spring-security-web:5.7.2'
+    implementation 'org.springframework.security:spring-security-config:5.7.2'
+    implementation 'org.springframework:spring-messaging:5.3.22'
+    implementation 'org.springframework.security:spring-security-messaging:5.7.2'
+    implementation 'org.springframework:spring-web:5.3.22'
+    implementation 'org.springframework:spring-websocket:5.3.22'
+    implementation 'org.springframework:spring-webmvc:5.3.22'*/
+}
+
+repositories {
+    mavenCentral()
 }

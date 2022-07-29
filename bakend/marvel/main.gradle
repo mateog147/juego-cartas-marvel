@@ -18,6 +18,9 @@ subprojects {
         implementation 'io.projectreactor:reactor-core'
         implementation 'io.projectreactor.addons:reactor-extra'
         implementation 'org.springframework:spring-context'
+        /*implementation 'org.springframework.security:spring-security-web:5.7.2'
+        implementation 'org.springframework.security:spring-security-config:5.7.2'
+        implementation 'org.springframework:spring-messaging:5.3.22'*/
 
         testImplementation 'io.projectreactor:reactor-test'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'

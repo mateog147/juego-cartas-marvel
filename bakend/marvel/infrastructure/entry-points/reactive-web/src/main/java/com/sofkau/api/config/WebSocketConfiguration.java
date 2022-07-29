@@ -3,8 +3,9 @@ package com.sofkau.api.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sofkau.api.publishers.ApuestaAgregaEventPublisher;
 import com.sofkau.usecase.events.ApuestaAgregaEvent;
-import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.HandlerMapping;
@@ -30,7 +31,7 @@ public class WebSocketConfiguration {
 
 
     @Bean
-    HandlerMapping handlerMapping(WebSocketHandler wsh) {
+    HandlerMapping handlerMapping(@Qualifier("webSocketHandler") WebSocketHandler wsh) {
         return new SimpleUrlHandlerMapping() {
             {
                 setUrlMap(Collections.singletonMap("/ws/apuestas", wsh));

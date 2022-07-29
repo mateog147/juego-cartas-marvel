@@ -84,7 +84,7 @@ export class TableroComponent implements OnInit , DoCheck {
       //console.log(this.apuestas);
       
     }
-   // else{ this.tablero.status = false}
+    else{ this.tablero.status = false}
   }
   
 

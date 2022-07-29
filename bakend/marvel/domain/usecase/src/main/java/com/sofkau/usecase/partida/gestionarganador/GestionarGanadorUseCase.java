@@ -23,14 +23,6 @@ public class GestionarGanadorUseCase {
 
         String ganadorId = partida.getRonda().determinarGanador();
         nombreGanador = repository.findById(ganadorId).toString();
-/*
-        entregarCarta(partida);
-        filtrarJugadorSinCartas(partida);
-
-        return partida;
-
-
-         */
 
         return  Flux.fromIterable(partida.getJugadores())
                                     .map(jugador -> {
@@ -54,7 +46,13 @@ public class GestionarGanadorUseCase {
 
     }
 
+    //TODO: refactorizacion
     /*
+        entregarCarta(partida);
+        filtrarJugadorSinCartas(partida);
+
+        return partida;
+
     Partida entregarCarta (Partida partida){
         String ganadorId = partida.getRonda().determinarGanador();
 

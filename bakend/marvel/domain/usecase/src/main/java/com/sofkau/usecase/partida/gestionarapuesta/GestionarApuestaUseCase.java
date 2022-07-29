@@ -15,7 +15,6 @@ import java.util.List;
 public class GestionarApuestaUseCase {
 
     private final RecibirapuestaUseCase recibirapuestaUseCase;
-    private final GestionarGanadorUseCase gestionarGanadorUseCase;
     private Boolean flag = Boolean.FALSE;
 
     public Mono<Partida> gestionarApuesta(Partida partida,Apuesta apuesta){

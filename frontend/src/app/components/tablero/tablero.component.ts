@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, DoCheck, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, OnInit } from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 import {Card} from '../card/card.component'
@@ -13,11 +13,12 @@ import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
 import Swal from 'sweetalert2';
 import { WebsocketService } from 'src/app/shared/service/websocket.service';
+
 @Component({
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
   styleUrls: ['./tablero.component.css'],
-  
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -40,14 +41,37 @@ export class TableroComponent implements OnInit , DoCheck {
             private partidaService: PartidaService, 
             private rutaActiva : ActivatedRoute,
             private websocket: WebsocketService,
+           
+            ) {   
+
+              // let socket = new WebSocket('ws://localhost:8080/ws/apuestas');
+               let socket2 = new WebSocket('ws://localhost:8080/ws/ganadores');
+           
+              // socket.addEventListener('message', (event: MessageEvent) => {
+              //   console.log((event.data )+ 'apuesta hecha');
+                
+              // })
+               socket2.addEventListener('message', (event: MessageEvent) => {
+               let ganador = JSON.parse(event.data);
+               
+               if(ganador.id === this.partida.ronda.id){
+                Swal.fire({timer: 5000, timerProgressBar: true, html: `<h2>El ganador de la ronda: ${ganador.ultimoGanador} </h2></hr>
+                <span style='font-size:100px;'>&#128526;</span>`}).then(result => {
+                  if(result.isConfirmed || result.dismiss === Swal.DismissReason.timer){
+                    this.getPartidaPorId();
+                    this.time = this.partida.ronda.isTimerOn;
+                  }
+                })}})
+                 
+                
+                
+               
             
-            ) {
               this.websocket.messages.subscribe(message => {
                 message.id === this.partida.ronda.id ?
                 this.apuestas = message.apuestas :
 
-                ''//console.log('recibi', message);''
-                
+                ''               
               })
             }
 
@@ -57,9 +81,11 @@ export class TableroComponent implements OnInit , DoCheck {
       
     if(this.apuestas.length === this.partida.jugadores.length) {
       this.tablero.status = true;
-      console.log(this.apuestas);
+      //console.log(this.apuestas);
       
-    }else{ this.tablero.status = false}}
+    }
+   // else{ this.tablero.status = false}
+  }
   
 
   ngOnInit(): void {
@@ -69,14 +95,15 @@ export class TableroComponent implements OnInit , DoCheck {
      
      
      this.subscripcion = this.partidaService.getRefresh$().subscribe(
-     () => this.ganadorRonda()
-     )
+     //()=> this.ganadorRonda()
+     ) 
      
      
      
   }
 
   ngAfterViewInit(){
+    //this.websocket.readMsg();
     this.partidaService.getPartidaporId(this.partidaId)
     .subscribe((data : any) => {
       data.jugadores.length === 1 ?   
@@ -113,10 +140,10 @@ export class TableroComponent implements OnInit , DoCheck {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
-    } else if (this.apuestas.filter(item =>
-      item.jugadorId === this.jugadorInfo.id).length > 0 ) {
-        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        Swal.fire(`Ya hiciste tu apuesta, espera a los demas jugadores`);
+    // } else if (this.apuestas.filter(item =>
+    //   item.jugadorId === this.jugadorInfo.id).length > 0 ) {
+    //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    //     Swal.fire(`Ya hiciste tu apuesta, espera a los demas jugadores`);
     }else {
       transferArrayItem(
         event.previousContainer.data,
@@ -147,7 +174,7 @@ export class TableroComponent implements OnInit , DoCheck {
         .subscribe({next: () => {
           this.time --;
          if( this.time == 0 ) {this.tomarCartaRandom();
-          this.ganadorRonda()
+          //this.ganadorRonda()
         }
       
       }})
@@ -230,17 +257,19 @@ export class TableroComponent implements OnInit , DoCheck {
         imagen: carta.imagen
       }
     }
-    this.websocket.messages.next(apuesta)
+    
+    //this.websocket.messages.next(apuesta)
+    //this.websocket.send('apuesta')
     this.partidaService.enviarApuesta(partidaId, apuesta).subscribe()
   }
 
   ganadorRonda(idPartida : string = this.partidaId){
     this.tablero.status ? 
     this.partidaService.ganadorRonda(idPartida).subscribe(item => 
-    Swal.fire(`<h2>El ganador de la ronda: ${item.ronda.ultimoGanador} </h2></hr>
-    <span style='font-size:100px;'>&#128526;</span>`).then(result => {
-      if(result.isConfirmed){
-    this.getPartidaPorId();
+    Swal.fire({timer: 10000, timerProgressBar: true, html: `<h2>El ganador de la ronda: ${item.ronda.ultimoGanador} </h2></hr>
+    <span style='font-size:100px;'>&#128526;</span>`}).then(result => {
+      if(result.isConfirmed || (result.dismiss === Swal.DismissReason.timer)){
+        this.getPartidaPorId();
         this.time = this.partida.ronda.isTimerOn;
       }
     })):
@@ -249,6 +278,8 @@ export class TableroComponent implements OnInit , DoCheck {
     if(this.mazo.length === 0){
       alert("Has perdido noob")
      }
+
+    
   }
 
 

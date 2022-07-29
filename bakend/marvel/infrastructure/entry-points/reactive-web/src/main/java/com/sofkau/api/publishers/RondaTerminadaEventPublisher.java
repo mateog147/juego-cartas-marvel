@@ -18,10 +18,6 @@ public class RondaTerminadaEventPublisher implements ApplicationListener<RondaTe
     private final Executor executor = Executors.newSingleThreadExecutor();
     private final BlockingQueue<RondaTerminadaEvent> queue =
             new LinkedBlockingQueue<>();
-/*
-    public RondaTerminadaEventPublisher(Executor executor) {
-        this.executor = executor;
-    }*/
 
 
     @Override

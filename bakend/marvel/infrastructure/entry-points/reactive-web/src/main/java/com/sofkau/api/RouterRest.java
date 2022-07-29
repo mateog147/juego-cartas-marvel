@@ -1,5 +1,8 @@
 package com.sofkau.api;
 
+import com.sofkau.api.handlers.HandlerCarta;
+import com.sofkau.api.handlers.HandlerJugador;
+import com.sofkau.api.handlers.HandlerPartida;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;

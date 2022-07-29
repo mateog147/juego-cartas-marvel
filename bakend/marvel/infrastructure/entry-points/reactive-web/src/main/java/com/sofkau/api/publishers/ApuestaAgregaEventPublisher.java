@@ -19,9 +19,6 @@ public class ApuestaAgregaEventPublisher implements ApplicationListener<ApuestaA
     private final BlockingQueue<ApuestaAgregaEvent> queue =
             new LinkedBlockingQueue<>();
 
-   /* public ApuestaAgregaEventPublisher (Executor executor) {
-        this.executor = executor;
-    }*/
 
     @Override
     public void accept(FluxSink<ApuestaAgregaEvent> apuestaAgregaEventFluxSink) {

@@ -1,4 +1,4 @@
-package com.sofkau.api.config;
+package com.sofkau.api.publishers;
 
 import com.sofkau.usecase.events.ApuestaAgregaEvent;
 import org.springframework.context.ApplicationListener;
@@ -8,19 +8,20 @@ import reactor.core.publisher.FluxSink;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 @Component
 public class ApuestaAgregaEventPublisher implements ApplicationListener<ApuestaAgregaEvent>, Consumer<FluxSink<ApuestaAgregaEvent>> {
 
-    private final Executor executor;
+    private final Executor executor = Executors.newSingleThreadExecutor();
     private final BlockingQueue<ApuestaAgregaEvent> queue =
             new LinkedBlockingQueue<>();
 
-    public ApuestaAgregaEventPublisher (Executor executor) {
+   /* public ApuestaAgregaEventPublisher (Executor executor) {
         this.executor = executor;
-    }
+    }*/
 
     @Override
     public void accept(FluxSink<ApuestaAgregaEvent> apuestaAgregaEventFluxSink) {

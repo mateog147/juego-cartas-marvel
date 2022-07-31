@@ -24,7 +24,7 @@ public class GestionarGanadorUseCase {
         String ganadorId = partida.getRonda().determinarGanador();
         nombreGanador = repository.findById(ganadorId).toString();
 
-        return  Flux.fromIterable(partida.getJugadores())
+        return Flux.fromIterable(partida.getJugadores())
                                     .map(jugador -> {
                                         if(jugador.id().equals(ganadorId)){
                                             nombreGanador = jugador.getNombre();

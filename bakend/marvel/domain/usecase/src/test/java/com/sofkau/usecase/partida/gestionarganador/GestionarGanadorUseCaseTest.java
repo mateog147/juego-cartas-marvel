@@ -59,26 +59,53 @@ class GestionarGanadorUseCaseTest {
 
         Partida partida = new Partida("partidaId", jugadoresPartida, ronda, mazo);
 
-        when(repository.findById(jugador2.id())).thenReturn(Mono.just(jugador2));
+        when(repository.findById(Mockito.any())).thenReturn(Mono.just(jugador2));
         //when(ganadorRondaUseCase.terminarRonda(Mockito.any(),Mockito.any()))
         //        .thenReturn(Mono.just(Ronda.builder().ultimoGanador("jugador2").build()));
 
         Partida partidaNueva = partida;
         useCase.gestionarGanador(partida)
-                .flatMap(partida1 -> {
+                .map(partida1 -> {
+
+                    /*
+                    partidaNueva.setId(partida1.getId());
+                    partidaNueva.setJugadores(partida1.getJugadores());
+                    partidaNueva.setRonda(partida1.getRonda());
+                    partidaNueva.setMazo(partida1.getMazo());
+
+                     */
+
                     partidaNueva.toBuilder()
+                            .id(partida1.getId())
                             .jugadores(partida1.getJugadores())
                             .ronda(partida1.getRonda())
+                            .mazo(partida1.getMazo())
                             .build();
-                    return Mono.just(partida1);
-                });
+
+
+                    return partida1;
+                })
+                .subscribe(i ->
+                                System.out.println(i)
+
+                        /*
+                        partidaNueva.toBuilder()
+                                .id(i.getId())
+                                .jugadores(i.getJugadores())
+                                .ronda(i.getRonda())
+                                .mazo(i.getMazo())
+                                .build()
+                         */
+                        );
+
 
         Jugador ganador = partidaNueva.getJugadores()
                 .stream()
                 .filter(jugadorGanador -> jugadorGanador.id().equals(jugador2.getId())).findFirst().get();
         List<Carta> cartaGanada = ganador.getCartas();
 
-        System.out.println("hola"+ganador);
+        Ronda rond = partidaNueva.getRonda();
+        System.out.println("hola"+rond);
         //Assertions.assertEquals("cartaApostada1", cartaGanada.getNombre());
 
         // El ganador (jugador2) Recibe las cartas apostadas

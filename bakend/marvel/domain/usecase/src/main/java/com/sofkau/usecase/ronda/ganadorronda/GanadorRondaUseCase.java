@@ -17,7 +17,7 @@ public class GanadorRondaUseCase {
             ronda.next();
             ronda.setUltimoGanador(nombreGanador);
         }
-        return repository.save(ronda).
-                doOnSuccess(rondaGuardada -> this.publisher.publishEvent(new RondaTerminadaEvent(rondaGuardada)));
+        return repository.save(ronda)
+                .doOnSuccess(rondaGuardada -> this.publisher.publishEvent(new RondaTerminadaEvent(rondaGuardada)));
     }
 }

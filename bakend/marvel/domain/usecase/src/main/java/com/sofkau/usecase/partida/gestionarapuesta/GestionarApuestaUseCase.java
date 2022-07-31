@@ -21,7 +21,7 @@ public class GestionarApuestaUseCase {
         return Flux.fromIterable(partida.getJugadores())
                         .map(jugador -> {
                             if(jugador.getId().equals(apuesta.getJugadorId())){
-                                flag= jugador.eliminarCarta(apuesta.getCarta());
+                                flag = jugador.eliminarCarta(apuesta.getCarta());
                             }
                             return jugador;
                         })

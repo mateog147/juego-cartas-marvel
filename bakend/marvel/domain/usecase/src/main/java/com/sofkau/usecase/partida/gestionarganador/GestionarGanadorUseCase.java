@@ -46,44 +46,5 @@ public class GestionarGanadorUseCase {
 
     }
 
-    //TODO: refactorizacion
-    /*
-        entregarCarta(partida);
-        filtrarJugadorSinCartas(partida);
 
-        return partida;
-
-    Partida entregarCarta (Partida partida){
-        String ganadorId = partida.getRonda().determinarGanador();
-
-        var jugadores = partida.getJugadores().stream()
-                .map(jugador -> {
-                    if(jugador.id().equals(ganadorId)){
-                        jugador.agregarCartas(partida.getRonda().entregarCartas());
-                    }
-                    return jugador;
-                })
-                .collect(Collectors.toList());
-
-        partida.setJugadores(jugadores);
-
-        return partida;
-
-    }
-
-    Partida filtrarJugadorSinCartas (Partida partida){
-        return partida.toBuilder()
-                .jugadores(partida.getJugadores().stream()
-                    .filter(jugador -> !jugador.cartas().isEmpty())
-                    .collect(Collectors.toList()))
-                .build();
-    }
-
-     */
-
-    //Conocer el ganador
-    // darle las cartas
-    // eliminar jugadores sin cartas
-    // guardar info ronda
-    // Actualizar la partida
 }

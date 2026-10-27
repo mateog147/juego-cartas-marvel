@@ -50,7 +50,13 @@ class GestionarGanadorUseCaseTest {
         Carta cartaApuesta2 = new Carta("ca2", "cartaApostada2", 2000, "xxx");
         Apuesta apuesta2 = new Apuesta(jugador2.id(), cartaApuesta2);
         List<Apuesta> apuestas = List.of(apuesta1, apuesta2);
-        Ronda ronda = new Ronda("rondaId", apuestas, 1, "", 60);
+        Ronda ronda = Ronda.builder()
+                .id("rondaId")
+                .apuestas(apuestas)
+                .numero(1)
+                .ultimoGanador("")
+                .isTimerOn(60)
+                .build();
 
         Carta carta1 = new Carta("1", "Hulk", 100, "xxx");
         Carta carta2 = new Carta("2", "Spiderman", 50, "xxx");

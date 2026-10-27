@@ -9,7 +9,6 @@ import { PartidaService } from 'src/app/shared/services/partida.service';
 import { Jugador } from 'src/app/interface/jugador';
 import { ActivatedRoute } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { WebsocketService } from 'src/app/shared/service/websocket.service';
 import { wsUrl } from 'src/environments/api.config';
@@ -31,10 +30,11 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   partida: any;
   jugadoruid: any;
   jugadorInfo: any;
-  time!: number;
+  time = 0;
   private ganadoresSocket?: WebSocket;
   private mostrandoGanador = false;
   private timerSub?: Subscription;
+  private lastKnownRound = 0;
 
   constructor(
     public authService: AuthService,
@@ -53,6 +53,11 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     this.websocket.messages.subscribe(message => {
       if (this.partida?.ronda?.id && message.id === this.partida.ronda.id) {
         this.apuestas = message.apuestas || [];
+        if (message.finRondaEn) {
+          this.partida.ronda.finRondaEn = message.finRondaEn;
+          this.partida.ronda.isTimerOn = message.isTimerOn ?? this.partida.ronda.isTimerOn;
+          this.syncTimerFromServer();
+        }
       }
     });
   }
@@ -66,8 +71,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
     this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
     this.getPartidaPorId(() => {
-      this.time = this.partida?.ronda?.isTimerOn ?? 60;
-      this.onTime();
+      this.syncTimerFromServer();
       this.chequearGanadorPartida();
     });
   }
@@ -101,25 +105,31 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     this.renderTableroApuestas();
   }
 
-  onTime() {
+  /** Countdown driven by server deadline (finRondaEn). No local auto-bet. */
+  syncTimerFromServer() {
     this.timerSub?.unsubscribe();
-    let remainingMs = (this.time || 12) * 1000;
-    this.timerSub = interval(1000).pipe(
-      takeWhile(() => remainingMs-- > 0)
-    ).subscribe({
-      next: () => {
-        this.time--;
-        if (this.time === 0) {
-          this.tomarCartaRandom();
-        }
+    const endsAt = this.partida?.ronda?.finRondaEn;
+    if (!endsAt) {
+      this.time = this.partida?.ronda?.isTimerOn ?? 30;
+      return;
+    }
+
+    this.time = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+    this.timerSub = interval(250).subscribe(() => {
+      this.time = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+      // When timer hits 0, server auto-bets/resolves; poll once shortly after
+      if (this.time === 0) {
+        this.timerSub?.unsubscribe();
+        setTimeout(() => this.getPartidaPorId(() => {
+          this.syncTimerFromServer();
+          if (this.partida?.ronda?.ultimoGanador
+              && (this.partida.ronda.apuestas?.length ?? 0) === 0
+              && this.partida.ronda.numero !== this.lastKnownRound) {
+            this.mostrarGanadorRonda(this.partida.ronda.ultimoGanador);
+          }
+        }), 800);
       }
     });
-  }
-
-  tomarCartaRandom() {
-    if (this.mazo.length > 0 && this.filtrarJugadorEnapuesta().length === 0) {
-      this.enviarApuesta(this.partidaId, this.mazo[0]);
-    }
   }
 
   filtrarJugadorEnapuesta() {
@@ -185,14 +195,14 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
 
     this.partidaService.enviarApuesta(partidaId, apuesta).subscribe({
       next: (partidaActualizada: any) => {
-        // Clear local drop zone after a successful bet
         this.apuestadrop = [];
         this.partida = partidaActualizada;
         this.jugadores = partidaActualizada.jugadores || [];
         this.imprimir();
+        this.syncTimerFromServer();
 
-        // Backend may have auto-resolved the round on this same response
-        if (partidaActualizada?.ronda?.ultimoGanador && (partidaActualizada.ronda.apuestas?.length ?? 0) === 0) {
+        if (partidaActualizada?.ronda?.ultimoGanador
+            && (partidaActualizada.ronda.apuestas?.length ?? 0) === 0) {
           this.mostrarGanadorRonda(partidaActualizada.ronda.ultimoGanador);
         }
 
@@ -201,7 +211,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
       error: (err) => {
         console.error('Error enviando apuesta', err);
         Swal.fire('No se pudo enviar la apuesta');
-        this.getPartidaPorId();
+        this.getPartidaPorId(() => this.syncTimerFromServer());
       }
     });
   }
@@ -211,17 +221,17 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
       return;
     }
     this.mostrandoGanador = true;
+    this.lastKnownRound = this.partida?.ronda?.numero ?? this.lastKnownRound;
     Swal.fire({
-      timer: 5000,
+      timer: 4000,
       timerProgressBar: true,
       html: `<h2>El ganador de la ronda: ${nombre}</h2><hr/>
              <span style='font-size:100px;'>&#128526;</span>`
     }).then(() => {
       this.mostrandoGanador = false;
       this.getPartidaPorId(() => {
-        this.time = this.partida?.ronda?.isTimerOn ?? 60;
         this.apuestadrop = [];
-        this.onTime();
+        this.syncTimerFromServer();
         this.chequearGanadorPartida();
       });
     });

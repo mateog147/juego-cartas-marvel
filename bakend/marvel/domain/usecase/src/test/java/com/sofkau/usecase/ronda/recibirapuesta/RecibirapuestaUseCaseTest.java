@@ -38,7 +38,13 @@ class RecibirapuestaUseCaseTest {
 
         Carta carta = new Carta("cartaId", "Hulk", 100, "xxx");
         Apuesta apuesta = new Apuesta("jugadorId", carta);
-        Ronda ronda = new Ronda("rondaId", new ArrayList<>(), 1, "", 60);
+        Ronda ronda = Ronda.builder()
+                .id("rondaId")
+                .apuestas(new ArrayList<>())
+                .numero(1)
+                .ultimoGanador("")
+                .isTimerOn(60)
+                .build();
 
         when(repository.findById("rondaId")).thenReturn(Mono.just(ronda));
         when(repository.save(Mockito.any()))

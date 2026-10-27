@@ -9,7 +9,11 @@ import reactor.core.publisher.Mono;
 public class CrearRondaUseCase {
     private final RondaRepository repository;
 
-    public Mono<Ronda> crearRonda(Ronda ronda){
+    public Mono<Ronda> crearRonda(Ronda ronda) {
+        if (ronda.getIsTimerOn() <= 0) {
+            ronda.setIsTimerOn(30);
+        }
+        ronda.iniciarTemporizador();
         return repository.save(ronda);
     }
 }

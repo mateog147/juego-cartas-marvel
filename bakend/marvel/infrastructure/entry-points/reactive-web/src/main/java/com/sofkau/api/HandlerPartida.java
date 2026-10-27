@@ -13,6 +13,7 @@ import com.sofkau.usecase.partida.guardarpartida.GuardarPartidaUseCase;
 import com.sofkau.usecase.partida.repartircartas.RepartirCartasUseCase;
 import com.sofkau.usecase.partida.retirarjugador.RetirarJugadorUseCase;
 import com.sofkau.usecase.partida.verificarganadorpartida.VerificarGanadorPartidaUseCase;
+import com.sofkau.api.timers.RondaTimerScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,7 @@ public class HandlerPartida {
     private final GestionarGanadorUseCase gestionarGanadorUseCase;
     private  final RetirarJugadorUseCase retirarJugadorUseCase;
     private final VerificarGanadorPartidaUseCase verificarGanadorPartidaUseCase;
+    private final RondaTimerScheduler rondaTimerScheduler;
 
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
 
@@ -43,6 +45,7 @@ public class HandlerPartida {
                         .flatMap(partida -> repartirCartasUseCase.repartir(partida, lista))
                         .flatMap(partida -> agregarRondaUseCase.agregarRonda(partida))
                         .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida)))
+                .doOnNext(rondaTimerScheduler::programar)
                 .flatMap(partida -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(partida))
@@ -70,6 +73,7 @@ public class HandlerPartida {
                         .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta))
                         .flatMap(this::resolverRondaSiCompleta)
                         .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida)))
+                .doOnNext(rondaTimerScheduler::programar)
                 .flatMap(partida -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(partida));

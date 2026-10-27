@@ -30,17 +30,22 @@ class GanadorRondaUseCaseTest {
 
     @Test
     public void terminar_ronda_test() {
-        Ronda ronda = new Ronda("1", new ArrayList<>(), 1, "", 60);
+        Ronda ronda = Ronda.builder()
+                .id("1")
+                .apuestas(new ArrayList<>())
+                .numero(1)
+                .ultimoGanador("")
+                .isTimerOn(60)
+                .build();
+
         when(repository.save(Mockito.any(Ronda.class)))
-                .thenAnswer(invocation -> {
-                    Ronda saved = invocation.getArgument(0);
-                    return Mono.just(saved);
-                });
+                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
         StepVerifier.create(useCase.terminarRonda(ronda, "jugadorGanador"))
                 .expectNextMatches(ronda1 ->
                         "jugadorGanador".equals(ronda1.getUltimoGanador())
-                                && ronda1.getNumero() == 2)
+                                && ronda1.getNumero() == 2
+                                && ronda1.getFinRondaEn() != null)
                 .expectComplete()
                 .verify();
     }

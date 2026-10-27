@@ -45,7 +45,13 @@ class GestionarApuestaUseCaseTest {
         List<Jugador> jugadoresPartida = List.of(jugador1, jugador2);
 
         Carta cartaApostada = new Carta("cartaId", "cartaApostada", 1000, "xxx");
-        Ronda ronda = new Ronda("1", List.of(new Apuesta(jugador2.id(), cartaApostada)), 1, "", 60);
+        Ronda ronda = Ronda.builder()
+                .id("1")
+                .apuestas(List.of(new Apuesta(jugador2.id(), cartaApostada)))
+                .numero(1)
+                .ultimoGanador("")
+                .isTimerOn(60)
+                .build();
 
         Apuesta apuesta = new Apuesta(jugador1.id(), cartaJugador1);
 

@@ -2,7 +2,6 @@ package com.sofkau.mongo.ronda;
 
 import com.sofkau.model.ronda.values.Apuesta;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -21,5 +20,6 @@ public class RondaDocument {
     private List<Apuesta> apuestas;
     private Integer numero;
     private String ultimoGanador;
-
+    private int isTimerOn;
+    private Long finRondaEn;
 }

@@ -11,11 +11,12 @@ import reactor.core.publisher.Mono;
 public class GanadorRondaUseCase {
     private final RondaRepository repository;
     private final ApplicationEventPublisher publisher;
-    public Mono<Ronda> terminarRonda (Ronda ronda, String nombreGanador) {
 
-        if(ronda.getApuestas().size()<=0){
+    public Mono<Ronda> terminarRonda(Ronda ronda, String nombreGanador) {
+        if (ronda.getApuestas() == null || ronda.getApuestas().size() <= 0) {
             ronda.next();
             ronda.setUltimoGanador(nombreGanador);
+            ronda.iniciarTemporizador();
         }
         return repository.save(ronda)
                 .doOnSuccess(rondaGuardada -> this.publisher.publishEvent(new RondaTerminadaEvent(rondaGuardada)));

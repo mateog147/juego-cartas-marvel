@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { JugadorserviceService } from 'src/app/shared/services/jugadorservice.service';
 import { PartidaService } from 'src/app/shared/services/partida.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+
 export interface JugadorId {
   id: string;
 }
@@ -14,91 +15,151 @@ export interface JugadorId {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-
 export class DashboardComponent implements OnInit {
-  linkPartida: string = ''
-  baseUrl: string = `${window.location.origin}/tablero/`;
-  idPartida: string = '';
+  linkPartida = '';
+  baseUrl = `${window.location.origin}/tablero/`;
+  idPartida = '';
   jugadores: string[] = [];
   usuarios: Jugador[] = [];
   rivales: Jugador[] = [];
   jugadorLog!: Jugador;
-  constructor(public authService: AuthService,
+  cargandoJugadores = true;
+  creandoPartida = false;
+  linkCopiado = false;
+  errorLobby = '';
+
+  constructor(
+    public authService: AuthService,
     private partida: PartidaService,
     private router: Router,
-    private jugador : JugadorserviceService,
-    private clipboard: Clipboard) { }
+    private jugador: JugadorserviceService,
+    private clipboard: Clipboard
+  ) {}
 
   ngOnInit(): void {
     this.todosJugadores();
-
   }
 
-  todosJugadores(){
-    let user = JSON.parse(localStorage.getItem('jugador')!);
-    this.jugadores.push(user.id);
-    this.jugadorLog = user
-    this.jugador.getJugadoresDB().subscribe((data) => {
-      data.filter((jugador: Jugador) => jugador.id != user.id)
-      .forEach((item: Jugador)=> this.usuarios.push(item))
-      })
-  }
-  ngDoCheck(){
-
+  get totalEnMesa(): number {
+    return this.jugadores.length;
   }
 
-  elegirJugador(ju : Jugador) : void {
+  get puedeCrear(): boolean {
+    return this.totalEnMesa >= 2 && this.totalEnMesa <= 6 && !this.creandoPartida && !this.linkPartida;
+  }
 
-    let id:string = ju.id ? ju.id : "";
+  get partidaLista(): boolean {
+    return !!this.linkPartida && !!this.idPartida;
+  }
 
-    if(this.jugadores.includes(id) ){
-     alert('Jugador ya agregado')
-    }else if (this.jugadores.length > 5){
-      alert('El juego ha llegado al limite de jugadores')
-    } 
-    else{
-      this.jugadores.push(id);
-      this.rivales.push(ju);
+  etiquetaJugador(j: Jugador): string {
+    const nombre = j.nombre || 'Jugador';
+    const shortUid = (j.uid || j.id || '').slice(-4).toUpperCase();
+    return shortUid ? `${nombre} · #${shortUid}` : nombre;
+  }
+
+  estaSeleccionado(j: Jugador): boolean {
+    return !!j.id && this.jugadores.includes(j.id);
+  }
+
+  todosJugadores() {
+    this.cargandoJugadores = true;
+    this.errorLobby = '';
+    const user = JSON.parse(localStorage.getItem('jugador')!);
+    this.jugadores = [user.id];
+    this.rivales = [];
+    this.usuarios = [];
+    this.jugadorLog = user;
+
+    this.jugador.getJugadoresDB().subscribe({
+      next: (data) => {
+        this.usuarios = (data || []).filter((j: Jugador) => j.id !== user.id);
+        this.cargandoJugadores = false;
+      },
+      error: () => {
+        this.cargandoJugadores = false;
+        this.errorLobby = 'No se pudieron cargar los jugadores. ¿Está el backend en marcha?';
+      }
+    });
+  }
+
+  elegirJugador(ju: Jugador): void {
+    const id = ju.id || '';
+    if (!id) {
+      return;
     }
-    console.log(this.jugadores, this.rivales);
-    
+    if (this.partidaLista) {
+      return;
+    }
+    if (this.jugadores.includes(id)) {
+      this.retirarRival(ju);
+      return;
+    }
+    if (this.jugadores.length >= 6) {
+      this.errorLobby = 'Máximo 6 jugadores por partida.';
+      return;
+    }
+    this.errorLobby = '';
+    this.jugadores.push(id);
+    this.rivales.push(ju);
   }
 
-  retirarRival(ju : Jugador) : void {
-    let id:string = ju.id ? ju.id : "";
-    if(this.jugadores.includes(id)){
-      this.rivales = this.rivales.filter(rival => rival.id !== id);
-      this.jugadores = this.jugadores.filter(jugador => jugador !== id);
-    }else{alert('Jugador no está agregado')}
-
+  retirarRival(ju: Jugador): void {
+    if (this.partidaLista) {
+      return;
+    }
+    const id = ju.id || '';
+    this.rivales = this.rivales.filter(rival => rival.id !== id);
+    this.jugadores = this.jugadores.filter(jugador => jugador !== id);
   }
 
   crearPartidaNueva(): void {
-    if (this.jugadores.length < 2) {
-      alert('No puedes jugar solo!');
+    if (!this.puedeCrear) {
+      this.errorLobby = this.totalEnMesa < 2
+        ? 'Elegí al menos un rival para jugar.'
+        : 'No se puede crear la partida ahora.';
       return;
     }
 
+    this.creandoPartida = true;
+    this.errorLobby = '';
     const dataTransfer: JugadorId[] = this.jugadores.map(id => ({ id }));
 
     this.partida.crearPartida(dataTransfer).subscribe({
       next: (data) => {
         this.linkPartida = this.baseUrl + data.id;
         this.idPartida = data.id;
+        this.creandoPartida = false;
+        this.copyLink();
       },
       error: (err) => {
+        this.creandoPartida = false;
         console.error('Error creando partida', err);
-        const msg = err?.error?.error || err?.message || 'Error desconocido';
-        alert('No se pudo crear la partida: ' + msg);
+        this.errorLobby = err?.error?.error || err?.message || 'No se pudo crear la partida';
       }
     });
   }
- empezarPartida(){
-  this.router.navigate(['tablero', this.idPartida])
- }
-  
- copyLink(){
-  
-  this.clipboard.copy(this.linkPartida)
- }
+
+  empezarPartida() {
+    if (!this.idPartida) {
+      return;
+    }
+    this.router.navigate(['tablero', this.idPartida]);
+  }
+
+  copyLink() {
+    if (!this.linkPartida) {
+      return;
+    }
+    this.clipboard.copy(this.linkPartida);
+    this.linkCopiado = true;
+    setTimeout(() => (this.linkCopiado = false), 2000);
+  }
+
+  nuevaSeleccion() {
+    this.linkPartida = '';
+    this.idPartida = '';
+    this.linkCopiado = false;
+    this.todosJugadores();
+  }
 }

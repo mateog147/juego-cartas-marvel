@@ -1,0 +1,268 @@
+.lobby {
+  padding-top: 3.5rem;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(255, 193, 7, 0.12), transparent 40%),
+    linear-gradient(180deg, #f7f4ef 0%, #ebe4d8 100%);
+}
+
+.lobby-main {
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.lobby-avatar {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+}
+
+.lobby-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 37, 41, 0.12);
+}
+
+.lobby-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  margin: 0 0 0.35rem;
+  color: #6c757d;
+}
+
+.lobby-hero h1 {
+  font-family: "Righteous", "Poppins", sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  margin: 0;
+}
+
+.lobby-score {
+  margin: 0.35rem 0 0;
+  color: #495057;
+}
+
+.lobby-steps {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.lobby-steps span {
+  border: 1px solid rgba(33, 37, 41, 0.2);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  color: #6c757d;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.lobby-steps span.active {
+  background: #212529;
+  color: #fff;
+  border-color: #212529;
+}
+
+.lobby-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.25rem;
+}
+
+.lobby-panel {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(33, 37, 41, 0.08);
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(33, 37, 41, 0.06);
+}
+
+.lobby-panel-head h2 {
+  font-family: "Righteous", "Poppins", sans-serif;
+  font-size: 1.35rem;
+  margin: 0 0 0.25rem;
+}
+
+.lobby-panel-head p {
+  margin: 0 0 1rem;
+  color: #6c757d;
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.75rem;
+}
+
+.player-card {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  text-align: left;
+  border: 1px solid rgba(33, 37, 41, 0.12);
+  border-radius: 14px;
+  padding: 0.75rem;
+  background: #fff;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.player-card img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.player-card strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.player-card span,
+.player-card em {
+  display: block;
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-style: normal;
+}
+
+.player-card:hover {
+  transform: translateY(-1px);
+  border-color: #0d6efd;
+}
+
+.player-card.selected {
+  background: #e7f1ff;
+  border-color: #0d6efd;
+}
+
+.player-card.selected em {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+.mesa-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.mesa-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: #f8f9fa;
+  border: 1px solid rgba(33, 37, 41, 0.08);
+}
+
+.mesa-item.you {
+  background: #fff3cd;
+  border-color: rgba(255, 193, 7, 0.45);
+}
+
+.mesa-item img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.mesa-item strong {
+  display: block;
+}
+
+.mesa-item span {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.lobby-empty {
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f8f9fa;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.lobby-empty.soft {
+  background: transparent;
+  border: 1px dashed rgba(33, 37, 41, 0.18);
+}
+
+.lobby-ready {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lobby-ready-copy h2 {
+  font-family: "Righteous", "Poppins", sans-serif;
+  margin: 0 0 0.35rem;
+}
+
+.lobby-ready-copy p {
+  margin: 0;
+  color: #495057;
+  max-width: 42rem;
+}
+
+.lobby-share label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.lobby-share-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem;
+}
+
+.lobby-mesa-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mesa-chip {
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  background: #e9ecef;
+  font-size: 0.85rem;
+}
+
+.mesa-chip.you {
+  background: #ffc107;
+}
+
+.lobby-ready-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .lobby-grid,
+  .lobby-share-row,
+  .lobby-hero {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lobby-share-row {
+    display: flex;
+    flex-direction: column;
+  }
+}

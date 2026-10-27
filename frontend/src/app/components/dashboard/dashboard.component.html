@@ -1,131 +1,147 @@
-
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="">
-      <img class="brand-logo" src="https://avatars.githubusercontent.com/u/70767641?v=4" alt="Sofka logo"> 
-      <span> SofkaUMarvels </span>      
-    </a>
-    <a class="btn btn-danger m-3" (click)="authService.SignOut()">
-      <i class="fas fa-sign-out-alt"></i>Log out
-    </a>
-  </nav>
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="">
+    <img class="brand-logo" src="https://avatars.githubusercontent.com/u/70767641?v=4" alt="Sofka logo">
+    <span> SofkaUMarvels </span>
+  </a>
+  <a class="btn btn-danger m-3" (click)="authService.SignOut()">
+    <i class="fas fa-sign-out-alt"></i> Log out
+  </a>
+</nav>
 
-  
-  <div class="container-fluid">
-    <div class="row">
-      <nav class="col-md-2 d-md-block bg-light sidebar">
-        <div class="sidebar-sticky">
-          <ul class="nav flex-column">
-            <br>
-            <br>
-            <li class="nav-item">
-              <div class="row" *ngIf="authService.userData as user">
-                    <img class=" m-auto img-thumbnail rounded-circle img-fluid p-2" 
-                    src="{{(user.photoURL) ? user.photoURL : '/assets/imgs/dummy.png'}}"
-                      alt="{{user.displayName}}">
-              </div>
-            </li>
-            <br>
-            <br>
-            <li class="nav-item">
-              <a class="nav-link active">
-                <i class="fas fa-user"></i>Perfil de usuario
-              </a>
-            </li>
-            
-            </ul>
-             
-           
-            
-          
+<div class="lobby container-fluid">
+  <div class="row">
+    <nav class="col-md-2 d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item pt-5" *ngIf="authService.userData as user">
+            <img class="m-auto d-block img-thumbnail rounded-circle img-fluid p-2 lobby-avatar"
+                 [src]="user.photoURL || '/assets/imgs/dummy.png'"
+                 [alt]="user.displayName">
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active"><i class="fas fa-user"></i> Perfil de usuario</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 lobby-main">
+      <header class="lobby-hero" *ngIf="authService.userData as user">
+        <div>
+          <p class="lobby-kicker">Lobby</p>
+          <h1>Hola, <strong>{{ user.displayName || 'jugador' }}</strong></h1>
+          <p class="lobby-score">Puntaje: <strong>{{ jugadorLog ? jugadorLog.puntaje : 0 }}</strong></p>
         </div>
-      </nav>
-      
-     
-      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-        <div class="inner-adjust" *ngIf="authService.userData as user">
-          <div class="pt-3 pb-2 mb-3 border-bottom">
-            <h1>Bienvenido: <strong>{{(user.displayName) ? user.displayName : 'User'}}</strong></h1>
-            <span>Puntaje: <strong>{{jugadorLog.puntaje}}</strong></span>
+        <div class="lobby-steps">
+          <span [class.active]="!partidaLista">1. Rivales</span>
+          <span [class.active]="partidaLista && !creandoPartida">2. Mesa lista</span>
+          <span>3. Jugar</span>
+        </div>
+      </header>
+
+      <div class="alert alert-danger" *ngIf="errorLobby">{{ errorLobby }}</div>
+
+      <!-- STEP: match ready -->
+      <section class="lobby-panel lobby-ready" *ngIf="partidaLista">
+        <div class="lobby-ready-copy">
+          <h2>Mesa creada</h2>
+          <p>Compartí el link con tus rivales y entrá cuando estén listos. Ambos deben abrir el mismo tablero.</p>
+        </div>
+
+        <div class="lobby-share">
+          <label>Link de la partida</label>
+          <div class="lobby-share-row">
+            <input class="form-control" [value]="linkPartida" readonly>
+            <button type="button" class="btn btn-dark" (click)="copyLink()">
+              {{ linkCopiado ? 'Copiado' : 'Copiar' }}
+            </button>
+            <a class="btn btn-outline-success"
+               [href]="'https://api.whatsapp.com/send/?text=' + linkPartida"
+               target="_blank" rel="noopener">WhatsApp</a>
           </div>
         </div>
 
-         
-          <div class="row">
-            <div class="col-md-12">
+        <div class="lobby-mesa-resumen">
+          <div class="mesa-chip you">Vos</div>
+          <div class="mesa-chip" *ngFor="let rival of rivales">{{ etiquetaJugador(rival) }}</div>
+        </div>
 
-                <div class="usuarios">
-                  <h2>Elije tus rivales</h2>
+        <div class="lobby-ready-actions">
+          <button type="button" class="btn btn-warning btn-lg" (click)="empezarPartida()">
+            Entrar al tablero
+          </button>
+          <button type="button" class="btn btn-link" (click)="nuevaSeleccion()">
+            Crear otra mesa
+          </button>
+        </div>
+      </section>
 
-                  <div class="row row-cols-1 row-cols-md-3 g-4" >
-                    <div class="col" *ngFor="let u of usuarios" (click)="elegirJugador(u!)">
-                      <div  class="card mb-3" >
-                        <div class="row g-0">
-                          <div class="col-md-4 text-center">
-                            <img src="../../../assets/character-default.png" 
-                            class="img-fluid p-2" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <h5 class="card-title">{{u.nombre}}</h5>
-                              <span >{{u.puntaje}}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+      <!-- STEP: pick rivals -->
+      <div class="lobby-grid" *ngIf="!partidaLista">
+        <section class="lobby-panel">
+          <div class="lobby-panel-head">
+            <h2>Jugadores disponibles</h2>
+            <p>Tocá para sumar o quitar. Si dos se llaman igual, mirá el código #XXXX.</p>
+          </div>
 
-                  <hr>
-                  
-                  <div class="row ">
-                    <h2 class="col-3">Rivales</h2>
-                    <div  class="row col-9 align-items-end">
-                      <a *ngIf=" linkPartida === '' " class="btn btn-primary ms-5 w-50" (click)="crearPartidaNueva()" >Crear Partida</a>
-                      <div *ngIf=" linkPartida !== '' " class="row ">
-                       <a class="btn btn-warning w-50" type="button" (click)="empezarPartida()" >Empezar partida</a>
-                       <mat-form-field appearance="outline" class="w-50">
-                        <mat-label>Copia el link para enviar a tus rivales</mat-label>
-                        <input matInput [value]="linkPartida" type="text">
-                        <button mat-icon-button matSuffix (click)="copyLink()" ><mat-icon>file_copy</mat-icon></button>
-                        <a  mat-icon-button matSuffix  href="https://api.whatsapp.com/send/?text={{linkPartida}}" >
-                          <mat-icon>whatsapp</mat-icon>
-                        </a>
-                      </mat-form-field>
-                      </div>
-                    </div>
-                   
-                  </div>
+          <div class="lobby-empty" *ngIf="cargandoJugadores">Cargando jugadores…</div>
+          <div class="lobby-empty" *ngIf="!cargandoJugadores && usuarios.length === 0">
+            No hay otros jugadores todavía. Pedile a alguien que inicie sesión en otra cuenta.
+          </div>
 
-                  <br>
-
-
-                  <section class="rivales">
-                    <div class="row row-cols-1 row-cols-md-3 g-4" >
-                      <div class="col" *ngFor="let rival of rivales; let i = index">
-                        <div  class="card mb-3">
-                          <div class="row g-0">
-                            <div class="col-md-4">
-                              <img src="../../../assets/character-{{i}}.png" 
-                              class="img-fluid rounded-start p-2" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                              <div class="card-body ">
-                                <h5 class="card-title">{{rival.nombre}}</h5>
-                                <a type="button" class="btn btn-outline-light btn-sm"  (click) = "retirarRival(rival!)"> &#10060;</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-                </div>
-
+          <div class="player-grid" *ngIf="!cargandoJugadores && usuarios.length > 0">
+            <button type="button"
+                    class="player-card"
+                    *ngFor="let u of usuarios"
+                    [class.selected]="estaSeleccionado(u)"
+                    (click)="elegirJugador(u)">
+              <img src="../../../assets/character-default.png" alt="">
+              <div>
+                <strong>{{ etiquetaJugador(u) }}</strong>
+                <span>{{ u.puntaje || 0 }} pts</span>
               </div>
-            </div>
+              <em>{{ estaSeleccionado(u) ? 'En mesa' : 'Sumar' }}</em>
+            </button>
+          </div>
+        </section>
 
-        
-      </main>
-    </div>
+        <section class="lobby-panel lobby-mesa">
+          <div class="lobby-panel-head">
+            <h2>Tu mesa</h2>
+            <p>{{ totalEnMesa }}/6 jugadores · mínimo 2</p>
+          </div>
+
+          <ul class="mesa-list" *ngIf="jugadorLog">
+            <li class="mesa-item you">
+              <img src="../../../assets/character-default.png" alt="">
+              <div>
+                <strong>{{ etiquetaJugador(jugadorLog) }}</strong>
+                <span>Host · {{ jugadorLog.puntaje || 0 }} pts</span>
+              </div>
+            </li>
+            <li class="mesa-item" *ngFor="let rival of rivales; let i = index">
+              <img [src]="'../../../assets/character-' + i + '.png'" alt="">
+              <div>
+                <strong>{{ etiquetaJugador(rival) }}</strong>
+                <span>{{ rival.puntaje || 0 }} pts</span>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="retirarRival(rival)">Quitar</button>
+            </li>
+          </ul>
+
+          <div class="lobby-empty soft" *ngIf="rivales.length === 0">
+            Todavía no elegiste rivales.
+          </div>
+
+          <button type="button"
+                  class="btn btn-primary btn-lg w-100"
+                  [disabled]="!puedeCrear"
+                  (click)="crearPartidaNueva()">
+            {{ creandoPartida ? 'Creando…' : 'Crear partida' }}
+          </button>
+        </section>
+      </div>
+    </main>
   </div>
-  <router-outlet></router-outlet>
+</div>
+<router-outlet></router-outlet>

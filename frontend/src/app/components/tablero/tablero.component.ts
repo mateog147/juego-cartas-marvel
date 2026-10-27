@@ -1,16 +1,15 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, OnInit } from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
-import {Card} from '../card/card.component'
+import { Card } from '../card/card.component';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ApuestaModel } from 'src/app/interface/apuesta.interface';
 import { PartidaService } from 'src/app/shared/services/partida.service';
 
 import { Jugador } from 'src/app/interface/jugador';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
-import {map, takeWhile} from 'rxjs/operators';
-import { add } from 'date-fns';
+import { takeWhile } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { WebsocketService } from 'src/app/shared/service/websocket.service';
 import { wsUrl } from 'src/environments/api.config';
@@ -19,230 +18,160 @@ import { wsUrl } from 'src/environments/api.config';
   selector: 'app-tablero',
   templateUrl: './tablero.component.html',
   styleUrls: ['./tablero.component.css'],
-  //changeDetection: ChangeDetectionStrategy.OnPush
 })
+export class TableroComponent implements OnInit, DoCheck, OnDestroy {
 
-
-export class TableroComponent implements OnInit , DoCheck {
-
-  tablero: {status:boolean} = {status : false}
-  partidaId !: string;
+  tablero: { status: boolean } = { status: false };
+  partidaId!: string;
   ronda: number = 0;
-  apuestas!: {jugadorId: string, carta:Card}[] ;
+  apuestas: { jugadorId: string, carta: Card }[] = [];
   mazo: Card[] = [];
   apuestadrop: Card[] = [];
-  jugadores: any;
-  partida:any;
+  jugadores: any[] = [];
+  partida: any;
   jugadoruid: any;
   jugadorInfo: any;
-  timeInterval : number = 1000;
   time!: number;
-  subscripcion!: Subscription;
-  constructor(public authService: AuthService, 
-            private partidaService: PartidaService, 
-            private rutaActiva : ActivatedRoute,
-            private websocket: WebsocketService,
-           
-            ) {   
+  private ganadoresSocket?: WebSocket;
+  private mostrandoGanador = false;
+  private timerSub?: Subscription;
 
-               const socket2 = new WebSocket(wsUrl('/ganadores'));
+  constructor(
+    public authService: AuthService,
+    private partidaService: PartidaService,
+    private rutaActiva: ActivatedRoute,
+    private websocket: WebsocketService,
+  ) {
+    this.ganadoresSocket = new WebSocket(wsUrl('/ganadores'));
+    this.ganadoresSocket.addEventListener('message', (event: MessageEvent) => {
+      const ganador = JSON.parse(event.data);
+      if (this.partida?.ronda?.id && ganador.id === this.partida.ronda.id) {
+        this.mostrarGanadorRonda(ganador.ultimoGanador);
+      }
+    });
 
-               socket2.addEventListener('message', (event: MessageEvent) => {
-               let ganador = JSON.parse(event.data);
-               
-               if(ganador.id === this.partida.ronda.id){
-                Swal.fire({timer: 5000, timerProgressBar: true, html: `<h2>El ganador de la ronda: ${ganador.ultimoGanador} </h2></hr>
-                <span style='font-size:100px;'>&#128526;</span>`}).then(result => {
-                  if(result.isConfirmed || result.dismiss === Swal.DismissReason.timer){
-                    this.getPartidaPorId();
-                    this.time = this.partida.ronda.isTimerOn;
-                  }
-                })}})
-                 
-                
-                
-               
-            
-              this.websocket.messages.subscribe(message => {
-                message.id === this.partida.ronda.id ?
-                this.apuestas = message.apuestas :
-
-                ''               
-              })
-            }
-
- 
-  ngDoCheck(): void {
-    //this.partidaService.getPartidaporId(this.partidaId).subscribe((partida : any)=> {
-      
-    if(this.apuestas.length === this.partida.jugadores.length) {
-      this.tablero.status = true;
-      //console.log(this.apuestas);
-      
-    }
-    else{ this.tablero.status = false}
+    this.websocket.messages.subscribe(message => {
+      if (this.partida?.ronda?.id && message.id === this.partida.ronda.id) {
+        this.apuestas = message.apuestas || [];
+      }
+    });
   }
-  
+
+  ngDoCheck(): void {
+    const jugadoresCount = this.partida?.jugadores?.length ?? 0;
+    this.tablero.status = jugadoresCount > 0 && this.apuestas.length === jugadoresCount;
+  }
 
   ngOnInit(): void {
-     this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
-     this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
-     this.getPartidaPorId();
-     
-     
-     this.subscripcion = this.partidaService.getRefresh$().subscribe(
-     //()=> this.ganadorRonda()
-     ) 
-     
-     
-     
-  }
-
-  ngAfterViewInit(){
-    //this.websocket.readMsg();
-    this.partidaService.getPartidaporId(this.partidaId)
-    .subscribe((data : any) => {
-      data.jugadores.length === 1 ?   
-      Swal.fire(`<h2>El ganador del juego fue: ${this.partida.ronda.ultimoGanador} </h2><hr/>
-      <span style='font-size:100px;'>&#129321;</span>`) :
-  
-      this.jugadores = data.jugadores;
-      this.time = data.ronda.isTimerOn;
+    this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
+    this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
+    this.getPartidaPorId(() => {
+      this.time = this.partida?.ronda?.isTimerOn ?? 60;
       this.onTime();
-    })
-        
-    
-   // console.log(this.partida)
-    
-  
-  }
-  ngAfterViewChecked(){
-    //this.onTime()
+      this.chequearGanadorPartida();
+    });
   }
 
-  ngOnChanges() {
-
-    //if(changes.mazo.currentValue != changes.partida.previousValue){
-
-    // this.getPartidaPorId();
-    // this.imprimir();
-    // console.log("algo cambio");
-    
-
+  ngOnDestroy(): void {
+    this.timerSub?.unsubscribe();
+    this.ganadoresSocket?.close();
   }
-  
 
   drop(event: CdkDragDrop<Card[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      return;
+    }
 
-    // } else if (this.apuestas.filter(item =>
-    //   item.jugadorId === this.jugadorInfo.id).length > 0 ) {
-    //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    //     Swal.fire(`Ya hiciste tu apuesta, espera a los demas jugadores`);
-    }else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,)
+    if (this.filtrarJugadorEnapuesta().length > 0) {
+      Swal.fire('Ya hiciste tu apuesta, espera a los demas jugadores');
+      return;
+    }
 
-      ;
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex,
+    );
 
-      this.newArray()
+    this.newArray();
+    const cartaApostada: Card = event.container.data[0];
+    this.enviarApuesta(this.partidaId, cartaApostada);
+    this.renderTableroApuestas();
+  }
 
-      let cartaApostada: Card = event.container.data[0]
-
-     // console.log(cartaApostada);
-
-      this.enviarApuesta(this.partidaId , cartaApostada);
-      this.renderTableroApuestas()
-      //window.location.reload();
-    }}
-
-    
-   
-  onTime(){
-    
-    let fina = 12000;
-    interval(1000).pipe(
-        takeWhile(() => fina -- > 0))
-        .subscribe({next: () => {
-          this.time --;
-         if( this.time == 0 ) {this.tomarCartaRandom();
-          //this.ganadorRonda()
+  onTime() {
+    this.timerSub?.unsubscribe();
+    let remainingMs = (this.time || 12) * 1000;
+    this.timerSub = interval(1000).pipe(
+      takeWhile(() => remainingMs-- > 0)
+    ).subscribe({
+      next: () => {
+        this.time--;
+        if (this.time === 0) {
+          this.tomarCartaRandom();
         }
-      
-      }})
-    
-    
-    
-  }
-  //!TOMAR CARTA AL FINALIZAR RELOJ
-  tomarCartaRandom(){
-    if(this.mazo.length > 0 && this.filtrarJugadorEnapuesta().length === 0 ){
-    this.enviarApuesta(this.partidaId, this.mazo[0])} 
-   
-   
-   
+      }
+    });
   }
 
-  //!PREGUNTAR SI HAY APUESTA DEL JUGADOR
-  filtrarJugadorEnapuesta(){
-    return this.apuestas.filter(item =>
-      item.jugadorId === this.jugadorInfo.id)
+  tomarCartaRandom() {
+    if (this.mazo.length > 0 && this.filtrarJugadorEnapuesta().length === 0) {
+      this.enviarApuesta(this.partidaId, this.mazo[0]);
+    }
   }
-  
-  //!INFO DE LOS MAZOS
-  newArray(){
+
+  filtrarJugadorEnapuesta() {
+    if (!this.jugadorInfo) {
+      return [];
+    }
+    return this.apuestas.filter(item => item.jugadorId === this.jugadorInfo.id);
+  }
+
+  newArray() {
     localStorage.setItem('mazo', JSON.stringify(this.mazo));
     localStorage.setItem('apuestadrop', JSON.stringify(this.apuestadrop));
-
   }
 
-  imprimir(){
-   this.renderTableroApuestas();
-   this.getJugadorInfo();
-   this.getMazo();
-   
-    //console.log(this.jugadoruid)
-    //console.log(this.partida);
-    //console.log(this.jugadores);
-    
-    //console.log(JSON.parse(localStorage.getItem('user')!).uid)
+  imprimir() {
+    this.renderTableroApuestas();
+    this.getJugadorInfo();
+    this.getMazo();
   }
 
-  getPartidaPorId() {
-    this.partidaService.getPartidaporId(this.partidaId)
-    .subscribe(item => {
+  getPartidaPorId(after?: () => void) {
+    this.partidaService.getPartidaporId(this.partidaId).subscribe((item: any) => {
       this.partida = item;
-      
-      this.imprimir()})
-      
+      this.jugadores = item.jugadores || [];
+      this.imprimir();
+      after?.();
+    });
   }
 
-  renderTableroApuestas(){
-    this.partida.ronda.apuestas.length > 0 ?
-    this.apuestas = this.partida.ronda.apuestas :
-    this.apuestas = [];
-    this.ronda = this.partida.ronda.numero;
-
+  renderTableroApuestas() {
+    this.apuestas = this.partida?.ronda?.apuestas?.length > 0
+      ? this.partida.ronda.apuestas
+      : [];
+    this.ronda = this.partida?.ronda?.numero ?? 0;
   }
-   getJugadorInfo()  {
 
-
-    this.partida.jugadores.forEach((jugador: Jugador) => {
-      if(jugador.uid === this.jugadoruid){ this.jugadorInfo = jugador
-      //console.log(jugador);
+  getJugadorInfo() {
+    this.partida?.jugadores?.forEach((jugador: Jugador) => {
+      if (jugador.uid === this.jugadoruid) {
+        this.jugadorInfo = jugador;
       }
-    })
+    });
   }
 
-  getMazo(){
-    this.mazo = this.jugadorInfo.cartas
+  getMazo() {
+    this.mazo = this.jugadorInfo?.cartas || [];
   }
 
-  enviarApuesta(partidaId : string , carta: Card){
+  enviarApuesta(partidaId: string, carta: Card) {
+    if (!this.jugadorInfo) {
+      return;
+    }
 
     const apuesta: ApuestaModel = {
       jugadorId: this.jugadorInfo.id,
@@ -252,31 +181,59 @@ export class TableroComponent implements OnInit , DoCheck {
         xp: carta.xp,
         imagen: carta.imagen
       }
-    }
-    
-    //this.websocket.messages.next(apuesta)
-    //this.websocket.send('apuesta')
-    this.partidaService.enviarApuesta(partidaId, apuesta).subscribe()
-  }
+    };
 
-  ganadorRonda(idPartida : string = this.partidaId){
-    this.tablero.status ? 
-    this.partidaService.ganadorRonda(idPartida).subscribe(item => 
-    Swal.fire({timer: 10000, timerProgressBar: true, html: `<h2>El ganador de la ronda: ${item.ronda.ultimoGanador} </h2></hr>
-    <span style='font-size:100px;'>&#128526;</span>`}).then(result => {
-      if(result.isConfirmed || (result.dismiss === Swal.DismissReason.timer)){
+    this.partidaService.enviarApuesta(partidaId, apuesta).subscribe({
+      next: (partidaActualizada: any) => {
+        // Clear local drop zone after a successful bet
+        this.apuestadrop = [];
+        this.partida = partidaActualizada;
+        this.jugadores = partidaActualizada.jugadores || [];
+        this.imprimir();
+
+        // Backend may have auto-resolved the round on this same response
+        if (partidaActualizada?.ronda?.ultimoGanador && (partidaActualizada.ronda.apuestas?.length ?? 0) === 0) {
+          this.mostrarGanadorRonda(partidaActualizada.ronda.ultimoGanador);
+        }
+
+        this.chequearGanadorPartida();
+      },
+      error: (err) => {
+        console.error('Error enviando apuesta', err);
+        Swal.fire('No se pudo enviar la apuesta');
         this.getPartidaPorId();
-        this.time = this.partida.ronda.isTimerOn;
       }
-    })):
-    this.getPartidaPorId()
-     
-    if(this.mazo.length === 0){
-      alert("Has perdido noob")
-     }
-
-    
+    });
   }
 
+  private mostrarGanadorRonda(nombre: string) {
+    if (this.mostrandoGanador) {
+      return;
+    }
+    this.mostrandoGanador = true;
+    Swal.fire({
+      timer: 5000,
+      timerProgressBar: true,
+      html: `<h2>El ganador de la ronda: ${nombre}</h2><hr/>
+             <span style='font-size:100px;'>&#128526;</span>`
+    }).then(() => {
+      this.mostrandoGanador = false;
+      this.getPartidaPorId(() => {
+        this.time = this.partida?.ronda?.isTimerOn ?? 60;
+        this.apuestadrop = [];
+        this.onTime();
+        this.chequearGanadorPartida();
+      });
+    });
+  }
 
+  private chequearGanadorPartida() {
+    if (this.partida?.jugadores?.length === 1) {
+      const nombre = this.partida.jugadores[0]?.nombre || this.partida.ronda?.ultimoGanador;
+      Swal.fire(`<h2>El ganador del juego fue: ${nombre}</h2><hr/>
+                 <span style='font-size:100px;'>&#129321;</span>`);
+    } else if (this.jugadorInfo && (this.jugadorInfo.cartas?.length ?? 0) === 0) {
+      Swal.fire('Te quedaste sin cartas. Has perdido esta partida.');
+    }
+  }
 }

@@ -66,17 +66,30 @@ public class HandlerPartida {
         var idPartida = serverRequest.pathVariable("id");
 
         return serverRequest.bodyToMono(Apuesta.class)
-                .flatMap(apuesta -> {
-                            return encontrarPartidaUseCase.encontrarPartida(idPartida)
-                                    .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta)) //TODO
-                                    //TODO .flatMap(partida -> verificarGanadorPartidaUseCase.verificarGanadorPartida(partida))
-                                    .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
-                        })
-
-                .flatMap(partida-> ServerResponse.ok()
-                
+                .flatMap(apuesta -> encontrarPartidaUseCase.encontrarPartida(idPartida)
+                        .flatMap(partida -> gestionarApuestaUseCase.gestionarApuesta(partida, apuesta))
+                        .flatMap(this::resolverRondaSiCompleta)
+                        .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida)))
+                .flatMap(partida -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(Mono.just(partida), Partida.class));
+                        .bodyValue(partida));
+    }
+
+    /**
+     * When every remaining player has placed a bet, resolve the round automatically
+     * (no manual "Ganador ronda" click required).
+     */
+    private Mono<Partida> resolverRondaSiCompleta(Partida partida) {
+        int jugadores = partida.getJugadores() == null ? 0 : partida.getJugadores().size();
+        int apuestas = partida.getRonda() == null || partida.getRonda().getApuestas() == null
+                ? 0
+                : partida.getRonda().getApuestas().size();
+
+        if (jugadores >= 2 && apuestas >= jugadores) {
+            return gestionarGanadorUseCase.gestionarGanador(partida)
+                    .flatMap(verificarGanadorPartidaUseCase::verificarGanadorPartida);
+        }
+        return Mono.just(partida);
     }
 
     public Mono<ServerResponse> GETGanadorRonda(ServerRequest serverRequest) {

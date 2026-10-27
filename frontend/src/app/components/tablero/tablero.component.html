@@ -1,47 +1,46 @@
 <div class="tablero">
 
-    <!-- <button type="button" class="btn btn-outline-primary" (click)="enviarApuesta()"> enviar apuesta</button> -->
-    <button type="button" class="btn btn-outline-primary" (click)="ganadorRonda()"> Ganador ronda</button>
-    <button type="button" class="btn btn-outline-primary" (click)="imprimir()"> imprimir algo</button>
-    
     <div class="shadow d-flex justify-content-evenly align-items-center" cdkDropListGroup>
-        
-        <div  class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
+
+        <div class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
            <div *ngFor="let jugador of jugadores; let i = index" >
-            <!-- <app-avatarjugador [(nombre)]="jugador.nombre" [(imagen)]="'../../../assets/character-{{i}}.png'"></app-avatarjugador> -->
             <div class="avatar text-center">
                 <img src="../../../assets/character-{{i}}.png" alt="foto usuario" class="rounded-circle img-fluid p-2" >
                 <span class="badge text-bg-warning p-1">{{jugador.nombre}}</span>
+                <div class="small">Cartas: {{jugador.cartas?.length || 0}}</div>
              </div>
-           </div> 
-            
+           </div>
         </div>
-       <div class="d-flex justify-content-around flex-wrap align-items-center w-75 mx-2  tablero-apuestas " *ngIf=" authService.userData as user"  cdkDropList
-       [cdkDropListData]="apuestadrop" (cdkDropListDropped)="drop($event)">
-        <div class="ronda">Ronda: {{ronda}}</div>
-        <div class="tiempo"><h3>
-            Time: {{ time > 0 ? time : 0 }}</h3>
-            
-        </div>
-        
-        <div class="apuesta d-flex justify-content-around flex-wrap align-items-center w-100 mx-2 ">
-          
-        <div *ngFor="let apuesta of apuestas" class="card-apuesta" ><p>{{apuesta.jugadorId}}</p>
-            <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/boomboom.jpg'" [nombre]="'nombre'" [xp]="2"></app-card>
-            <app-card *ngIf="tablero.status " [nombre]="apuesta.carta.nombre" [xp]="apuesta.carta.xp" [img]="apuesta.carta.imagen"></app-card> 
-        </div>
-        </div>
-       </div>
-       <div class="mazojugador"> 
-        <div class="texto-mazo " *ngIf="authService.userData as user"><h3>Mazo de {{user.displayName}}</h3></div>
-       <div  class="d-flex align-items-center flex-column mazo-cartas " cdkDropList
-       [cdkDropListData]="mazo" (cdkDropListDropped)="drop($event)">
-       
-       <div *ngFor="let item of mazo" cdkDrag><app-card [nombre]="item.nombre" [xp]="item.xp" [img]="item.imagen"></app-card> </div>
 
+       <div class="d-flex justify-content-around flex-wrap align-items-center w-75 mx-2  tablero-apuestas "
+            *ngIf="authService.userData as user"
+            cdkDropList
+            [cdkDropListData]="apuestadrop"
+            (cdkDropListDropped)="drop($event)">
+        <div class="ronda">Ronda: {{ronda}}</div>
+        <div class="tiempo"><h3>Time: {{ time > 0 ? time : 0 }}</h3></div>
+
+        <div class="apuesta d-flex justify-content-around flex-wrap align-items-center w-100 mx-2 ">
+          <div *ngFor="let apuesta of apuestas" class="card-apuesta">
+            <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/boomboom.jpg'" [nombre]="'???'" [xp]="0"></app-card>
+            <app-card *ngIf="tablero.status" [nombre]="apuesta.carta.nombre" [xp]="apuesta.carta.xp" [img]="apuesta.carta.imagen"></app-card>
+          </div>
+        </div>
+        <p class="text-muted small mt-2" *ngIf="!tablero.status">
+          Arrastrá una carta para apostar. Cuando todos apuesten, la ronda se resuelve sola.
+        </p>
        </div>
-       
+
+       <div class="mazojugador">
+        <div class="texto-mazo " *ngIf="authService.userData as user"><h3>Mazo de {{user.displayName}}</h3></div>
+       <div class="d-flex align-items-center flex-column mazo-cartas " cdkDropList
+            [cdkDropListData]="mazo"
+            (cdkDropListDropped)="drop($event)">
+         <div *ngFor="let item of mazo" cdkDrag>
+           <app-card [nombre]="item.nombre" [xp]="item.xp" [img]="item.imagen"></app-card>
+         </div>
+       </div>
        </div>
     </div>
-   
+
 </div>

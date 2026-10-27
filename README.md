@@ -66,18 +66,21 @@ Inicie el servidor del frontend, que correra en el puerto http://localhost:4200/
   npm run start
 ```
 
+En local, el frontend usa URLs relativas (`/api`, `/ws`) y el proxy de Angular
+(`proxy.conf.json`) las reenvía a `http://localhost:8080`. Para producción,
+`ng build` sustituye `environment.ts` por `environment.prod.ts` (API/WS absolutos).
+
 Regrese a la carpeta raiz y vaya a la carpeta marvel.
 ```bash
   cd ../bakend/marvel
 ```
 
-Abrala Abrala con un editor que soporte gradle y permita que se inicialicen las 
-dependencias.
-
-Corra el proyecto desde el archivo MainApplication en el modulo Applications.
+Requiere **JDK 17** (Gradle 7.4.2) y **MongoDB local** (el Atlas del repo ya no resuelve).
 
 ```bash
-  com.sofkau.MainApplication.java
+  brew services start mongodb/brew/mongodb-community@7.0
+  export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
+  ./gradlew bootRun --args='--spring.profiles.active=local'
 ```
 
 Inicie el servidor del backend que correra en el puerto http://localhost:8080

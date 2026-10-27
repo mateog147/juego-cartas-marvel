@@ -39,16 +39,20 @@ public class HandlerPartida {
         return serverRequest.bodyToFlux(Jugador.class)
                 .map(jugador -> jugador.id())
                 .collectList()
-                .map(lista -> {
-                    return crearPartidaUseCase.crearPartida()
-                            .flatMap(partida -> repartirCartasUseCase.repartir(partida, lista))
-                            .onErrorStop()
-                            .doOnNext(partida -> System.out.println("No pauso"))
-                            .flatMap(partida -> agregarRondaUseCase.agregarRonda(partida))
-                            .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida));
-                })
-                .flatMap(partida -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                        .body(partida, Partida.class));
+                .flatMap(lista -> crearPartidaUseCase.crearPartida()
+                        .flatMap(partida -> repartirCartasUseCase.repartir(partida, lista))
+                        .flatMap(partida -> agregarRondaUseCase.agregarRonda(partida))
+                        .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida)))
+                .flatMap(partida -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(partida))
+                .onErrorResume(error -> {
+                    System.err.println("Error creando partida: " + error.getMessage());
+                    error.printStackTrace();
+                    return ServerResponse.badRequest()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue("{\"error\":\"" + error.getMessage().replace("\"", "'") + "\"}");
+                });
     }
 
     public Mono<ServerResponse>GETPartidaPorId(ServerRequest serverRequest){

@@ -1,25 +1,18 @@
 // src\app\services\websocket.service.ts
-import { Injectable } from "@angular/core";
-import {  map, Observable, Observer, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { map, Observable, Observer, Subject } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
-
-
-const URL = "ws://localhost:8080/ws/apuestas";
-
-
+import { wsUrl } from 'src/environments/api.config';
 
 @Injectable()
 export class WebsocketService {
-    
-   
-    
 
     //& ESTA FUNCIONA PERO SI SE RECARGA LA PAGINA YA SE CORTA LA COMUNICACION PARA TODOS
     private subject!: AnonymousSubject<MessageEvent>;
     public messages!: Subject<any>;
 
     constructor() {
-        this.messages = <Subject<any>>this.connect(URL).pipe(
+        this.messages = <Subject<any>>this.connect(wsUrl('/apuestas')).pipe(
             map(
                 (response: MessageEvent): any => {
                     console.log(response.data);

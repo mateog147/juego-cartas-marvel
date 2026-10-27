@@ -17,7 +17,7 @@ export interface JugadorId {
 
 export class DashboardComponent implements OnInit {
   linkPartida: string = ''
-  baseUrl: string = 'localhost:4200/tablero/';
+  baseUrl: string = `${window.location.origin}/tablero/`;
   idPartida: string = '';
   jugadores: string[] = [];
   usuarios: Jugador[] = [];
@@ -74,23 +74,25 @@ export class DashboardComponent implements OnInit {
   }
 
   crearPartidaNueva(): void {
-    if(this.jugadores.length < 2){
+    if (this.jugadores.length < 2) {
       alert('No puedes jugar solo!');
-    }else{    
-    let dataTransfer: JugadorId[] = [];
-    
-    this.jugadores.forEach(jugador => {
-      dataTransfer.push(({
-        id: jugador
-      }))
-    });
-   
-    this.partida.crearPartida(dataTransfer)
-   .subscribe(data => {
-    this.linkPartida = this.baseUrl + data.id ;
-    this.idPartida = data.id});
+      return;
+    }
 
-  }}
+    const dataTransfer: JugadorId[] = this.jugadores.map(id => ({ id }));
+
+    this.partida.crearPartida(dataTransfer).subscribe({
+      next: (data) => {
+        this.linkPartida = this.baseUrl + data.id;
+        this.idPartida = data.id;
+      },
+      error: (err) => {
+        console.error('Error creando partida', err);
+        const msg = err?.error?.error || err?.message || 'Error desconocido';
+        alert('No se pudo crear la partida: ' + msg);
+      }
+    });
+  }
  empezarPartida(){
   this.router.navigate(['tablero', this.idPartida])
  }

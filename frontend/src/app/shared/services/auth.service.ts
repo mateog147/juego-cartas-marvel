@@ -45,6 +45,12 @@ export class AuthService {
           this.router.navigate(['dashboard']);
         });
         this.SetUserData(result.user);
+        // Sync jugador into local/backend Mongo (SignIn used to skip this)
+        const name =
+          result.user?.displayName ||
+          result.user?.email?.split('@')[0] ||
+          'Jugador';
+        this.nuevoJugador(result.user!.uid, name);
       })
       .catch((error) => {
         window.alert(error.message);
@@ -137,6 +143,7 @@ export class AuthService {
   SignOut() {
     return this.afAuth.signOut().then(() => {
       localStorage.removeItem('user');
+      localStorage.removeItem('jugador');
       this.router.navigate(['sign-in']);
     });
   }

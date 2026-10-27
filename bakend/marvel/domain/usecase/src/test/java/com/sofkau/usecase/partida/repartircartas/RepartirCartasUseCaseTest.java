@@ -27,13 +27,12 @@ class RepartirCartasUseCaseTest {
     RepartirCartasUseCase useCase;
 
     @Mock
-    JugadorRepository repository;
+    JugadorRepository jugadorRepository;
 
     @Test
-    private void respartir_cartas_a_jugadores_test(){
-
-        Jugador jugador1 = new Jugador("j1","uid1", "jugador1", 0, new ArrayList<>());
-        Jugador jugador2 = new Jugador("j2","uid2", "jugador2", 0, new ArrayList<>());
+    public void repartir_cartas_a_jugadores_test() {
+        Jugador jugador1 = new Jugador("j1", "uid1", "jugador1", 0, new ArrayList<>());
+        Jugador jugador2 = new Jugador("j2", "uid2", "jugador2", 0, new ArrayList<>());
         List<Jugador> jugadoresPartida = List.of(jugador1, jugador2);
         List<String> jugadoresIds = List.of(jugador1.id(), jugador2.id());
 
@@ -48,21 +47,25 @@ class RepartirCartasUseCaseTest {
         Carta carta9 = new Carta("c9", "carta9", 90, "xxx");
         Carta carta10 = new Carta("c10", "carta10", 100, "xxx");
         Carta carta11 = new Carta("c11", "carta11", 110, "xxx");
-        List<Carta> cartasMazo = List.of(carta1, carta2, carta3, carta4, carta5, carta6, carta7, carta8, carta9, carta10, carta11);
-        Mazo mazo =  Mazo.getMazo(cartasMazo);
+        // Mutable: asignarCartas() removes dealt cards from the deck
+        List<Carta> cartasMazo = new ArrayList<>(List.of(
+                carta1, carta2, carta3, carta4, carta5, carta6,
+                carta7, carta8, carta9, carta10, carta11
+        ));
+        Mazo mazo = Mazo.getMazo(cartasMazo);
 
         Ronda ronda = new Ronda();
-
         Partida partida = new Partida("partidaId", new ArrayList<>(), ronda, mazo);
 
-        when(repository.findAllById(Mockito.any())).thenReturn(Flux.fromIterable(jugadoresPartida));
+        when(jugadorRepository.findAllById(Mockito.any())).thenReturn(Flux.fromIterable(jugadoresPartida));
 
         StepVerifier.create(useCase.repartir(partida, jugadoresIds))
-                .expectNextMatches(partida1 -> )
-
+                .expectNextMatches(partidaRepartida ->
+                        partidaRepartida.getJugadores().size() == 2
+                                && partidaRepartida.getJugadores().stream()
+                                .allMatch(jugador -> jugador.getCartas() != null && jugador.getCartas().size() == 5)
+                                && partidaRepartida.getMazo().mazo().size() == 1)
+                .expectComplete()
+                .verify();
     }
-
-
-
-
 }

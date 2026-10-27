@@ -13,6 +13,7 @@ import {map, takeWhile} from 'rxjs/operators';
 import { add } from 'date-fns';
 import Swal from 'sweetalert2';
 import { WebsocketService } from 'src/app/shared/service/websocket.service';
+import { wsUrl } from 'src/environments/api.config';
 
 @Component({
   selector: 'app-tablero',
@@ -44,13 +45,8 @@ export class TableroComponent implements OnInit , DoCheck {
            
             ) {   
 
-              // let socket = new WebSocket('ws://localhost:8080/ws/apuestas');
-               let socket2 = new WebSocket('ws://localhost:8080/ws/ganadores');
-           
-              // socket.addEventListener('message', (event: MessageEvent) => {
-              //   console.log((event.data )+ 'apuesta hecha');
-                
-              // })
+               const socket2 = new WebSocket(wsUrl('/ganadores'));
+
                socket2.addEventListener('message', (event: MessageEvent) => {
                let ganador = JSON.parse(event.data);
                

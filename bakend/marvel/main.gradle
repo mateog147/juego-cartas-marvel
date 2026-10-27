@@ -33,6 +33,10 @@ subprojects {
 
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     test.finalizedBy(project.tasks.jacocoTestReport)
 
     jacocoTestReport {

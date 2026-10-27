@@ -4,21 +4,16 @@
 
 export const environment = {
   production: false,
-  firebase :{
-    apiKey: "AIzaSyDHgUVpSiMhc6LjujfjC5NhiCi07vPqmnU",
-    authDomain: "sofkau-heroes.firebaseapp.com",
-    projectId: "sofkau-heroes",
-    storageBucket: "sofkau-heroes.appspot.com",
-    messagingSenderId: "162611560419",
-    appId: "1:162611560419:web:88724e642e2b9c838eead6"
-  }
+  // Relative paths go through proxy.conf.json → http://localhost:8080
+  apiBaseUrl: '/api',
+  // Empty: WebSocket uses the current host (ng serve proxies /ws → :8080)
+  wsBaseUrl: '',
+  firebase: {
+    apiKey: 'AIzaSyDHgUVpSiMhc6LjujfjC5NhiCi07vPqmnU',
+    authDomain: 'sofkau-heroes.firebaseapp.com',
+    projectId: 'sofkau-heroes',
+    storageBucket: 'sofkau-heroes.appspot.com',
+    messagingSenderId: '162611560419',
+    appId: '1:162611560419:web:88724e642e2b9c838eead6',
+  },
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

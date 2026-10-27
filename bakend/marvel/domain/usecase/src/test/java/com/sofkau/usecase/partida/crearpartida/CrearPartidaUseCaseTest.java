@@ -1,7 +1,6 @@
 package com.sofkau.usecase.partida.crearpartida;
 
 import com.sofkau.model.carta.Carta;
-import com.sofkau.model.carta.gateways.CartaRepository;
 import com.sofkau.model.mazo.Mazo;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.model.partida.gateways.PartidaRepository;
@@ -19,6 +18,8 @@ import reactor.test.StepVerifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.mockito.Mockito.when;
 
@@ -34,15 +35,13 @@ class CrearPartidaUseCaseTest {
     MostrarCartasUseCase mostrarCartasUseCase;
 
     @Test
-    public void crear_partida(){
-        Carta carta1 = new Carta("1", "Hulk", 100, "xxx");
-        Carta carta2 = new Carta("2", "Spiderman", 50, "xxx");
-        List<Carta> cartas = List.of(carta1, carta2);
+    public void crear_partida() {
+        List<Carta> cartas = IntStream.rangeClosed(1, 12)
+                .mapToObj(i -> new Carta(String.valueOf(i), "Carta" + i, i * 10, "xxx"))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         Ronda ronda = new Ronda();
-
-        Mazo mazo =  Mazo.getMazo(cartas);
-
+        Mazo mazo = Mazo.getMazo(new ArrayList<>(cartas));
         Partida partida = Partida.builder()
                 .mazo(mazo)
                 .ronda(ronda)

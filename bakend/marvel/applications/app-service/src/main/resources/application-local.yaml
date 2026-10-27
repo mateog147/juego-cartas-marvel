@@ -1,0 +1,7 @@
+# Local profile: use a MongoDB running on this machine.
+# Start Mongo, then: ./gradlew bootRun --args='--spring.profiles.active=local'
+spring:
+  data:
+    mongodb:
+      uri: "mongodb://127.0.0.1:27017"
+      database: "marvel"

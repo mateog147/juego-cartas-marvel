@@ -10,8 +10,7 @@ import { Jugador } from 'src/app/interface/jugador';
 import { ActivatedRoute } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { WebsocketService } from 'src/app/shared/service/websocket.service';
-import { wsUrl } from 'src/environments/api.config';
+import { PartidaRealtimeEvent, WebsocketService } from 'src/app/shared/service/websocket.service';
 
 @Component({
   selector: 'app-tablero',
@@ -31,9 +30,9 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   jugadoruid: any;
   jugadorInfo: any;
   time = 0;
-  private ganadoresSocket?: WebSocket;
   private mostrandoGanador = false;
   private timerSub?: Subscription;
+  private wsSub?: Subscription;
   private lastKnownRound = 0;
 
   constructor(
@@ -41,26 +40,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     private partidaService: PartidaService,
     private rutaActiva: ActivatedRoute,
     private websocket: WebsocketService,
-  ) {
-    this.ganadoresSocket = new WebSocket(wsUrl('/ganadores'));
-    this.ganadoresSocket.addEventListener('message', (event: MessageEvent) => {
-      const ganador = JSON.parse(event.data);
-      if (this.partida?.ronda?.id && ganador.id === this.partida.ronda.id) {
-        this.mostrarGanadorRonda(ganador.ultimoGanador);
-      }
-    });
-
-    this.websocket.messages.subscribe(message => {
-      if (this.partida?.ronda?.id && message.id === this.partida.ronda.id) {
-        this.apuestas = message.apuestas || [];
-        if (message.finRondaEn) {
-          this.partida.ronda.finRondaEn = message.finRondaEn;
-          this.partida.ronda.isTimerOn = message.isTimerOn ?? this.partida.ronda.isTimerOn;
-          this.syncTimerFromServer();
-        }
-      }
-    });
-  }
+  ) {}
 
   ngDoCheck(): void {
     const jugadoresCount = this.partida?.jugadores?.length ?? 0;
@@ -70,6 +50,10 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   ngOnInit(): void {
     this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
     this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
+
+    this.websocket.connectToPartida(this.partidaId);
+    this.wsSub = this.websocket.events$.subscribe(event => this.onRealtimeEvent(event));
+
     this.getPartidaPorId(() => {
       this.syncTimerFromServer();
       this.chequearGanadorPartida();
@@ -78,7 +62,31 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
 
   ngOnDestroy(): void {
     this.timerSub?.unsubscribe();
-    this.ganadoresSocket?.close();
+    this.wsSub?.unsubscribe();
+    this.websocket.disconnect();
+  }
+
+  private onRealtimeEvent(event: PartidaRealtimeEvent) {
+    if (!event?.partida || event.partidaId !== this.partidaId) {
+      return;
+    }
+
+    this.applyPartidaSnapshot(event.partida);
+
+    if (event.type === 'ROUND_RESOLVED') {
+      const nombre = event.partida?.ronda?.ultimoGanador;
+      if (nombre) {
+        this.mostrarGanadorRonda(nombre);
+      }
+    }
+  }
+
+  private applyPartidaSnapshot(snapshot: any) {
+    this.partida = snapshot;
+    this.jugadores = snapshot.jugadores || [];
+    this.imprimir();
+    this.syncTimerFromServer();
+    this.chequearGanadorPartida();
   }
 
   drop(event: CdkDragDrop<Card[]>) {
@@ -105,7 +113,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     this.renderTableroApuestas();
   }
 
-  /** Countdown driven by server deadline (finRondaEn). No local auto-bet. */
+  /** Countdown driven by server deadline (finRondaEn). */
   syncTimerFromServer() {
     this.timerSub?.unsubscribe();
     const endsAt = this.partida?.ronda?.finRondaEn;
@@ -117,17 +125,14 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     this.time = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
     this.timerSub = interval(250).subscribe(() => {
       this.time = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
-      // When timer hits 0, server auto-bets/resolves; poll once shortly after
       if (this.time === 0) {
         this.timerSub?.unsubscribe();
-        setTimeout(() => this.getPartidaPorId(() => {
-          this.syncTimerFromServer();
-          if (this.partida?.ronda?.ultimoGanador
-              && (this.partida.ronda.apuestas?.length ?? 0) === 0
-              && this.partida.ronda.numero !== this.lastKnownRound) {
-            this.mostrarGanadorRonda(this.partida.ronda.ultimoGanador);
+        // Server closes the round; room event ROUND_RESOLVED / BET_PLACED will refresh state
+        setTimeout(() => {
+          if (!this.mostrandoGanador) {
+            this.getPartidaPorId(() => this.syncTimerFromServer());
           }
-        }), 800);
+        }, 900);
       }
     });
   }
@@ -196,17 +201,12 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     this.partidaService.enviarApuesta(partidaId, apuesta).subscribe({
       next: (partidaActualizada: any) => {
         this.apuestadrop = [];
-        this.partida = partidaActualizada;
-        this.jugadores = partidaActualizada.jugadores || [];
-        this.imprimir();
-        this.syncTimerFromServer();
+        this.applyPartidaSnapshot(partidaActualizada);
 
         if (partidaActualizada?.ronda?.ultimoGanador
             && (partidaActualizada.ronda.apuestas?.length ?? 0) === 0) {
           this.mostrarGanadorRonda(partidaActualizada.ronda.ultimoGanador);
         }
-
-        this.chequearGanadorPartida();
       },
       error: (err) => {
         console.error('Error enviando apuesta', err);

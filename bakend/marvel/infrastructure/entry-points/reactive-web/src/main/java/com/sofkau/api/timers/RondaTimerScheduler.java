@@ -1,5 +1,6 @@
 package com.sofkau.api.timers;
 
+import com.sofkau.api.realtime.PartidaRealtimeHub;
 import com.sofkau.model.partida.Partida;
 import com.sofkau.usecase.partida.cerrarrondaportiempo.CerrarRondaPorTiempoUseCase;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RondaTimerScheduler {
 
     private final CerrarRondaPorTiempoUseCase cerrarRondaPorTiempoUseCase;
+    private final PartidaRealtimeHub partidaRealtimeHub;
     private final ConcurrentHashMap<String, Disposable> jobs = new ConcurrentHashMap<>();
 
     public void programar(Partida partida) {
@@ -39,7 +41,7 @@ public class RondaTimerScheduler {
 
         Disposable disposable = Mono.delay(Duration.ofMillis(delayMs))
                 .flatMap(tick -> cerrarRondaPorTiempoUseCase.cerrar(partidaId, rondaId, numero))
-                .doOnNext(this::programarSiCorresponde)
+                .doOnNext(this::afterTimeout)
                 .doFinally(signal -> jobs.remove(key))
                 .subscribe(
                         ok -> {
@@ -50,13 +52,25 @@ public class RondaTimerScheduler {
         jobs.put(key, disposable);
     }
 
-    private void programarSiCorresponde(Partida partida) {
+    private void afterTimeout(Partida partida) {
+        if (esRondaResuelta(partida)) {
+            partidaRealtimeHub.emitRoundResolved(partida);
+        } else {
+            partidaRealtimeHub.emitBetPlaced(partida);
+        }
         if (partida.getRonda() != null
                 && partida.getRonda().getFinRondaEn() != null
                 && partida.getJugadores() != null
                 && partida.getJugadores().size() >= 2) {
             programar(partida);
         }
+    }
+
+    private boolean esRondaResuelta(Partida partida) {
+        return partida.getRonda() != null
+                && (partida.getRonda().getApuestas() == null || partida.getRonda().getApuestas().isEmpty())
+                && partida.getRonda().getUltimoGanador() != null
+                && !partida.getRonda().getUltimoGanador().isBlank();
     }
 
     private static String jobKey(String partidaId, String rondaId, Integer numero) {

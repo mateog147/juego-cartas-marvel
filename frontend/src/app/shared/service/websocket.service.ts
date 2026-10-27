@@ -1,57 +1,61 @@
-// src\app\services\websocket.service.ts
 import { Injectable } from '@angular/core';
-import { map, Observable, Observer, Subject } from 'rxjs';
-import { AnonymousSubject } from 'rxjs/internal/Subject';
+import { Observable, Subject } from 'rxjs';
 import { wsUrl } from 'src/environments/api.config';
 
+export interface PartidaRealtimeEvent {
+  type: 'BET_PLACED' | 'ROUND_RESOLVED' | 'STATE' | string;
+  partidaId: string;
+  partida: any;
+}
+
+/**
+ * One WebSocket room per partida: /ws/partida/{partidaId}
+ */
 @Injectable()
 export class WebsocketService {
 
-    //& ESTA FUNCIONA PERO SI SE RECARGA LA PAGINA YA SE CORTA LA COMUNICACION PARA TODOS
-    private subject!: AnonymousSubject<MessageEvent>;
-    public messages!: Subject<any>;
+  private socket?: WebSocket;
+  private partidaId?: string;
+  private readonly eventsSubject = new Subject<PartidaRealtimeEvent>();
 
-    constructor() {
-        this.messages = <Subject<any>>this.connect(wsUrl('/apuestas')).pipe(
-            map(
-                (response: MessageEvent): any => {
-                    console.log(response.data);
-                    return JSON.parse(response.data);
-                }
-            )
-        );
-    }
-    
-    public connect(url: string): AnonymousSubject<MessageEvent> {
-        if (!this.subject) {
-            this.subject = this.create(url);
-            console.log("Successfully connected: " + url);
-        }
-        return this.subject;
-    }
+  /** Stream of typed room events for the active partida. */
+  readonly events$: Observable<PartidaRealtimeEvent> = this.eventsSubject.asObservable();
 
-    private create(url: string): AnonymousSubject<MessageEvent> {
-        let ws = new WebSocket(url); console.log(ws.readyState);
-        let observable = new Observable((obs: Observer<MessageEvent>) => {
-            ws.onmessage = obs.next.bind(obs);
-            ws.onerror = obs.error.bind(obs);
-            ws.onclose = obs.complete.bind(obs);
-            return ws.close.bind(ws);
-           
-            
-        });
-        let observer = {
-            error: () =>{console.log('eroor')},
-            complete: ()=>{},
-            next: (data: Object) => {
-                console.log('apuesta hecha', data);
-                console.log(ws.readyState);
-                
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify(data));
-                }
-            }
-        };
-        return new AnonymousSubject<MessageEvent>(observer, observable);
+  /** @deprecated kept for older callers; prefer events$ */
+  get messages(): Subject<any> {
+    return this.eventsSubject as Subject<any>;
+  }
+
+  connectToPartida(partidaId: string): void {
+    if (!partidaId) {
+      return;
     }
+    if (this.socket && this.partidaId === partidaId && this.socket.readyState <= WebSocket.OPEN) {
+      return;
+    }
+    this.disconnect();
+    this.partidaId = partidaId;
+    const url = wsUrl(`/partida/${partidaId}`);
+    this.socket = new WebSocket(url);
+
+    this.socket.onopen = () => console.log('WS room connected', url);
+    this.socket.onmessage = (event: MessageEvent) => {
+      try {
+        const parsed = JSON.parse(event.data) as PartidaRealtimeEvent;
+        this.eventsSubject.next(parsed);
+      } catch (err) {
+        console.error('Invalid WS payload', err);
+      }
+    };
+    this.socket.onerror = (err) => console.error('WS room error', err);
+    this.socket.onclose = () => console.log('WS room closed', partidaId);
+  }
+
+  disconnect(): void {
+    if (this.socket) {
+      this.socket.close();
+      this.socket = undefined;
+    }
+    this.partidaId = undefined;
+  }
 }

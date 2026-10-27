@@ -37,6 +37,9 @@ public class CerrarRondaPorTiempoUseCase {
     public Mono<Partida> cerrar(String partidaId, String rondaId, Integer numeroEsperado) {
         return encontrarPartidaUseCase.encontrarPartida(partidaId)
                 .flatMap(partida -> {
+                    if (!partida.permiteJugar()) {
+                        return Mono.just(partida);
+                    }
                     if (partida.getRonda() == null
                             || !Objects.equals(partida.getRonda().getId(), rondaId)
                             || !Objects.equals(partida.getRonda().getNumero(), numeroEsperado)) {

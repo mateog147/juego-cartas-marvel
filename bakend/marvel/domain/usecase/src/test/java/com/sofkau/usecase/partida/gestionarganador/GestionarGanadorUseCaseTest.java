@@ -63,7 +63,13 @@ class GestionarGanadorUseCaseTest {
         List<Carta> cartasMazo = List.of(carta1, carta2);
         Mazo mazo =  Mazo.getMazo(cartasMazo);
 
-        Partida partida = new Partida("partidaId", jugadoresPartida, ronda, mazo);
+        Partida partida = Partida.builder()
+                .id("partidaId")
+                .jugadores(jugadoresPartida)
+                .ronda(ronda)
+                .mazo(mazo)
+                .estado(Partida.ESTADO_EN_JUEGO)
+                .build();
 
         when(repository.findById(Mockito.any())).thenReturn(Mono.just(jugador2));
         //when(ganadorRondaUseCase.terminarRonda(Mockito.any(),Mockito.any()))

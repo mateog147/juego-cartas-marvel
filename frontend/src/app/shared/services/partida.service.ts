@@ -25,13 +25,59 @@ export class PartidaService {
     return this.refresh$;
   }
 
-  getPartidaporId(partidaId: string) {
-    return this.http.get(this.partidaUrl + partidaId);
+  /** Mongo jugador id from localStorage (roster membership). */
+  currentJugadorId(): string {
+    try {
+      const raw = localStorage.getItem('jugador');
+      if (!raw) {
+        return '';
+      }
+      return JSON.parse(raw)?.id || '';
+    } catch {
+      return '';
+    }
   }
 
-  enviarApuesta(idPartida: string, apuesta: ApuestaModel): Observable<any> {
-    return this.http.post(this.partidaUrl + idPartida, apuesta, this.httpOptions)
-      .pipe(tap(() => this.getRefresh$().next()));
+  private withJugador(url: string, jugadorId?: string): string {
+    const id = jugadorId ?? this.currentJugadorId();
+    if (!id) {
+      return url;
+    }
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}jugadorId=${encodeURIComponent(id)}`;
+  }
+
+  getPartidaporId(partidaId: string, jugadorId?: string) {
+    return this.http.get(this.withJugador(this.partidaUrl + partidaId, jugadorId));
+  }
+
+  listarAbiertas(jugadorId: string): Observable<any[]> {
+    const q = jugadorId ? `?jugadorId=${encodeURIComponent(jugadorId)}` : '';
+    return this.http.get<any[]>(`${this.partidaUrl}abiertas${q}`);
+  }
+
+  iniciarPartida(partidaId: string, jugadorId?: string): Observable<any> {
+    return this.http.post(
+      this.withJugador(`${this.partidaUrl}iniciar/${partidaId}`, jugadorId),
+      {},
+      this.httpOptions
+    ).pipe(tap(() => this.getRefresh$().next()));
+  }
+
+  cerrarPartida(partidaId: string, jugadorId?: string): Observable<any> {
+    return this.http.post(
+      this.withJugador(`${this.partidaUrl}cerrar/${partidaId}`, jugadorId),
+      {},
+      this.httpOptions
+    ).pipe(tap(() => this.getRefresh$().next()));
+  }
+
+  enviarApuesta(idPartida: string, apuesta: ApuestaModel, jugadorId?: string): Observable<any> {
+    return this.http.post(
+      this.withJugador(this.partidaUrl + idPartida, jugadorId || apuesta.jugadorId),
+      apuesta,
+      this.httpOptions
+    ).pipe(tap(() => this.getRefresh$().next()));
   }
 
   ganadorRonda(partidaId: string): Observable<any> {

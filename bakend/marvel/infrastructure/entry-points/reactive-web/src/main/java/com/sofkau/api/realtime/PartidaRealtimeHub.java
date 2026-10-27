@@ -41,6 +41,14 @@ public class PartidaRealtimeHub {
         emit(PartidaRealtimeEvent.STATE, partida);
     }
 
+    public void emitPartidaCerrada(Partida partida) {
+        emit(PartidaRealtimeEvent.PARTIDA_CERRADA, partida);
+    }
+
+    public void emitPartidaIniciada(Partida partida) {
+        emit(PartidaRealtimeEvent.PARTIDA_INICIADA, partida);
+    }
+
     private Sinks.Many<PartidaRealtimeEvent> room(String partidaId) {
         // replay last event so a client joining mid-round gets current snapshot
         return rooms.computeIfAbsent(partidaId,

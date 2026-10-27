@@ -1,5 +1,30 @@
 <div class="tablero">
 
+    <div class="espera-overlay" *ngIf="esperandoInicio">
+      <div class="espera-card">
+        <h2>Mesa en espera</h2>
+        <p *ngIf="soyHost">
+          Cuando tus rivales estén en el tablero, pulsá <strong>Empezar partida</strong>.
+          Hasta entonces no corre el timer ni se puede apostar.
+        </p>
+        <p *ngIf="!soyHost">
+          Esperando a que el host empiece la partida…
+        </p>
+        <button type="button"
+                class="btn btn-success btn-lg"
+                *ngIf="soyHost"
+                [disabled]="iniciando"
+                (click)="iniciarPartidaDesdeTablero()">
+          {{ iniciando ? 'Empezando…' : 'Empezar partida' }}
+        </button>
+        <button type="button"
+                class="btn btn-outline-light mt-2"
+                (click)="cerrarMesaDesdeTablero()">
+          Cerrar mesa
+        </button>
+      </div>
+    </div>
+
     <div class="shadow d-flex justify-content-evenly align-items-center" cdkDropListGroup>
 
         <div class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
@@ -18,7 +43,13 @@
             [cdkDropListData]="apuestadrop"
             (cdkDropListDropped)="drop($event)">
         <div class="ronda">Ronda: {{ronda}}</div>
-        <div class="tiempo"><h3>Time: {{ time > 0 ? time : 0 }}</h3></div>
+        <div class="tiempo"><h3>Time: {{ esperandoInicio ? '—' : (time > 0 ? time : 0) }}</h3></div>
+        <button type="button"
+                class="btn btn-sm btn-outline-danger mb-2"
+                *ngIf="partida?.estado !== 'CERRADA' && !esperandoInicio"
+                (click)="cerrarMesaDesdeTablero()">
+          Cerrar mesa
+        </button>
 
         <div class="apuesta d-flex justify-content-around flex-wrap align-items-center w-100 mx-2 ">
           <div *ngFor="let apuesta of apuestas" class="card-apuesta">
@@ -26,7 +57,7 @@
             <app-card *ngIf="tablero.status" [nombre]="apuesta.carta.nombre" [xp]="apuesta.carta.xp" [img]="apuesta.carta.imagen"></app-card>
           </div>
         </div>
-        <p class="text-muted small mt-2" *ngIf="!tablero.status">
+        <p class="text-muted small mt-2" *ngIf="!tablero.status && enJuego">
           Arrastrá una carta para apostar. Si se acaba el tiempo, el servidor apuesta por vos.
           Cuando todos apostaron (o vence el timer), la ronda se resuelve sola.
         </p>
@@ -37,7 +68,7 @@
        <div class="d-flex align-items-center flex-column mazo-cartas " cdkDropList
             [cdkDropListData]="mazo"
             (cdkDropListDropped)="drop($event)">
-         <div *ngFor="let item of mazo" cdkDrag>
+         <div *ngFor="let item of mazo" cdkDrag [cdkDragDisabled]="esperandoInicio">
            <app-card [nombre]="item.nombre" [xp]="item.xp" [img]="item.imagen"></app-card>
          </div>
        </div>

@@ -55,7 +55,13 @@ class GestionarApuestaUseCaseTest {
 
         Apuesta apuesta = new Apuesta(jugador1.id(), cartaJugador1);
 
-        Partida partida = new Partida("partidaId", jugadoresPartida, ronda, mazo);
+        Partida partida = Partida.builder()
+                .id("partidaId")
+                .jugadores(jugadoresPartida)
+                .ronda(ronda)
+                .mazo(mazo)
+                .estado(Partida.ESTADO_EN_JUEGO)
+                .build();
 
         when(recibirapuestaUseCase.recibirApuesta(ronda.getId(), apuesta))
                 .thenReturn(Mono.just(

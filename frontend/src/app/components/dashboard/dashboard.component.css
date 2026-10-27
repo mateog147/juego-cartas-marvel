@@ -244,11 +244,55 @@
   background: #ffc107;
 }
 
+.mesa-chip.estado {
+  background: #212529;
+  color: #fff;
+}
+
 .lobby-ready-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
+}
+
+.lobby-mesas {
+  margin-bottom: 1.25rem;
+}
+
+.mesas-abiertas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.mesa-abierta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: #f8f9fa;
+  border: 1px solid rgba(33, 37, 41, 0.08);
+}
+
+.mesa-abierta strong {
+  display: block;
+}
+
+.mesa-abierta span {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.mesa-abierta-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 @media (max-width: 992px) {

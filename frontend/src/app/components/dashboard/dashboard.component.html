@@ -41,11 +41,53 @@
 
       <div class="alert alert-danger" *ngIf="errorLobby">{{ errorLobby }}</div>
 
-      <!-- STEP: match ready -->
+      <section class="lobby-panel lobby-mesas" *ngIf="!partidaLista">
+        <div class="lobby-panel-head">
+          <h2>Mis mesas abiertas</h2>
+          <p>Retomá una partida en curso o cerrala cuando termine.</p>
+        </div>
+
+        <div class="lobby-empty soft" *ngIf="cargandoMesas">Cargando mesas…</div>
+        <div class="lobby-empty soft" *ngIf="!cargandoMesas && mesasAbiertas.length === 0">
+          No tenés mesas abiertas.
+        </div>
+
+        <ul class="mesas-abiertas" *ngIf="!cargandoMesas && mesasAbiertas.length > 0">
+          <li class="mesa-abierta" *ngFor="let mesa of mesasAbiertas">
+            <div>
+              <strong>{{ etiquetaMesa(mesa) }}</strong>
+              <span>{{ esHost(mesa) ? 'Sos el host' : 'Participás' }} · {{ etiquetaEstado(mesa.estado) }}</span>
+            </div>
+            <div class="mesa-abierta-actions">
+              <button type="button"
+                      class="btn btn-sm btn-success"
+                      *ngIf="puedeIniciarMesa(mesa)"
+                      [disabled]="iniciandoMesaId === mesa.id"
+                      (click)="iniciarMesa(mesa)">
+                {{ iniciandoMesaId === mesa.id ? 'Empezando…' : 'Empezar' }}
+              </button>
+              <button type="button" class="btn btn-sm btn-warning" (click)="entrarMesa(mesa)">
+                Entrar
+              </button>
+              <button type="button"
+                      class="btn btn-sm btn-outline-danger"
+                      [disabled]="cerrandoMesaId === mesa.id"
+                      (click)="cerrarMesa(mesa)">
+                {{ cerrandoMesaId === mesa.id ? 'Cerrando…' : 'Cerrar' }}
+              </button>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- STEP: waiting table -->
       <section class="lobby-panel lobby-ready" *ngIf="partidaLista">
         <div class="lobby-ready-copy">
-          <h2>Mesa creada</h2>
-          <p>Compartí el link con tus rivales y entrá cuando estén listos. Ambos deben abrir el mismo tablero.</p>
+          <h2>Mesa en espera</h2>
+          <p>
+            Solo pueden entrar los jugadores que elegiste. Compartí el link; cuando estén en el tablero,
+            vos (host) pulsá <strong>Empezar partida</strong> para arrancar el timer.
+          </p>
         </div>
 
         <div class="lobby-share">
@@ -62,13 +104,27 @@
         </div>
 
         <div class="lobby-mesa-resumen">
-          <div class="mesa-chip you">Vos</div>
+          <div class="mesa-chip you">Vos · host</div>
           <div class="mesa-chip" *ngFor="let rival of rivales">{{ etiquetaJugador(rival) }}</div>
+          <div class="mesa-chip estado">{{ etiquetaEstado(partidaEstado) }}</div>
         </div>
 
         <div class="lobby-ready-actions">
-          <button type="button" class="btn btn-warning btn-lg" (click)="empezarPartida()">
+          <button type="button"
+                  class="btn btn-success btn-lg"
+                  *ngIf="mesaEnEspera"
+                  [disabled]="iniciandoPartida"
+                  (click)="iniciarYEntrar()">
+            {{ iniciandoPartida ? 'Empezando…' : 'Empezar partida' }}
+          </button>
+          <button type="button" class="btn btn-warning btn-lg" (click)="entrarAlTablero()">
             Entrar al tablero
+          </button>
+          <button type="button"
+                  class="btn btn-outline-danger"
+                  [disabled]="cerrandoMesaId === idPartida"
+                  (click)="cerrarMesa({ id: idPartida, hostJugadorId: jugadorLog?.id, estado: partidaEstado })">
+            {{ cerrandoMesaId === idPartida ? 'Cerrando…' : 'Cerrar mesa' }}
           </button>
           <button type="button" class="btn btn-link" (click)="nuevaSeleccion()">
             Crear otra mesa

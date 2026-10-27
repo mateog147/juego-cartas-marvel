@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { wsUrl } from 'src/environments/api.config';
 
 export interface PartidaRealtimeEvent {
-  type: 'BET_PLACED' | 'ROUND_RESOLVED' | 'STATE' | string;
+  type: 'BET_PLACED' | 'ROUND_RESOLVED' | 'STATE' | 'PARTIDA_CERRADA' | 'PARTIDA_INICIADA' | string;
   partidaId: string;
   partida: any;
 }

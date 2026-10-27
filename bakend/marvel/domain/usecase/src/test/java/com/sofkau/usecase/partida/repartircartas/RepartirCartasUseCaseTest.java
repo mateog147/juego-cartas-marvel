@@ -55,7 +55,13 @@ class RepartirCartasUseCaseTest {
         Mazo mazo = Mazo.getMazo(cartasMazo);
 
         Ronda ronda = new Ronda();
-        Partida partida = new Partida("partidaId", new ArrayList<>(), ronda, mazo);
+        Partida partida = Partida.builder()
+                .id("partidaId")
+                .jugadores(new ArrayList<>())
+                .ronda(ronda)
+                .mazo(mazo)
+                .estado(Partida.ESTADO_ESPERANDO)
+                .build();
 
         when(jugadorRepository.findAllById(Mockito.any())).thenReturn(Flux.fromIterable(jugadoresPartida));
 

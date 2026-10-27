@@ -10,9 +10,15 @@ import reactor.core.publisher.Mono;
 public class AgregarRondaUseCase {
     private final CrearRondaUseCase crearRondaUseCase;
 
-    //TODO: se puede unir con crear ronda
-    public Mono<Partida> agregarRonda(Partida partida){
-        return crearRondaUseCase.crearRonda(new Ronda())
-                .map(ronda -> partida.toBuilder().ronda(ronda).build());
+    /** Idle round (no timer) — used when creating a waiting table. */
+    public Mono<Partida> agregarRonda(Partida partida) {
+        return agregarRonda(partida, false);
+    }
+
+    public Mono<Partida> agregarRonda(Partida partida, boolean iniciarTimer) {
+        Mono<Ronda> rondaMono = iniciarTimer
+                ? crearRondaUseCase.crearRonda(new Ronda())
+                : crearRondaUseCase.crearRondaIdle(new Ronda());
+        return rondaMono.map(ronda -> partida.toBuilder().ronda(ronda).build());
     }
 }

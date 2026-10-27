@@ -15,6 +15,8 @@ public class PartidaRealtimeEvent {
     public static final String BET_PLACED = "BET_PLACED";
     public static final String ROUND_RESOLVED = "ROUND_RESOLVED";
     public static final String STATE = "STATE";
+    public static final String PARTIDA_CERRADA = "PARTIDA_CERRADA";
+    public static final String PARTIDA_INICIADA = "PARTIDA_INICIADA";
 
     private String type;
     private String partidaId;

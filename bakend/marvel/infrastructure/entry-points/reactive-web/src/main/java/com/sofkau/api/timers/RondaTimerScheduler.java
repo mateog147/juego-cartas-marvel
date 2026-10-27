@@ -19,9 +19,27 @@ public class RondaTimerScheduler {
     private final PartidaRealtimeHub partidaRealtimeHub;
     private final ConcurrentHashMap<String, Disposable> jobs = new ConcurrentHashMap<>();
 
+    public void cancelar(String partidaId) {
+        if (partidaId == null || partidaId.isBlank()) {
+            return;
+        }
+        String prefix = partidaId + ":";
+        jobs.entrySet().removeIf(entry -> {
+            if (!entry.getKey().startsWith(prefix)) {
+                return false;
+            }
+            Disposable job = entry.getValue();
+            if (job != null && !job.isDisposed()) {
+                job.dispose();
+            }
+            return true;
+        });
+    }
+
     public void programar(Partida partida) {
         if (partida == null
                 || partida.getId() == null
+                || !partida.permiteJugar()
                 || partida.getRonda() == null
                 || partida.getRonda().getId() == null
                 || partida.getRonda().getFinRondaEn() == null) {
@@ -53,6 +71,11 @@ public class RondaTimerScheduler {
     }
 
     private void afterTimeout(Partida partida) {
+        if (!partida.estaAbierta()) {
+            partidaRealtimeHub.emitPartidaCerrada(partida);
+            cancelar(partida.getId());
+            return;
+        }
         if (esRondaResuelta(partida)) {
             partidaRealtimeHub.emitRoundResolved(partida);
         } else {

@@ -9,11 +9,25 @@ import reactor.core.publisher.Mono;
 public class CrearRondaUseCase {
     private final RondaRepository repository;
 
+    /** Creates a round and starts the betting timer (used when game is already in play). */
     public Mono<Ronda> crearRonda(Ronda ronda) {
+        return crearRonda(ronda, true);
+    }
+
+    /** Idle round for lobby wait — no finRondaEn until the host starts the match. */
+    public Mono<Ronda> crearRondaIdle(Ronda ronda) {
+        return crearRonda(ronda, false);
+    }
+
+    private Mono<Ronda> crearRonda(Ronda ronda, boolean iniciarTimer) {
         if (ronda.getIsTimerOn() <= 0) {
             ronda.setIsTimerOn(30);
         }
-        ronda.iniciarTemporizador();
+        if (iniciarTimer) {
+            ronda.iniciarTemporizador();
+        } else {
+            ronda.setFinRondaEn(null);
+        }
         return repository.save(ronda);
     }
 }

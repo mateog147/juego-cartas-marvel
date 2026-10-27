@@ -7,7 +7,7 @@ import { ApuestaModel } from 'src/app/interface/apuesta.interface';
 import { PartidaService } from 'src/app/shared/services/partida.service';
 
 import { Jugador } from 'src/app/interface/jugador';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { PartidaRealtimeEvent, WebsocketService } from 'src/app/shared/service/websocket.service';
@@ -29,8 +29,12 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   partida: any;
   jugadoruid: any;
   jugadorInfo: any;
+  jugadorDbId = '';
   time = 0;
+  iniciando = false;
   private mostrandoGanador = false;
+  private partidaCerradaAvisada = false;
+  private accesoDenegadoAvisado = false;
   private timerSub?: Subscription;
   private wsSub?: Subscription;
   private lastKnownRound = 0;
@@ -39,8 +43,22 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     public authService: AuthService,
     private partidaService: PartidaService,
     private rutaActiva: ActivatedRoute,
+    private router: Router,
     private websocket: WebsocketService,
   ) {}
+
+  get esperandoInicio(): boolean {
+    return this.partida?.estado === 'ESPERANDO';
+  }
+
+  get soyHost(): boolean {
+    return !!this.jugadorDbId && this.partida?.hostJugadorId === this.jugadorDbId;
+  }
+
+  get enJuego(): boolean {
+    const e = this.partida?.estado;
+    return !e || e === 'EN_JUEGO' || e === 'ABIERTA';
+  }
 
   ngDoCheck(): void {
     const jugadoresCount = this.partida?.jugadores?.length ?? 0;
@@ -50,6 +68,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   ngOnInit(): void {
     this.partidaId = this.rutaActiva.snapshot.paramMap.get('idPartida')!;
     this.jugadoruid = JSON.parse(localStorage.getItem('user')!).uid;
+    this.jugadorDbId = this.partidaService.currentJugadorId();
 
     this.websocket.connectToPartida(this.partidaId);
     this.wsSub = this.websocket.events$.subscribe(event => this.onRealtimeEvent(event));
@@ -73,6 +92,16 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
 
     this.applyPartidaSnapshot(event.partida);
 
+    if (event.type === 'PARTIDA_CERRADA' || event.partida?.estado === 'CERRADA') {
+      this.avisarPartidaCerrada(event.partida);
+      return;
+    }
+
+    if (event.type === 'PARTIDA_INICIADA') {
+      this.syncTimerFromServer();
+      return;
+    }
+
     if (event.type === 'ROUND_RESOLVED') {
       const nombre = event.partida?.ronda?.ultimoGanador;
       if (nombre) {
@@ -87,9 +116,54 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     this.imprimir();
     this.syncTimerFromServer();
     this.chequearGanadorPartida();
+    if (snapshot?.estado === 'CERRADA') {
+      this.avisarPartidaCerrada(snapshot);
+    }
+  }
+
+  private avisarPartidaCerrada(partida: any) {
+    if (this.partidaCerradaAvisada) {
+      return;
+    }
+    this.partidaCerradaAvisada = true;
+    this.timerSub?.unsubscribe();
+    const ganador = partida?.jugadores?.length === 1
+      ? (partida.jugadores[0]?.nombre || 'un jugador')
+      : null;
+    const mensaje = ganador
+      ? `La mesa se cerró. Ganó ${ganador}.`
+      : 'La mesa fue cerrada.';
+    Swal.fire({
+      title: 'Mesa cerrada',
+      text: mensaje,
+      confirmButtonText: 'Volver al lobby'
+    }).then(() => {
+      this.router.navigate(['/dashboard']);
+    });
+  }
+
+  private avisarAccesoDenegado(msg?: string) {
+    if (this.accesoDenegadoAvisado) {
+      return;
+    }
+    this.accesoDenegadoAvisado = true;
+    Swal.fire({
+      title: 'No podés entrar',
+      text: msg || 'Esta mesa es solo para los jugadores invitados.',
+      confirmButtonText: 'Volver al lobby'
+    }).then(() => this.router.navigate(['/dashboard']));
   }
 
   drop(event: CdkDragDrop<Card[]>) {
+    if (this.esperandoInicio) {
+      Swal.fire('La mesa todavía no empezó. Esperá a que el host pulse Empezar.');
+      return;
+    }
+    if (this.partida?.estado === 'CERRADA') {
+      Swal.fire('La mesa ya está cerrada');
+      return;
+    }
+
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       return;
@@ -116,6 +190,10 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   /** Countdown driven by server deadline (finRondaEn). */
   syncTimerFromServer() {
     this.timerSub?.unsubscribe();
+    if (this.esperandoInicio) {
+      this.time = 0;
+      return;
+    }
     const endsAt = this.partida?.ronda?.finRondaEn;
     if (!endsAt) {
       this.time = this.partida?.ronda?.isTimerOn ?? 30;
@@ -127,7 +205,6 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
       this.time = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
       if (this.time === 0) {
         this.timerSub?.unsubscribe();
-        // Server closes the round; room event ROUND_RESOLVED / BET_PLACED will refresh state
         setTimeout(() => {
           if (!this.mostrandoGanador) {
             this.getPartidaPorId(() => this.syncTimerFromServer());
@@ -156,11 +233,20 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   getPartidaPorId(after?: () => void) {
-    this.partidaService.getPartidaporId(this.partidaId).subscribe((item: any) => {
-      this.partida = item;
-      this.jugadores = item.jugadores || [];
-      this.imprimir();
-      after?.();
+    this.partidaService.getPartidaporId(this.partidaId).subscribe({
+      next: (item: any) => {
+        this.partida = item;
+        this.jugadores = item.jugadores || [];
+        this.imprimir();
+        after?.();
+      },
+      error: (err) => {
+        if (err?.status === 403) {
+          this.avisarAccesoDenegado(err?.error?.error);
+          return;
+        }
+        Swal.fire('No se pudo cargar la partida').then(() => this.router.navigate(['/dashboard']));
+      }
     });
   }
 
@@ -173,7 +259,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
 
   getJugadorInfo() {
     this.partida?.jugadores?.forEach((jugador: Jugador) => {
-      if (jugador.uid === this.jugadoruid) {
+      if (jugador.uid === this.jugadoruid || jugador.id === this.jugadorDbId) {
         this.jugadorInfo = jugador;
       }
     });
@@ -210,8 +296,25 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
       },
       error: (err) => {
         console.error('Error enviando apuesta', err);
-        Swal.fire('No se pudo enviar la apuesta');
+        Swal.fire(err?.error?.error || 'No se pudo enviar la apuesta');
         this.getPartidaPorId(() => this.syncTimerFromServer());
+      }
+    });
+  }
+
+  iniciarPartidaDesdeTablero() {
+    if (!this.soyHost || !this.esperandoInicio || this.iniciando) {
+      return;
+    }
+    this.iniciando = true;
+    this.partidaService.iniciarPartida(this.partidaId, this.jugadorDbId).subscribe({
+      next: (partida) => {
+        this.iniciando = false;
+        this.applyPartidaSnapshot(partida);
+      },
+      error: (err) => {
+        this.iniciando = false;
+        Swal.fire(err?.error?.error || 'No se pudo empezar la partida');
       }
     });
   }
@@ -238,12 +341,34 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   private chequearGanadorPartida() {
-    if (this.partida?.jugadores?.length === 1) {
-      const nombre = this.partida.jugadores[0]?.nombre || this.partida.ronda?.ultimoGanador;
-      Swal.fire(`<h2>El ganador del juego fue: ${nombre}</h2><hr/>
-                 <span style='font-size:100px;'>&#129321;</span>`);
+    if (this.esperandoInicio) {
+      return;
+    }
+    if (this.partida?.estado === 'CERRADA' || this.partida?.jugadores?.length === 1) {
+      this.avisarPartidaCerrada(this.partida);
     } else if (this.jugadorInfo && (this.jugadorInfo.cartas?.length ?? 0) === 0) {
       Swal.fire('Te quedaste sin cartas. Has perdido esta partida.');
     }
+  }
+
+  cerrarMesaDesdeTablero() {
+    if (!this.partidaId || this.partida?.estado === 'CERRADA') {
+      return;
+    }
+    Swal.fire({
+      title: '¿Cerrar la mesa?',
+      text: 'Se termina la partida para todos.',
+      showCancelButton: true,
+      confirmButtonText: 'Cerrar',
+      cancelButtonText: 'Seguir jugando'
+    }).then(result => {
+      if (!result.isConfirmed) {
+        return;
+      }
+      this.partidaService.cerrarPartida(this.partidaId, this.jugadorDbId).subscribe({
+        next: (partida) => this.avisarPartidaCerrada(partida),
+        error: (err) => Swal.fire(err?.error?.error || 'No se pudo cerrar la mesa')
+      });
+    });
   }
 }

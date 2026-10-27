@@ -5,8 +5,42 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    position: relative;
+}
 
+.espera-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 18, 22, 0.72);
+    padding: 1.5rem;
+}
 
+.espera-card {
+    max-width: 28rem;
+    width: 100%;
+    background: rgba(33, 37, 41, 0.95);
+    color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.espera-card h2 {
+    margin: 0;
+    font-family: "Righteous", "Poppins", sans-serif;
+}
+
+.espera-card p {
+    margin: 0;
+    color: #ced4da;
 }
 
 .tablero-apuestas {

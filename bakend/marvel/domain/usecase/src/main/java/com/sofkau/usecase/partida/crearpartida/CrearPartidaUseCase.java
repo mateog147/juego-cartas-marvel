@@ -29,6 +29,8 @@ public class CrearPartidaUseCase {
                     return repository.save(Partida.builder()
                             .mazo(mazo)
                             .ronda(new Ronda())
+                            .estado(Partida.ESTADO_ESPERANDO)
+                            .creadaEn(System.currentTimeMillis())
                             .build());
                 });
     }

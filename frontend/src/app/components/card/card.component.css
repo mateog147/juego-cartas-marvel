@@ -1,49 +1,71 @@
-.card{
-    /* background-color: #cbc7e9; */
-    width: 150px;
-    height: 230px;
-    color: rgb(255, 255, 255);
-    font-size: 30px;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    
-    
-}
-.card-body{
-    background-color: rgba(10, 10, 10, 0.4);
-   
-}
-.card h3 , .card h5{
-    font-family: 'Bangers', cursive !important;
-    
-    
-}
-.card h3{
-    font-size: 1.5rem;
-}
-.card h5{ 
-    font-size: 1.1rem;
-}
-ul{
-    list-style: none;
-    
-}
-h3{
-    
-    text-align: left;
-}
-h3:hover,h5:hover{ 
-
-    transform:scale(1.2);
-    
-    color: rebeccapurple;
-
-}
-.card:hover{
-    /* transform: scale(1.2); */
-    animation: tada;
-    animation-duration: 2s;
+.hero-card {
+  width: 150px;
+  height: 230px;
+  position: relative;
+  border: 3px solid #0a0a0a;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #0a0a0a;
+  background: #12141c;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
+.hero-card-art {
+  position: absolute;
+  inset: 0;
+  background-image: var(--art);
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: saturate(1.15) contrast(1.05);
+}
 
+.hero-card-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 42%, rgba(7, 8, 13, 0.92) 78%),
+    radial-gradient(circle at 20% 15%, rgba(255, 230, 0, 0.18), transparent 45%);
+}
+
+.hero-card-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 0.65rem 0.7rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hero-card h3 {
+  margin: 0;
+  font-family: "Bangers", cursive;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  color: #fff7e0;
+  text-shadow: 2px 2px 0 #0a0a0a;
+  line-height: 1;
+}
+
+.power-chip {
+  align-self: flex-start;
+  background: #ffe600;
+  color: #0a0a0a;
+  border: 2px solid #0a0a0a;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-family: "Changa", sans-serif;
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  box-shadow: 2px 2px 0 #0a0a0a;
+}
+
+.hero-card:hover {
+  transform: translateY(-4px) rotate(-1deg);
+  box-shadow: 6px 8px 0 #0a0a0a;
+}

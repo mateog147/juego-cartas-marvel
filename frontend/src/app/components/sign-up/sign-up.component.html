@@ -1,62 +1,37 @@
 <div class="displayTable">
-    <div class="displayTableCell">
-      <div class="authBlock">
-        <h3>Registrate</h3>
-        <div class="formGroup">
-          <input
-            type="Nombre"
-            class="formControl"
-            placeholder="Nombre usuario"
-            #userName
-            required
-          />
-        </div>
-        <div class="formGroup">
-          <input
-            type="email"
-            class="formControl"
-            placeholder="E-mail"
-            #userEmail
-            required
-          />
-        </div>
-        <div class="formGroup">
-          <input
-            type="password"
-            class="formControl"
-            placeholder="Contraseña"
-            #userPwd
-            required
-          />
-        </div>
-        <div class="formGroup">
-          <input
-            type="button"
-            class="btn btnPrimary"
-            value="Registrar"
-            (click)="authService.SignUp(userName.value , userEmail.value, userPwd.value)"
-          />
-        </div>
-        <div class="formGroup">
-          <span class="or"><span class="orInner">O</span></span>
-        </div>
-        
-        <div class="formGroup">
-          <button
-            type="button"
-            class="btn googleBtn"
-            (click)="authService.GoogleAuth()"
-          >
-            <i class="fab fa-google-plus-g"></i>
-            Continua  con Google
-          </button>
-        </div>
+  <div class="displayTableCell">
+    <div class="authBlock">
+      <header class="auth-brand">
+        <p class="kicker">Nuevo jugador</p>
+        <h1 class="brand-wordmark">Unite</h1>
+        <p>Creá tu perfil y saltá a la mesa.</p>
+      </header>
+
+      <div class="formGroup">
+        <input type="text" class="formControl" placeholder="Nombre" #userName required />
       </div>
-      <div class="redirectToLogin">
-        <span
-          >Ya tenes cuenta?
-          <span class="redirect" routerLink="/sign-in">Iniciar Sesion</span></span
-        >
+      <div class="formGroup">
+        <input type="email" class="formControl" placeholder="E-mail" #userEmail required />
+      </div>
+      <div class="formGroup">
+        <input type="password" class="formControl" placeholder="Contraseña" #userPwd required />
+      </div>
+      <div class="formGroup">
+        <input type="button" class="btn btnPrimary" value="¡Crear cuenta!"
+               (click)="authService.SignUp(userName.value, userEmail.value, userPwd.value)" />
+      </div>
+      <div class="formGroup">
+        <span class="or"><span class="orInner">O</span></span>
+      </div>
+      <div class="formGroup">
+        <button type="button" class="btn googleBtn" (click)="authService.GoogleAuth()">
+          <i class="fab fa-google"></i>
+          Continuar con Google
+        </button>
       </div>
     </div>
+    <div class="redirectToLogin">
+      ¿Ya tenés cuenta? <span class="redirect" routerLink="/sign-in">Iniciar sesión</span>
+    </div>
   </div>
+</div>

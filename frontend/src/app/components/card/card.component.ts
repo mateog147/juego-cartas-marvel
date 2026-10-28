@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { resolveCardArt } from 'src/app/shared/utils/card-art';
 
-export interface Card{
+export interface Card {
   id?: string;
   nombre: string;
   imagen: string;
@@ -13,21 +14,15 @@ export interface Card{
   styleUrls: ['./card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnInit {
+export class CardComponent implements OnChanges {
 
-  @Input()
-  xp!: number;
-  @Input()
-  nombre!: string;
+  @Input() xp!: number;
+  @Input() nombre!: string;
   @Input() img!: string;
 
-  
+  artUrl = 'assets/imgs/boomboom.jpg';
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.artUrl = resolveCardArt(this.nombre, this.img);
   }
-
-  
-
 }

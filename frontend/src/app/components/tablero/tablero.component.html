@@ -1,78 +1,86 @@
-<div class="tablero">
+<div class="fight">
+  <div class="espera-overlay" *ngIf="esperandoInicio">
+    <div class="espera-card">
+      <p class="espera-kicker">Round 0</p>
+      <h2>Mesa en espera</h2>
+      <p *ngIf="soyHost">
+        Cuando tus rivales estén acá, pulsá <strong>Empezar partida</strong>.
+      </p>
+      <p *ngIf="!soyHost">Esperando al host…</p>
+      <button type="button"
+              class="comic-btn comic-btn-cyan"
+              *ngIf="soyHost"
+              [disabled]="iniciando"
+              (click)="iniciarPartidaDesdeTablero()">
+        {{ iniciando ? 'Empezando…' : 'Empezar partida' }}
+      </button>
+      <button type="button" class="comic-btn comic-btn-ghost" (click)="cerrarMesaDesdeTablero()">
+        Cerrar mesa
+      </button>
+    </div>
+  </div>
 
-    <div class="espera-overlay" *ngIf="esperandoInicio">
-      <div class="espera-card">
-        <h2>Mesa en espera</h2>
-        <p *ngIf="soyHost">
-          Cuando tus rivales estén en el tablero, pulsá <strong>Empezar partida</strong>.
-          Hasta entonces no corre el timer ni se puede apostar.
-        </p>
-        <p *ngIf="!soyHost">
-          Esperando a que el host empiece la partida…
-        </p>
-        <button type="button"
-                class="btn btn-success btn-lg"
-                *ngIf="soyHost"
-                [disabled]="iniciando"
-                (click)="iniciarPartidaDesdeTablero()">
-          {{ iniciando ? 'Empezando…' : 'Empezar partida' }}
-        </button>
-        <button type="button"
-                class="btn btn-outline-light mt-2"
-                (click)="cerrarMesaDesdeTablero()">
-          Cerrar mesa
-        </button>
+  <header class="fight-hud">
+    <div class="hud-brand">
+      <span>SofkaUMarvels</span>
+      <strong>Fight Arena</strong>
+    </div>
+    <div class="hud-stats">
+      <div class="hud-pill">Ronda {{ ronda }}</div>
+      <div class="hud-pill timer">{{ esperandoInicio ? '—' : (time > 0 ? time : 0) }}s</div>
+      <button type="button"
+              class="comic-btn comic-btn-magenta"
+              *ngIf="partida?.estado !== 'CERRADA' && !esperandoInicio"
+              (click)="cerrarMesaDesdeTablero()">
+        Cerrar
+      </button>
+    </div>
+  </header>
+
+  <div class="fight-stage" cdkDropListGroup>
+    <aside class="fighters">
+      <div class="fighter" *ngFor="let jugador of jugadores; let i = index">
+        <img [src]="'assets/character-' + (i % 6) + '.png'" [alt]="jugador.nombre">
+        <div>
+          <strong>{{ jugador.nombre }}</strong>
+          <span>{{ jugador.cartas?.length || 0 }} cartas</span>
+        </div>
       </div>
-    </div>
+    </aside>
 
-    <div class="shadow d-flex justify-content-evenly align-items-center" cdkDropListGroup>
-
-        <div class="jugadores-partida d-flex justify-content-evenly align-items-center flex-column">
-           <div *ngFor="let jugador of jugadores; let i = index" >
-            <div class="avatar text-center">
-                <img src="../../../assets/character-{{i}}.png" alt="foto usuario" class="rounded-circle img-fluid p-2" >
-                <span class="badge text-bg-warning p-1">{{jugador.nombre}}</span>
-                <div class="small">Cartas: {{jugador.cartas?.length || 0}}</div>
-             </div>
-           </div>
+    <section class="arena-board"
+             *ngIf="authService.userData as user"
+             cdkDropList
+             [cdkDropListData]="apuestadrop"
+             (cdkDropListDropped)="drop($event)">
+      <p class="board-title">Zona de apuesta</p>
+      <div class="bets">
+        <div *ngFor="let apuesta of apuestas" class="bet-slot">
+          <app-card *ngIf="!tablero.status"
+                    [img]="'assets/imgs/boomboom.jpg'"
+                    [nombre]="'???'"
+                    [xp]="0"></app-card>
+          <app-card *ngIf="tablero.status"
+                    [nombre]="apuesta.carta.nombre"
+                    [xp]="apuesta.carta.xp"
+                    [img]="apuesta.carta.imagen"></app-card>
         </div>
+      </div>
+      <p class="board-hint" *ngIf="!tablero.status && enJuego">
+        Arrastrá una carta. Si se acaba el tiempo, el server apuesta por vos.
+      </p>
+    </section>
 
-       <div class="d-flex justify-content-around flex-wrap align-items-center w-75 mx-2  tablero-apuestas "
-            *ngIf="authService.userData as user"
-            cdkDropList
-            [cdkDropListData]="apuestadrop"
-            (cdkDropListDropped)="drop($event)">
-        <div class="ronda">Ronda: {{ronda}}</div>
-        <div class="tiempo"><h3>Time: {{ esperandoInicio ? '—' : (time > 0 ? time : 0) }}</h3></div>
-        <button type="button"
-                class="btn btn-sm btn-outline-danger mb-2"
-                *ngIf="partida?.estado !== 'CERRADA' && !esperandoInicio"
-                (click)="cerrarMesaDesdeTablero()">
-          Cerrar mesa
-        </button>
-
-        <div class="apuesta d-flex justify-content-around flex-wrap align-items-center w-100 mx-2 ">
-          <div *ngFor="let apuesta of apuestas" class="card-apuesta">
-            <app-card *ngIf="!tablero.status" [img]="'../../../assets/imgs/boomboom.jpg'" [nombre]="'???'" [xp]="0"></app-card>
-            <app-card *ngIf="tablero.status" [nombre]="apuesta.carta.nombre" [xp]="apuesta.carta.xp" [img]="apuesta.carta.imagen"></app-card>
-          </div>
+    <aside class="hand">
+      <h3 *ngIf="authService.userData as user">Mazo de {{ user.displayName }}</h3>
+      <div class="hand-rail"
+           cdkDropList
+           [cdkDropListData]="mazo"
+           (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let item of mazo" cdkDrag [cdkDragDisabled]="esperandoInicio">
+          <app-card [nombre]="item.nombre" [xp]="item.xp" [img]="item.imagen"></app-card>
         </div>
-        <p class="text-muted small mt-2" *ngIf="!tablero.status && enJuego">
-          Arrastrá una carta para apostar. Si se acaba el tiempo, el servidor apuesta por vos.
-          Cuando todos apostaron (o vence el timer), la ronda se resuelve sola.
-        </p>
-       </div>
-
-       <div class="mazojugador">
-        <div class="texto-mazo " *ngIf="authService.userData as user"><h3>Mazo de {{user.displayName}}</h3></div>
-       <div class="d-flex align-items-center flex-column mazo-cartas " cdkDropList
-            [cdkDropListData]="mazo"
-            (cdkDropListDropped)="drop($event)">
-         <div *ngFor="let item of mazo" cdkDrag [cdkDragDisabled]="esperandoInicio">
-           <app-card [nombre]="item.nombre" [xp]="item.xp" [img]="item.imagen"></app-card>
-         </div>
-       </div>
-       </div>
-    </div>
-
+      </div>
+    </aside>
+  </div>
 </div>

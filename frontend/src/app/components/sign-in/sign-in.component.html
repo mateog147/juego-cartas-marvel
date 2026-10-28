@@ -1,34 +1,37 @@
-<div class="displayTable container-fluid">
-    <div class="displayTableCell container">
-      <div class="authBlock">
-        <h1 class="text-center text-white mb-5">Bienvenido a SofkaUMarvels!</h1>
-        <div class="formGroup">
-          <input type="email" class="formControl" placeholder="Email usuario" #userName required>
-        </div>
-        <div class="formGroup">
-          <input type="password" class="formControl" placeholder="Contraseña" #userPassword required>
-        </div>
-        <!-- Calling SignIn Api from AuthService -->
-        <div class="formGroup">
-          <input type="button" class="btn btnPrimary" value="Ingresar" (click)="authService.SignIn(userName.value, userPassword.value)">
-        </div>
-        <div class="formGroup">
-          <span class="or"><span class="orInner">O</span></span>
-        </div>
-        <!-- Calling GoogleAuth Api from AuthService -->
-        <div class="formGroup">
-          <button type="button" class="btn googleBtn" (click)="authService.GoogleAuth()">
-            <i class="fab fa-google-plus-g"></i>
-           Ingresar con Google
-          </button>
-        </div>
-        <div class="forgotPassword">
-          <span routerLink="/forgot-password">Olvidaste la contraseña?</span>
-        </div>
+<div class="displayTable">
+  <div class="displayTableCell">
+    <div class="authBlock">
+      <header class="auth-brand">
+        <p class="kicker">Arcade TCG</p>
+        <h1 class="brand-wordmark">SofkaUMarvels</h1>
+        <p>Elegí tu héroe. Apostá poder. Ganá la mesa.</p>
+      </header>
+
+      <div class="formGroup">
+        <input type="email" class="formControl" placeholder="Email" #userName required>
       </div>
-      <div class="redirectToLogin">
-        <span class="text-black">No tienes cuenta?<span class="redirect " routerLink="/register-user">Registrate aqui</span></span>
+      <div class="formGroup">
+        <input type="password" class="formControl" placeholder="Contraseña" #userPassword required>
+      </div>
+      <div class="formGroup">
+        <input type="button" class="btn btnPrimary" value="¡Entrar a la arena!"
+               (click)="authService.SignIn(userName.value, userPassword.value)">
+      </div>
+      <div class="formGroup">
+        <span class="or"><span class="orInner">O</span></span>
+      </div>
+      <div class="formGroup">
+        <button type="button" class="btn googleBtn" (click)="authService.GoogleAuth()">
+          <i class="fab fa-google"></i>
+          Google
+        </button>
+      </div>
+      <div class="forgotPassword">
+        <span routerLink="/forgot-password">¿Olvidaste la contraseña?</span>
       </div>
     </div>
+    <div class="redirectToLogin">
+      ¿Sin cuenta? <span class="redirect" routerLink="/register-user">Registrate</span>
+    </div>
   </div>
-  
+</div>

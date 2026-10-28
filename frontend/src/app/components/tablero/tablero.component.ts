@@ -9,8 +9,8 @@ import { PartidaService } from 'src/app/shared/services/partida.service';
 import { Jugador } from 'src/app/interface/jugador';
 import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
-import Swal from 'sweetalert2';
 import { PartidaRealtimeEvent, WebsocketService } from 'src/app/shared/service/websocket.service';
+import { comicAlert, comicError, comicInfo, comicWin } from 'src/app/shared/utils/comic-alert';
 
 @Component({
   selector: 'app-tablero',
@@ -130,16 +130,13 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     const ganador = partida?.jugadores?.length === 1
       ? (partida.jugadores[0]?.nombre || 'un jugador')
       : null;
-    const mensaje = ganador
-      ? `La mesa se cerró. Ganó ${ganador}.`
-      : 'La mesa fue cerrada.';
-    Swal.fire({
-      title: 'Mesa cerrada',
-      text: mensaje,
-      confirmButtonText: 'Volver al lobby'
-    }).then(() => {
-      this.router.navigate(['/dashboard']);
-    });
+    if (ganador) {
+      comicWin('¡Campeón!', ganador, { confirmButtonText: 'Volver al lobby' })
+        .then(() => this.router.navigate(['/dashboard']));
+    } else {
+      comicInfo('Mesa cerrada', 'La partida terminó.')
+        .then(() => this.router.navigate(['/dashboard']));
+    }
   }
 
   private avisarAccesoDenegado(msg?: string) {
@@ -147,20 +144,17 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
       return;
     }
     this.accesoDenegadoAvisado = true;
-    Swal.fire({
-      title: 'No podés entrar',
-      text: msg || 'Esta mesa es solo para los jugadores invitados.',
-      confirmButtonText: 'Volver al lobby'
-    }).then(() => this.router.navigate(['/dashboard']));
+    comicError('No podés entrar', msg || 'Esta mesa es solo para los jugadores invitados.')
+      .then(() => this.router.navigate(['/dashboard']));
   }
 
   drop(event: CdkDragDrop<Card[]>) {
     if (this.esperandoInicio) {
-      Swal.fire('La mesa todavía no empezó. Esperá a que el host pulse Empezar.');
+      comicInfo('Aún no empieza', 'Esperá a que el host pulse Empezar.');
       return;
     }
     if (this.partida?.estado === 'CERRADA') {
-      Swal.fire('La mesa ya está cerrada');
+      comicInfo('Mesa cerrada', 'Esta partida ya terminó.');
       return;
     }
 
@@ -170,7 +164,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     }
 
     if (this.filtrarJugadorEnapuesta().length > 0) {
-      Swal.fire('Ya hiciste tu apuesta, espera a los demas jugadores');
+      comicInfo('Ya apostaste', 'Esperá a los demás jugadores.');
       return;
     }
 
@@ -245,7 +239,8 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
           this.avisarAccesoDenegado(err?.error?.error);
           return;
         }
-        Swal.fire('No se pudo cargar la partida').then(() => this.router.navigate(['/dashboard']));
+        comicError('No se pudo cargar la partida')
+          .then(() => this.router.navigate(['/dashboard']));
       }
     });
   }
@@ -296,7 +291,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
       },
       error: (err) => {
         console.error('Error enviando apuesta', err);
-        Swal.fire(err?.error?.error || 'No se pudo enviar la apuesta');
+        comicError(err?.error?.error || 'No se pudo enviar la apuesta');
         this.getPartidaPorId(() => this.syncTimerFromServer());
       }
     });
@@ -314,7 +309,7 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
       },
       error: (err) => {
         this.iniciando = false;
-        Swal.fire(err?.error?.error || 'No se pudo empezar la partida');
+        comicError(err?.error?.error || 'No se pudo empezar la partida');
       }
     });
   }
@@ -325,11 +320,11 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     }
     this.mostrandoGanador = true;
     this.lastKnownRound = this.partida?.ronda?.numero ?? this.lastKnownRound;
-    Swal.fire({
+    comicWin(`Gana la ronda`, nombre, {
       timer: 4000,
       timerProgressBar: true,
-      html: `<h2>El ganador de la ronda: ${nombre}</h2><hr/>
-             <span style='font-size:100px;'>&#128526;</span>`
+      showConfirmButton: true,
+      confirmButtonText: 'Boom',
     }).then(() => {
       this.mostrandoGanador = false;
       this.getPartidaPorId(() => {
@@ -347,7 +342,11 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     if (this.partida?.estado === 'CERRADA' || this.partida?.jugadores?.length === 1) {
       this.avisarPartidaCerrada(this.partida);
     } else if (this.jugadorInfo && (this.jugadorInfo.cartas?.length ?? 0) === 0) {
-      Swal.fire('Te quedaste sin cartas. Has perdido esta partida.');
+      comicAlert({
+        title: '¡KO!',
+        html: '<div class="comic-swal-burst">OUT</div><p class="comic-swal-sub">Te quedaste sin cartas.</p>',
+        confirmButtonText: 'Seguir mirando',
+      });
     }
   }
 
@@ -355,19 +354,19 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
     if (!this.partidaId || this.partida?.estado === 'CERRADA') {
       return;
     }
-    Swal.fire({
+    comicAlert({
       title: '¿Cerrar la mesa?',
       text: 'Se termina la partida para todos.',
       showCancelButton: true,
       confirmButtonText: 'Cerrar',
-      cancelButtonText: 'Seguir jugando'
+      cancelButtonText: 'Seguir',
     }).then(result => {
       if (!result.isConfirmed) {
         return;
       }
       this.partidaService.cerrarPartida(this.partidaId, this.jugadorDbId).subscribe({
         next: (partida) => this.avisarPartidaCerrada(partida),
-        error: (err) => Swal.fire(err?.error?.error || 'No se pudo cerrar la mesa')
+        error: (err) => comicError(err?.error?.error || 'No se pudo cerrar la mesa')
       });
     });
   }

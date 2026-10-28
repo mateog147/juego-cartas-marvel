@@ -17,17 +17,26 @@ export class JugadorserviceService {
 
   constructor(private http: HttpClient) { }
 
-  nuevoJugador(uid: string, name: string): Observable<any> {
+  nuevoJugador(uid: string, name: string, avatar?: string): Observable<any> {
     const data: Jugador = {
       nombre: name,
       uid: uid,
       cartas: [],
-      puntaje: 0
+      puntaje: 0,
+      avatar: avatar || 'assets/character-default.png'
     };
     return this.http.post(this.jugadorUrl, data, this.httpOptions);
   }
 
   getJugadoresDB(): Observable<any> {
     return this.http.get(this.jugadorUrl, this.httpOptions);
+  }
+
+  actualizarPerfil(id: string, nombre: string, avatar: string): Observable<Jugador> {
+    return this.http.put<Jugador>(
+      `${this.jugadorUrl}perfil/${id}`,
+      { nombre, avatar },
+      this.httpOptions
+    );
   }
 }

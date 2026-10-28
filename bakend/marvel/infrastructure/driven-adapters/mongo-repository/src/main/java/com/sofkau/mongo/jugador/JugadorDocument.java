@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+
 @Document
 @Data
 @AllArgsConstructor
@@ -20,4 +21,5 @@ public class JugadorDocument {
     private String nombre;
     private Integer puntaje;
     private List<Carta> cartas;
+    private String avatar;
 }

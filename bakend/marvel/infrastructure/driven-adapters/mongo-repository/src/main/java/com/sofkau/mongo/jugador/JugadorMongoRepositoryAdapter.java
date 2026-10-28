@@ -39,7 +39,7 @@ public class JugadorMongoRepositoryAdapter extends AdapterOperations<Jugador, Ju
 
     @Override
     public Mono<Jugador> findByUid(String jugadorUid) {
-        Example<JugadorDocument> jugadorExample = Example.of(new JugadorDocument(null,jugadorUid,null,null,null));
+        Example<JugadorDocument> jugadorExample = Example.of(new JugadorDocument(null, jugadorUid, null, null, null, null));
 
         return repository.findOne(jugadorExample).map(d -> mapper.map(d, Jugador.class));
     }

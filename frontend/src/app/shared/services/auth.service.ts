@@ -154,4 +154,55 @@ export class AuthService {
     });
   }
 
+  /**
+   * Persist display name + avatar preset to Mongo, Firebase profile, and local caches.
+   */
+  actualizarPerfilLocal(nombre: string, avatar: string): Promise<any> {
+    const raw = localStorage.getItem('jugador');
+    if (!raw) {
+      return Promise.reject(new Error('No hay jugador en sesión'));
+    }
+    const local = JSON.parse(raw);
+    if (!local?.id) {
+      return Promise.reject(new Error('Jugador sin id'));
+    }
+
+    return new Promise((resolve, reject) => {
+      this.jugador.actualizarPerfil(local.id, nombre, avatar).subscribe({
+        next: async (data) => {
+          localStorage.setItem('jugador', JSON.stringify(data));
+          try {
+            const user = await this.afAuth.currentUser;
+            if (user) {
+              await user.updateProfile({
+                displayName: nombre,
+                photoURL: avatar,
+              });
+              this.userData = {
+                ...this.userData,
+                displayName: nombre,
+                photoURL: avatar,
+              };
+              localStorage.setItem('user', JSON.stringify({
+                ...JSON.parse(localStorage.getItem('user') || '{}'),
+                displayName: nombre,
+                photoURL: avatar,
+              }));
+              await this.SetUserData({
+                ...user,
+                displayName: nombre,
+                photoURL: avatar,
+              });
+            }
+            resolve(data);
+          } catch (err) {
+            // Mongo already saved; still resolve so UI can continue
+            resolve(data);
+          }
+        },
+        error: (err) => reject(err),
+      });
+    });
+  }
+
 }

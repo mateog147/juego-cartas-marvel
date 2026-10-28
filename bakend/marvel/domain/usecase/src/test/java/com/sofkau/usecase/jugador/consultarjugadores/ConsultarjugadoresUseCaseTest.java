@@ -32,8 +32,8 @@ class ConsultarjugadoresUseCaseTest {
     public void consultar_un_jugador(){
 
         //Arrange
-        Jugador jugador1 = new Jugador("1","uid1", "jugador1", 0, new ArrayList<>());
-        Jugador jugador2 = new Jugador("2","uid2", "jugador2", 0, new ArrayList<>());
+        Jugador jugador1 = new Jugador("1","uid1", "jugador1", 0, new ArrayList<>(), null);
+        Jugador jugador2 = new Jugador("2","uid2", "jugador2", 0, new ArrayList<>(), null);
         Flux<Jugador> jugadores = Flux.fromIterable(List.of(jugador1, jugador2));
         when(repository.findAll()).thenReturn(jugadores);
 

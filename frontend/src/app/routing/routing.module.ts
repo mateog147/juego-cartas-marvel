@@ -10,6 +10,7 @@ import { AuthGuard } from '../shared/guard/auth.guard';
 import { TableroComponent } from '../components/tablero/tablero.component';
 import { TablacrudComponent } from '../components/tablacrud/tablacrud.component';
 import { AdminGuard } from '../shared/guard/admin.guard';
+import { PerfilComponent } from '../components/perfil/perfil.component';
 
 //TODO agregar ruteos para una eventual 404
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'sign-in', component: SignInComponent },
   { path: 'register-user', component: SignUpComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'perfil', component: PerfilComponent, canActivate: [AuthGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
   {path: 'tablero/:idPartida', component: TableroComponent, canActivate: [AuthGuard] },

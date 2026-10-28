@@ -31,8 +31,8 @@ class RepartirCartasUseCaseTest {
 
     @Test
     public void repartir_cartas_a_jugadores_test() {
-        Jugador jugador1 = new Jugador("j1", "uid1", "jugador1", 0, new ArrayList<>());
-        Jugador jugador2 = new Jugador("j2", "uid2", "jugador2", 0, new ArrayList<>());
+        Jugador jugador1 = new Jugador("j1", "uid1", "jugador1", 0, new ArrayList<>(), null);
+        Jugador jugador2 = new Jugador("j2", "uid2", "jugador2", 0, new ArrayList<>(), null);
         List<Jugador> jugadoresPartida = List.of(jugador1, jugador2);
         List<String> jugadoresIds = List.of(jugador1.id(), jugador2.id());
 

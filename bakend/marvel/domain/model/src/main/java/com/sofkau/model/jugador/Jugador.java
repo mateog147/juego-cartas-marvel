@@ -5,23 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Jugador {
-    //todo agregar rol y foto
     private String id;
     private String uid;
     private String nombre;
     private Integer puntaje;
-
     private List<Carta> cartas;
+    /** Local asset path, e.g. assets/character-2.png */
+    private String avatar;
 
     public String uid() {return uid;}
 
@@ -41,6 +38,10 @@ public class Jugador {
         return nombre;
     }
 
+    public String avatar() {
+        return avatar;
+    }
+
     public List<Carta> agregarCartas(List<Carta> cartasNueva){
         List<Carta> lista = this.cartas;
         lista.addAll(cartasNueva);
@@ -48,7 +49,6 @@ public class Jugador {
     }
 
     public Boolean eliminarCarta(Carta carta){
-
         return this.cartas.remove(carta);
     }
 

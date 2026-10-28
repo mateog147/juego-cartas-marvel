@@ -1,50 +1,8 @@
-.arena-top {
-  position: sticky;
-  top: 0;
-  z-index: 20;
+.lobby-top-actions {
   display: flex;
-  justify-content: space-between;
+  gap: 0.45rem;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1.25rem;
-  background: rgba(7, 8, 13, 0.92);
-  border-bottom: 4px solid #ffe600;
-  backdrop-filter: blur(8px);
-}
-
-.arena-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-}
-
-.arena-burst {
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: #ff2d6a;
-  color: #fff7e0;
-  border: 3px solid #0a0a0a;
-  box-shadow: 3px 3px 0 #0a0a0a;
-  font-family: "Bangers", cursive;
-  font-size: 1.1rem;
-  transform: rotate(-8deg);
-}
-
-.arena-kicker {
-  margin: 0;
-  color: #00e7ff;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.7rem;
-}
-
-.arena-brand h1 {
-  margin: 0;
-  font-size: clamp(1.7rem, 4vw, 2.4rem);
-  color: #ffe600;
 }
 
 .arena {

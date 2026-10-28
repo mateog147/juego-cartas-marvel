@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Jugador } from 'src/app/interface/jugador';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { JugadorserviceService } from 'src/app/shared/services/jugadorservice.service';
 import { PartidaService } from 'src/app/shared/services/partida.service';
+import { LobbyRealtimeEvent, LobbyWebsocketService } from 'src/app/shared/service/lobby-websocket.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { resolveAvatar } from 'src/app/shared/utils/avatars';
+import { comicAlert } from 'src/app/shared/utils/comic-alert';
 
 export interface JugadorId {
   id: string;
@@ -23,7 +27,7 @@ export interface MesaAbierta {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   linkPartida = '';
   baseUrl = `${window.location.origin}/tablero/`;
   idPartida = '';
@@ -42,16 +46,34 @@ export class DashboardComponent implements OnInit {
   cerrandoMesaId = '';
   iniciandoMesaId = '';
 
+  private lobbySub?: Subscription;
+  private notifiedMesaIds = new Set<string>();
+
   constructor(
     public authService: AuthService,
     private partida: PartidaService,
     private router: Router,
     private jugador: JugadorserviceService,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private lobbyWs: LobbyWebsocketService,
   ) {}
 
   ngOnInit(): void {
     this.todosJugadores();
+    this.lobbyWs.connect();
+    this.lobbySub = this.lobbyWs.events$.subscribe((event) => this.onLobbyEvent(event));
+  }
+
+  ngOnDestroy(): void {
+    this.lobbySub?.unsubscribe();
+    this.lobbyWs.disconnect();
+  }
+
+  @HostListener('document:visibilitychange')
+  onVisibilityChange(): void {
+    if (document.visibilityState === 'visible') {
+      this.refrescarLobby();
+    }
   }
 
   get totalEnMesa(): number {
@@ -68,6 +90,14 @@ export class DashboardComponent implements OnInit {
 
   get mesaEnEspera(): boolean {
     return this.partidaLista && this.partidaEstado === 'ESPERANDO';
+  }
+
+  get avatarUrl(): string {
+    return resolveAvatar(this.jugadorLog?.avatar, this.authService.userData?.photoURL);
+  }
+
+  avatarDe(j?: Jugador | null): string {
+    return resolveAvatar(j?.avatar);
   }
 
   etiquetaJugador(j: Jugador): string {
@@ -127,6 +157,28 @@ export class DashboardComponent implements OnInit {
       }
     });
 
+    this.cargarMesasAbiertas();
+  }
+
+  refrescarLobby() {
+    if (!this.jugadorLog?.id) {
+      return;
+    }
+    const myId = this.jugadorLog.id;
+    this.jugador.getJugadoresDB().subscribe({
+      next: (data) => {
+        this.usuarios = (data || []).filter((j: Jugador) => j.id !== myId);
+        const me = (data || []).find((j: Jugador) => j.id === myId);
+        if (me) {
+          this.jugadorLog = { ...this.jugadorLog, ...me };
+          localStorage.setItem('jugador', JSON.stringify(this.jugadorLog));
+        }
+        this.rivales = this.rivales.map((rival) => {
+          const fresh = (data || []).find((j: Jugador) => j.id === rival.id);
+          return fresh ? { ...rival, ...fresh } : rival;
+        });
+      }
+    });
     this.cargarMesasAbiertas();
   }
 
@@ -197,6 +249,9 @@ export class DashboardComponent implements OnInit {
         this.idPartida = data.id;
         this.partidaEstado = data.estado || 'ESPERANDO';
         this.creandoPartida = false;
+        if (data.id) {
+          this.notifiedMesaIds.add(data.id);
+        }
         this.copyLink();
         this.cargarMesasAbiertas();
       },
@@ -297,5 +352,81 @@ export class DashboardComponent implements OnInit {
     this.partidaEstado = '';
     this.linkCopiado = false;
     this.todosJugadores();
+  }
+
+  private onLobbyEvent(event: LobbyRealtimeEvent): void {
+    switch (event.type) {
+      case 'PERFIL_UPDATED':
+        this.applyPerfilUpdated(event);
+        break;
+      case 'MESA_CREADA':
+        this.onMesaCreada(event);
+        break;
+      case 'MESA_CERRADA':
+      case 'MESA_INICIADA':
+        if (this.meInRoster(event)) {
+          this.cargarMesasAbiertas();
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  private applyPerfilUpdated(event: LobbyRealtimeEvent): void {
+    const id = event.jugadorId;
+    if (!id) {
+      return;
+    }
+    const patch = (j: Jugador): Jugador => ({
+      ...j,
+      nombre: event.nombre ?? j.nombre,
+      avatar: event.avatar ?? j.avatar,
+    });
+
+    if (this.jugadorLog?.id === id) {
+      this.jugadorLog = patch(this.jugadorLog);
+      localStorage.setItem('jugador', JSON.stringify(this.jugadorLog));
+    }
+
+    this.usuarios = this.usuarios.map((u) => (u.id === id ? patch(u) : u));
+    this.rivales = this.rivales.map((u) => (u.id === id ? patch(u) : u));
+  }
+
+  private onMesaCreada(event: LobbyRealtimeEvent): void {
+    if (!this.meInRoster(event)) {
+      return;
+    }
+    this.cargarMesasAbiertas();
+
+    const partidaId = event.partidaId || '';
+    const soyHost = !!this.jugadorLog?.id && event.hostJugadorId === this.jugadorLog.id;
+    if (!partidaId || soyHost || this.notifiedMesaIds.has(partidaId)) {
+      return;
+    }
+    this.notifiedMesaIds.add(partidaId);
+
+    comicAlert({
+      title: '¡Te invitaron!',
+      html: '<div class="comic-swal-burst">VS</div><p class="comic-swal-sub">Hay una mesa nueva esperándote.</p>',
+      confirmButtonText: 'Ver mesa',
+      showCancelButton: true,
+      cancelButtonText: 'Después',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.router.navigate(['tablero', partidaId]);
+      }
+    });
+  }
+
+  private meInRoster(event: LobbyRealtimeEvent): boolean {
+    const myId = this.jugadorLog?.id;
+    if (!myId) {
+      return false;
+    }
+    if (event.hostJugadorId === myId) {
+      return true;
+    }
+    return Array.isArray(event.jugadorIds) && event.jugadorIds.includes(myId);
   }
 }

@@ -36,12 +36,15 @@ public class WebSocketConfiguration {
     HandlerMapping handlerMapping(
             @Qualifier("webSocketHandler") WebSocketHandler apuestasHandler,
             @Qualifier("rondaWebSocketHandler") WebSocketHandler ganadoresHandler,
-            @Qualifier("partidaWebSocketHandler") WebSocketHandler partidaHandler
+            @Qualifier("partidaWebSocketHandler") WebSocketHandler partidaHandler,
+            @Qualifier("lobbyWebSocketHandler") WebSocketHandler lobbyHandler
     ) {
         Map<String, WebSocketHandler> endpoints = new HashMap<>();
         // Legacy global channels (kept for compatibility)
         endpoints.put("/ws/apuestas", apuestasHandler);
         endpoints.put("/ws/ganadores", ganadoresHandler);
+        // Lobby broadcast (perfil + mesas)
+        endpoints.put("/ws/lobby", lobbyHandler);
         // Room per match
         endpoints.put("/ws/partida/**", partidaHandler);
         return new SimpleUrlHandlerMapping() {{

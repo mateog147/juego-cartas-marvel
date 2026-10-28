@@ -298,6 +298,95 @@ button,
   .authBlock { box-shadow: 5px 5px 0 var(--stroke); }
 }
 
+/* Shared arcade chrome (lobby + profile) */
+.arena-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(7, 8, 13, 0.92);
+  border-bottom: 4px solid #ffe600;
+  backdrop-filter: blur(8px);
+}
+
+.arena-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.arena-burst {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ff2d6a;
+  color: #fff7e0;
+  border: 3px solid #0a0a0a;
+  box-shadow: 3px 3px 0 #0a0a0a;
+  font-family: "Bangers", cursive;
+  font-size: 1.1rem;
+  transform: rotate(-8deg);
+}
+
+.arena-kicker {
+  margin: 0;
+  color: #00e7ff;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+}
+
+.arena-brand h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  color: #ffe600;
+}
+
+.arena-panel {
+  background: rgba(18, 20, 28, 0.92);
+  border: 4px solid #0a0a0a;
+  box-shadow: 7px 7px 0 #0a0a0a;
+  border-radius: 18px;
+  padding: 1.15rem 1.2rem;
+  margin-bottom: 1.15rem;
+}
+
+.arena-panel-head h3 {
+  margin: 0;
+  font-size: 1.7rem;
+  color: #ffe600;
+  text-shadow: 2px 2px 0 #0a0a0a;
+}
+
+.arena-panel-head p {
+  margin: 0.25rem 0 0.9rem;
+  color: #a9b0c3;
+}
+
+.arena-tag {
+  margin: 0;
+  color: #00e7ff;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+}
+
+.arena-score {
+  margin: 0.35rem 0 0;
+  color: #a9b0c3;
+}
+
+.arena-score strong {
+  color: #ffe600;
+  font-size: 1.2rem;
+}
+
 /* —— Comic SweetAlert2 —— */
 .swal2-container {
   background: rgba(7, 8, 13, 0.78) !important;

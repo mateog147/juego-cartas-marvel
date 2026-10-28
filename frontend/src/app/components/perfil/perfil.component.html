@@ -1,0 +1,62 @@
+<header class="arena-top">
+  <div class="arena-brand">
+    <span class="arena-burst">ME</span>
+    <div>
+      <p class="arena-kicker">SofkaUMarvels</p>
+      <h1 class="brand-wordmark">Tu perfil</h1>
+    </div>
+  </div>
+  <div class="perfil-top-actions">
+    <button type="button" class="comic-btn comic-btn-ghost" (click)="volver()">Lobby</button>
+    <button type="button" class="comic-btn comic-btn-magenta" (click)="authService.SignOut()">Salir</button>
+  </div>
+</header>
+
+<main class="perfil" *ngIf="jugador">
+  <section class="perfil-hero arena-panel">
+    <img class="perfil-preview" [src]="avatar" [alt]="nombre">
+    <div>
+      <p class="arena-tag">Player card</p>
+      <h2>{{ nombre || 'Sin nombre' }}</h2>
+      <p class="perfil-meta">{{ email }}</p>
+      <p class="arena-score">Score <strong>{{ jugador.puntaje || 0 }}</strong></p>
+    </div>
+  </section>
+
+  <section class="arena-panel">
+    <div class="arena-panel-head">
+      <h3>Nombre en la arena</h3>
+      <p>Así te ven los rivales en el lobby y el tablero (máx. 24).</p>
+    </div>
+    <input class="formControl perfil-input"
+           maxlength="24"
+           [(ngModel)]="nombre"
+           placeholder="Tu nombre de héroe">
+  </section>
+
+  <section class="arena-panel">
+    <div class="arena-panel-head">
+      <h3>Elegí avatar</h3>
+      <p>Presets locales — sin subir archivos.</p>
+    </div>
+    <div class="avatar-grid">
+      <button type="button"
+              class="avatar-pick"
+              *ngFor="let path of presets"
+              [class.selected]="avatar === path"
+              (click)="elegirAvatar(path)">
+        <img [src]="path" alt="">
+      </button>
+    </div>
+  </section>
+
+  <div class="perfil-actions">
+    <button type="button"
+            class="comic-btn comic-btn-yellow"
+            [disabled]="!puedeGuardar"
+            (click)="guardar()">
+      {{ guardando ? 'Guardando…' : 'Guardar perfil' }}
+    </button>
+    <button type="button" class="comic-btn comic-btn-ghost" (click)="volver()">Cancelar</button>
+  </div>
+</main>

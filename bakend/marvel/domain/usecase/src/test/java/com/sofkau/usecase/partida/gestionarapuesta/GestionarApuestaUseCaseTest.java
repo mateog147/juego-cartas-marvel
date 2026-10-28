@@ -39,9 +39,9 @@ class GestionarApuestaUseCaseTest {
         Mazo mazo =  Mazo.getMazo(cartasMazo);
 
         Carta cartaJugador1 = new Carta("cj1", "cartaJugador1", 10, "xxx");
-        Jugador jugador1 = new Jugador("j1", "uid1", "jugador1", 0, new ArrayList<>(List.of(cartaJugador1)));
+        Jugador jugador1 = new Jugador("j1", "uid1", "jugador1", 0, new ArrayList<>(List.of(cartaJugador1)), null);
         Carta cartaJugador2 = new Carta("cj2", "cartaJugador2", 20, "xxx");
-        Jugador jugador2 = new Jugador("j2", "uid2", "jugador2", 0, new ArrayList<>(List.of(cartaJugador2)));
+        Jugador jugador2 = new Jugador("j2", "uid2", "jugador2", 0, new ArrayList<>(List.of(cartaJugador2)), null);
         List<Jugador> jugadoresPartida = List.of(jugador1, jugador2);
 
         Carta cartaApostada = new Carta("cartaId", "cartaApostada", 1000, "xxx");

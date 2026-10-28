@@ -6,9 +6,12 @@
       <h1 class="brand-wordmark">Arena Lobby</h1>
     </div>
   </div>
-  <button type="button" class="comic-btn comic-btn-magenta" (click)="authService.SignOut()">
-    Salir
-  </button>
+  <div class="lobby-top-actions">
+    <a class="comic-btn comic-btn-cyan" routerLink="/perfil">Perfil</a>
+    <button type="button" class="comic-btn comic-btn-magenta" (click)="authService.SignOut()">
+      Salir
+    </button>
+  </div>
 </header>
 
 <main class="arena" *ngIf="authService.userData as user">
@@ -19,7 +22,7 @@
       <p class="arena-score">Score <strong>{{ jugadorLog ? jugadorLog.puntaje : 0 }}</strong></p>
     </div>
     <img class="arena-avatar"
-         [src]="user.photoURL || 'assets/character-default.png'"
+         [src]="avatarUrl"
          [alt]="user.displayName">
     <ol class="arena-steps" aria-label="Pasos">
       <li [class.active]="!partidaLista">Rivales</li>
@@ -131,7 +134,7 @@
                 *ngFor="let u of usuarios; let i = index"
                 [class.selected]="estaSeleccionado(u)"
                 (click)="elegirJugador(u)">
-          <img [src]="'assets/character-' + (i % 6) + '.png'" alt="">
+          <img [src]="avatarDe(u)" alt="">
           <div>
             <strong>{{ etiquetaJugador(u) }}</strong>
             <span>{{ u.puntaje || 0 }} pts</span>
@@ -149,14 +152,14 @@
 
       <ul class="seat-list" *ngIf="jugadorLog">
         <li class="seat you">
-          <img src="assets/character-default.png" alt="">
+          <img [src]="avatarUrl" alt="">
           <div>
             <strong>{{ etiquetaJugador(jugadorLog) }}</strong>
             <span>Host</span>
           </div>
         </li>
-        <li class="seat" *ngFor="let rival of rivales; let i = index">
-          <img [src]="'assets/character-' + (i % 6) + '.png'" alt="">
+        <li class="seat" *ngFor="let rival of rivales">
+          <img [src]="avatarDe(rival)" alt="">
           <div>
             <strong>{{ etiquetaJugador(rival) }}</strong>
             <span>{{ rival.puntaje || 0 }} pts</span>

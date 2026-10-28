@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { PartidaRealtimeEvent, WebsocketService } from 'src/app/shared/service/websocket.service';
 import { comicAlert, comicError, comicInfo, comicWin } from 'src/app/shared/utils/comic-alert';
+import { resolveAvatar } from 'src/app/shared/utils/avatars';
 
 @Component({
   selector: 'app-tablero',
@@ -58,6 +59,10 @@ export class TableroComponent implements OnInit, DoCheck, OnDestroy {
   get enJuego(): boolean {
     const e = this.partida?.estado;
     return !e || e === 'EN_JUEGO' || e === 'ABIERTA';
+  }
+
+  avatarDe(jugador?: Jugador | null): string {
+    return resolveAvatar(jugador?.avatar);
   }
 
   ngDoCheck(): void {

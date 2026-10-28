@@ -15,6 +15,7 @@ import com.sofkau.usecase.partida.listarpartidasabiertas.ListarPartidasAbiertasU
 import com.sofkau.usecase.partida.repartircartas.RepartirCartasUseCase;
 import com.sofkau.usecase.partida.retirarjugador.RetirarJugadorUseCase;
 import com.sofkau.usecase.partida.verificarganadorpartida.VerificarGanadorPartidaUseCase;
+import com.sofkau.api.realtime.LobbyRealtimeHub;
 import com.sofkau.api.realtime.PartidaRealtimeHub;
 import com.sofkau.api.timers.RondaTimerScheduler;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ public class HandlerPartida {
     private final IniciarPartidaUseCase iniciarPartidaUseCase;
     private final RondaTimerScheduler rondaTimerScheduler;
     private final PartidaRealtimeHub partidaRealtimeHub;
+    private final LobbyRealtimeHub lobbyRealtimeHub;
 
     public Mono<ServerResponse> POSTCrearPartida(ServerRequest serverRequest){
 
@@ -60,7 +62,10 @@ public class HandlerPartida {
                                         : System.currentTimeMillis())
                                 .build())
                         .flatMap(partida -> guardarPartidaUseCase.guardarPartida(partida)))
-                .doOnNext(partidaRealtimeHub::emitState)
+                .doOnNext(partida -> {
+                    partidaRealtimeHub.emitState(partida);
+                    lobbyRealtimeHub.emitMesaCreada(partida);
+                })
                 .flatMap(partida -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(partida))
@@ -92,6 +97,7 @@ public class HandlerPartida {
                 .doOnNext(partida -> {
                     rondaTimerScheduler.programar(partida);
                     partidaRealtimeHub.emitPartidaIniciada(partida);
+                    lobbyRealtimeHub.emitMesaIniciada(partida);
                 })
                 .flatMap(partida -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
@@ -192,6 +198,7 @@ public class HandlerPartida {
     private void afterPartidaCerrada(Partida partida) {
         rondaTimerScheduler.cancelar(partida.getId());
         partidaRealtimeHub.emitPartidaCerrada(partida);
+        lobbyRealtimeHub.emitMesaCerrada(partida);
     }
 
     private boolean esRondaResuelta(Partida partida) {

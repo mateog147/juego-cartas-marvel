@@ -28,7 +28,7 @@ class ActualizarPuntajeJugadorUseCaseTest {
     @Test
     public void actualizar_puntaje_de_jugador_test(){
 
-        Jugador jugador = new Jugador("1","uid1", "jugador1", 0, new ArrayList<>());
+        Jugador jugador = new Jugador("1","uid1", "jugador1", 0, new ArrayList<>(), null);
         Mono<Jugador> jugadorMono = Mono.just(jugador);
 
         when(repository.findById(jugador.id())).thenReturn(jugadorMono);

@@ -40,7 +40,7 @@
   <div class="fight-stage" cdkDropListGroup>
     <aside class="fighters">
       <div class="fighter" *ngFor="let jugador of jugadores; let i = index">
-        <img [src]="'assets/character-' + (i % 6) + '.png'" [alt]="jugador.nombre">
+        <img [src]="avatarDe(jugador)" [alt]="jugador.nombre">
         <div>
           <strong>{{ jugador.nombre }}</strong>
           <span>{{ jugador.cartas?.length || 0 }} cartas</span>

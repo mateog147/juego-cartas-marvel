@@ -30,7 +30,7 @@ class CrearJugadorUseCaseTest {
     @Test
     public void crear_jugador_test(){
 
-        Jugador jugador = new Jugador("1","uid1", "jugador1", 0, new ArrayList<>());
+        Jugador jugador = new Jugador("1","uid1", "jugador1", 0, new ArrayList<>(), null);
         when(repository.findByUid(jugador.uid())).thenReturn(Mono.just(jugador));
         when(repository.save(Mockito.any(Jugador.class))).thenReturn(Mono.just(jugador));
 
